@@ -2,6 +2,7 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User, Group
 from django.utils.html import format_html
+from django.utils.safestring import mark_safe
 from django.template.response import TemplateResponse
 from django.urls import path
 
@@ -357,18 +358,15 @@ class SubmissionAdmin(admin.ModelAdmin):
 
     def has_response(self, obj):
         """Display checkmark if HR has responded."""
+        if not obj:
+            return mark_safe('<span style="color: #6b7280;">—</span>')
         try:
             if hasattr(obj, 'hr_response') and obj.hr_response:
-                return format_html(
-                    '<span style="color: #22c55e; font-weight: 700; font-size: 16px;">✓</span>'
-                )
+                return mark_safe('<span style="color: #22c55e; font-weight: 700; font-size: 16px;">✓</span>')
         except Exception:
-            pass
-        return format_html(
-            '<span style="color: #6b7280;">—</span>'
-        )
+            return mark_safe('<span style="color: #6b7280;">—</span>')
+        return mark_safe('<span style="color: #6b7280;">—</span>')
     has_response.short_description = "Response"
-    has_response.boolean = True
 
     def submission_preview(self, obj):
         """Show a formatted preview of the submission."""
