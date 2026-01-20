@@ -1,0 +1,21 @@
+{% extends "submissions/base.html" %}
+{% block content %}
+  <h1>Submitted</h1>
+  <p>Your submission was received.</p>
+
+  {% if receipt_code %}
+    <p><strong>Save your receipt code:</strong></p>
+    <p class="pill code">{{ receipt_code }}</p>
+    <p class="muted">You’ll need this numeric code to check status and read any HR response later.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/status/">Check status</a>
+      <a class="btn" href="/submit/">Submit another</a>
+    </div>
+  {% else %}
+    <p class="muted">If you already navigated away, you can still check status if you saved your receipt code.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/status/">Go to status lookup</a>
+    </div>
+  {% endif %}
+{% endblock %}
+

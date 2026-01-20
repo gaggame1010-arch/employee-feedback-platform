@@ -1,0 +1,29 @@
+{% extends "submissions/base.html" %}
+{% block content %}
+  <div class="grid2">
+    <div>
+      <h1>Speak up safely.</h1>
+      <p class="muted">
+        Submit an issue, concern, or question anonymously. After you submit, you’ll receive a <strong>numeric receipt code</strong> to check updates later.
+      </p>
+      <div class="actions">
+        <a class="btn btn-primary" href="/submit/">Submit anonymously</a>
+        <a class="btn" href="/status/">Check status</a>
+      </div>
+      <p class="hint">Tip: Keep your receipt code somewhere safe (it’s the only way to view updates).</p>
+    </div>
+    <div>
+      <h2>How it works</h2>
+      <p class="muted"><span class="pill neutral">1</span> Enter the company access code.</p>
+      <p class="muted"><span class="pill neutral">2</span> Submit your message (no login).</p>
+      <p class="muted"><span class="pill neutral">3</span> Save your receipt code to check status.</p>
+      <hr />
+      <h2>For HR</h2>
+      <p class="muted">Log in to triage and respond from the HR dashboard.</p>
+      <div class="actions">
+        <a class="btn" href="/admin/">HR login</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}
+

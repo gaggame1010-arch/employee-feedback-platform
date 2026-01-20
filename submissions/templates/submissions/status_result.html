@@ -1,0 +1,38 @@
+{% extends "submissions/base.html" %}
+{% block content %}
+  <h1>Status</h1>
+
+  <p><strong>Receipt:</strong> <span class="pill code">{{ submission.receipt_code }}</span></p>
+  <p><strong>Type:</strong> {{ submission.get_type_display }}</p>
+  <p>
+    <strong>Status:</strong>
+    {% if submission.status == "NEW" %}
+      <span class="pill warn">New</span>
+    {% elif submission.status == "IN_REVIEW" %}
+      <span class="pill warn">In review</span>
+    {% elif submission.status == "RESPONDED" %}
+      <span class="pill good">Responded</span>
+    {% elif submission.status == "CLOSED" %}
+      <span class="pill neutral">Closed</span>
+    {% else %}
+      <span class="pill neutral">{{ submission.get_status_display }}</span>
+    {% endif %}
+  </p>
+  <p><strong>Title:</strong> {{ submission.title }}</p>
+  <hr />
+  <p style="white-space: pre-wrap;">{{ submission.body }}</p>
+
+  <hr />
+  <h2>HR response</h2>
+  {% if submission.hr_response %}
+    <p style="white-space: pre-wrap;">{{ submission.hr_response.body }}</p>
+  {% else %}
+    <p class="muted">No response yet.</p>
+  {% endif %}
+
+  <div class="actions">
+    <a class="btn" href="/status/">Check another code</a>
+    <a class="btn" href="/submit/">Submit new</a>
+  </div>
+{% endblock %}
+

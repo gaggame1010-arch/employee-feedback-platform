@@ -1,0 +1,66 @@
+{% extends "submissions/base.html" %}
+{% block content %}
+  <h1>Submit anonymously</h1>
+  <p class="muted">Enter the company access code to submit. No employee login is required.</p>
+
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  <form method="post" id="submit-form">
+    {% csrf_token %}
+    <label for="access_code">Company access code</label>
+    <input 
+      id="access_code" 
+      name="access_code" 
+      type="text"
+      inputmode="numeric" 
+      autocomplete="off" 
+      placeholder="e.g. 839271" 
+      value="{{ access_code|default:'' }}"
+      required 
+      pattern="[0-9]+"
+      title="Numbers only"
+    />
+
+    <label for="type">Type <span class="required">*</span></label>
+    <select id="type" name="type" required>
+      <option value="">Select a type…</option>
+      <option value="ISSUE" {% if submission_type == "ISSUE" %}selected{% endif %}>Issue</option>
+      <option value="CONCERN" {% if submission_type == "CONCERN" %}selected{% endif %}>Concern</option>
+      <option value="QUESTION" {% if submission_type == "QUESTION" %}selected{% endif %}>Question</option>
+      <option value="SUGGESTION" {% if submission_type == "SUGGESTION" %}selected{% endif %}>Suggestion</option>
+    </select>
+
+    <label for="title">Title <span class="required">*</span></label>
+    <input 
+      id="title" 
+      name="title" 
+      type="text"
+      maxlength="255" 
+      minlength="3"
+      placeholder="Short summary (at least 3 characters)" 
+      value="{{ title|default:'' }}"
+      required 
+    />
+    <small class="hint">Minimum 3 characters</small>
+
+    <label for="body">Description <span class="required">*</span></label>
+    <textarea 
+      id="body" 
+      name="body" 
+      rows="6"
+      maxlength="5000"
+      minlength="10"
+      placeholder="Write details here. Avoid names or identifying info unless necessary. Minimum 10 characters." 
+      required
+    >{{ body|default:'' }}</textarea>
+    <small class="hint">Minimum 10 characters, maximum 5000 characters</small>
+
+    <div class="actions">
+      <button class="btn btn-primary" type="submit">Submit</button>
+      <a class="btn" href="/status/">I already have a receipt code</a>
+    </div>
+  </form>
+{% endblock %}
+

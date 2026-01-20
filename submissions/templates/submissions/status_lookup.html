@@ -1,0 +1,31 @@
+{% extends "submissions/base.html" %}
+{% block content %}
+  <h1>Check status</h1>
+  <p class="muted">Enter the numeric receipt code you received after submitting.</p>
+
+  {% if error %}
+    <div class="error">{{ error }}</div>
+  {% endif %}
+
+  <form method="post">
+    {% csrf_token %}
+    <label for="receipt_code">Receipt code</label>
+    <input 
+      id="receipt_code" 
+      name="receipt_code" 
+      type="text"
+      placeholder="12345-67890" 
+      value="{{ receipt_code|default:'' }}"
+      autocomplete="off" 
+      pattern="[0-9]{5}-[0-9]{5}"
+      title="Format: 12345-67890 (10 digits with dash)"
+      required 
+    />
+    <small class="hint">Enter your 10-digit receipt code (format: 12345-67890)</small>
+    <div class="actions">
+      <button class="btn btn-primary" type="submit">Check</button>
+      <a class="btn" href="/submit/">Submit new</a>
+    </div>
+  </form>
+{% endblock %}
+
