@@ -1,0 +1,56 @@
+{% extends "submissions/base.html" %}
+
+{% block content %}
+<h1>Contact / Book a demo</h1>
+<p class="muted">
+  Tell us about your company and we’ll help you set this up safely.
+</p>
+
+{% if success %}
+  <div class="pill good" style="margin-top: 12px;">
+    Message sent. We’ll get back to you soon.
+  </div>
+{% endif %}
+
+{% if error %}
+  <div class="error">{{ error }}</div>
+{% endif %}
+
+<div class="grid2" style="margin-top: 14px;">
+  <div>
+    <h2>Send a message</h2>
+    <form method="post" style="margin-top: 8px;">
+      {% csrf_token %}
+      <label for="name">Name <span class="required">*</span></label>
+      <input id="name" name="name" type="text" minlength="2" maxlength="120" required value="{{ name|default:'' }}" />
+
+      <label for="email">Work email <span class="required">*</span></label>
+      <input id="email" name="email" type="email" maxlength="254" required value="{{ email|default:'' }}" />
+
+      <label for="message">Message <span class="required">*</span></label>
+      <textarea id="message" name="message" rows="6" minlength="10" maxlength="4000" required>{{ message|default:'' }}</textarea>
+      <small class="hint">Minimum 10 characters</small>
+
+      <div class="actions">
+        <button class="btn btn-primary" type="submit">Send</button>
+        <a class="btn" href="/security/">Security / Privacy</a>
+      </div>
+    </form>
+  </div>
+  <div>
+    <h2>Book a demo</h2>
+    <p class="muted">
+      If you use a scheduling tool (Calendly, Google Calendar, etc.), link it here.
+    </p>
+    <div class="actions" style="flex-wrap: wrap;">
+      <a class="btn" href="#" onclick="alert('Add your scheduling link here (e.g., Calendly).'); return false;">Open scheduling</a>
+      <a class="btn" href="/how-it-works/">How it works</a>
+      <a class="btn" href="/pricing/">Pricing</a>
+    </div>
+    <p class="hint">
+      For now, this page sends messages to your configured HR notification emails.
+    </p>
+  </div>
+</div>
+{% endblock %}
+

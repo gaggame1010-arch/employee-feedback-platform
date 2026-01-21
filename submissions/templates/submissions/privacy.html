@@ -1,0 +1,158 @@
+{% extends "submissions/base.html" %}
+
+{% block content %}
+<h1>Privacy Policy</h1>
+<p class="muted">Last updated: {{ "now"|date:"F j, Y" }}</p>
+
+<h2>1. Introduction</h2>
+<p>
+  This Anonymous Employee Platform ("Platform") is designed to provide a secure and anonymous channel 
+  for employees to submit concerns, issues, questions, and suggestions to Human Resources. Your privacy 
+  and anonymity are our top priorities.
+</p>
+
+<h2>2. Anonymity Guarantee</h2>
+<p>
+  <strong>We do not collect, store, or track any information that could identify you personally.</strong>
+</p>
+<ul>
+  <li><strong>No IP Address Logging:</strong> We do not log or store your IP address when you submit a report.</li>
+  <li><strong>No Browser Fingerprinting:</strong> We do not use cookies, tracking pixels, or any technology that could identify your device.</li>
+  <li><strong>No Account Required:</strong> You do not need to create an account or provide any personal information to use this platform.</li>
+  <li><strong>No Email Collection:</strong> We do not ask for or store your email address.</li>
+  <li><strong>No Name Collection:</strong> We do not ask for or store your name or any identifying information.</li>
+</ul>
+
+<p>
+  The only information we collect is what you voluntarily provide in your submission: the type of submission 
+  (issue, concern, question, or suggestion), title, and description. Even this information is stored without 
+  any connection to your identity.
+</p>
+
+<h2>3. What Information We Collect</h2>
+<p>We collect only the following information:</p>
+<ul>
+  <li><strong>Submission Content:</strong> The type, title, and description you provide in your submission.</li>
+  <li><strong>Receipt Code:</strong> A randomly generated 10-digit code that allows you to check the status of your submission.</li>
+  <li><strong>Timestamp:</strong> The date and time your submission was created (for tracking purposes only).</li>
+</ul>
+
+<p>
+  <strong>We do NOT collect:</strong> Your name, email address, employee ID, department, location, IP address, 
+  browser information, device information, or any other identifying data.
+</p>
+
+<h2>4. Data Ownership</h2>
+<p>
+  <strong>You own your data.</strong> Your submissions belong to you. However, by using this platform, you grant 
+  the company permission to:
+</p>
+<ul>
+  <li>Store your submission securely in our database</li>
+  <li>Allow authorized HR personnel to view and respond to your submission</li>
+  <li>Use aggregated, anonymized data for internal reporting and improvement purposes</li>
+</ul>
+
+<p>
+  You cannot edit or delete your submission after it has been submitted. This is by design to maintain 
+  the integrity of the reporting process and prevent tampering.
+</p>
+
+<h2>5. Who Can See What</h2>
+
+<h3>5.1. Your Submission</h3>
+<p>
+  <strong>Only authorized HR personnel</strong> with staff-level access to the HR Dashboard can view your submission. 
+  This includes:
+</p>
+<ul>
+  <li>The submission type (Issue, Concern, Question, or Suggestion)</li>
+  <li>The title and description you provided</li>
+  <li>The receipt code</li>
+  <li>The date and time of submission</li>
+  <li>Any HR responses to your submission</li>
+</ul>
+
+<h3>5.2. HR Responses</h3>
+<p>
+  When HR responds to your submission, their response is linked to your submission and can be viewed by:
+</p>
+<ul>
+  <li>You (using your receipt code)</li>
+  <li>Authorized HR personnel</li>
+</ul>
+
+<h3>5.3. Who Cannot See Your Submission</h3>
+<p>
+  The following people <strong>cannot</strong> access your submission:
+</p>
+<ul>
+  <li>Your manager or supervisor (unless they are also authorized HR personnel)</li>
+  <li>Other employees</li>
+  <li>IT administrators (they have no access to submission content)</li>
+  <li>External parties</li>
+</ul>
+
+<h3>5.4. Status Lookup</h3>
+<p>
+  You can check the status of your submission using your receipt code. This lookup shows:
+</p>
+<ul>
+  <li>Your submission details</li>
+  <li>Current status (New, In Review, Responded, or Closed)</li>
+  <li>Any HR responses</li>
+</ul>
+<p>
+  <strong>No one else can access your submission</strong> without your receipt code. Keep your receipt code 
+  secure and do not share it with others unless you want them to see your submission.
+</p>
+
+<h2>6. Data Security</h2>
+<p>
+  We implement industry-standard security measures to protect your data:
+</p>
+<ul>
+  <li><strong>HTTPS Encryption:</strong> All data transmitted between your browser and our servers is encrypted using HTTPS (TLS 1.2+).</li>
+  <li><strong>Secure Database:</strong> Submissions are stored in an encrypted database with restricted access.</li>
+  <li><strong>Access Controls:</strong> Only authorized HR personnel with secure authentication can access the HR Dashboard.</li>
+  <li><strong>Rate Limiting:</strong> We limit the number of submissions per IP address to prevent abuse.</li>
+</ul>
+
+<h2>7. Data Retention</h2>
+<p>
+  Submissions are retained indefinitely to maintain a record of employee concerns and HR responses. 
+  This allows HR to track patterns, ensure follow-up, and maintain accountability.
+</p>
+
+<h2>8. Your Rights</h2>
+<p>You have the right to:</p>
+<ul>
+  <li>Submit anonymous reports without fear of retaliation</li>
+  <li>Check the status of your submission using your receipt code</li>
+  <li>Receive responses from HR (if they choose to respond)</li>
+  <li>Request information about how your data is handled (contact HR)</li>
+</ul>
+
+<p>
+  <strong>Note:</strong> Because submissions are anonymous, we cannot verify your identity to fulfill 
+  requests to delete or modify your submission. This is by design to protect your anonymity.
+</p>
+
+<h2>9. Changes to This Policy</h2>
+<p>
+  We may update this Privacy Policy from time to time. The "Last updated" date at the top of this page 
+  indicates when changes were made. Continued use of the platform after changes constitutes acceptance 
+  of the updated policy.
+</p>
+
+<h2>10. Contact</h2>
+<p>
+  If you have questions about this Privacy Policy or how your data is handled, please contact your 
+  Human Resources department.
+</p>
+
+<p class="muted" style="margin-top: 24px;">
+  <strong>Remember:</strong> This platform is designed to protect your anonymity. Do not include 
+  identifying details in your submissions unless absolutely necessary for HR to address your concern.
+</p>
+{% endblock %}

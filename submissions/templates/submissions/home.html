@@ -23,6 +23,16 @@
       <div class="actions">
         <a class="btn" href="/admin/">HR login</a>
       </div>
+      <hr />
+      <h2>Privacy & Security</h2>
+      <p class="muted">
+        Your anonymity is protected. We don't collect IP addresses, names, or any identifying information.
+      </p>
+      <div class="actions" style="flex-wrap: wrap;">
+        <a class="btn" href="{% url 'submissions:privacy' %}" style="font-size: 12px; padding: 8px 12px;">Privacy Policy</a>
+        <a class="btn" href="{% url 'submissions:security' %}" style="font-size: 12px; padding: 8px 12px;">Security Info</a>
+        <a class="btn" href="{% url 'submissions:terms' %}" style="font-size: 12px; padding: 8px 12px;">Terms</a>
+      </div>
     </div>
   </div>
 {% endblock %}

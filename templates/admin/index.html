@@ -103,71 +103,127 @@
     
     .dashboard .module h2 {
       color: #e8eefc;
-      font-size: 18px;
-      font-weight: 800;
+      font-size: 16px;
+      font-weight: 900;
       margin: 0 0 20px;
-      padding-bottom: 12px;
-      border-bottom: 2px solid rgba(44,102,255,.3);
-      letter-spacing: -0.3px;
+      padding: 14px 18px;
+      background: linear-gradient(135deg, rgba(44,102,255,.2), rgba(124,58,237,.15));
+      border: 1px solid rgba(44,102,255,.3);
+      border-radius: 16px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,.2);
     }
     
     .dashboard .module h2::before {
       content: "▸";
       color: #2c66ff;
-      font-size: 20px;
+      font-size: 18px;
+      font-weight: 900;
     }
     
     /* Custom icon for Authentication and Authorization */
     .dashboard .module.auth-module h2::before {
       content: "🔐" !important;
-      font-size: 22px !important;
-      margin-right: 4px;
+      font-size: 20px !important;
+      margin-right: 2px;
     }
     
     .dashboard .module.auth-module h2 .auth-icon {
       display: none; /* Hide the JS-added icon if CSS works */
     }
     
+    /* Submissions module header styling */
+    .dashboard .module:has(a[href*="/admin/submissions/"]) h2 {
+      background: linear-gradient(135deg, rgba(34,197,94,.2), rgba(44,102,255,.15));
+      border-color: rgba(34,197,94,.3);
+    }
+    
     .dashboard .module table {
       width: 100%;
-      border-collapse: collapse;
+      border-collapse: separate;
+      border-spacing: 0 10px;
     }
     
-    .dashboard .module table th {
+    .dashboard .module table thead th {
       text-align: left;
-      padding: 8px 0;
+      padding: 8px 0 4px;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: rgba(232,238,252,.72);
-      border-bottom: 1px solid rgba(255,255,255,.1);
-    }
-    
-    .dashboard .module table td {
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,.05);
-    }
-    
-    .dashboard .module table tr:last-child td {
+      letter-spacing: 0.8px;
+      color: rgba(232,238,252,.5);
       border-bottom: none;
+    }
+    
+    .dashboard .module table tbody tr {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      transition: all 0.2s;
+    }
+    
+    .dashboard .module table tbody tr:hover {
+      background: rgba(185,210,255,.08);
+      border-color: rgba(44,102,255,.25);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+    }
+    
+    .dashboard .module table tbody tr th,
+    .dashboard .module table tbody tr td {
+      padding: 14px 18px;
+      border: none;
+      vertical-align: middle;
+    }
+    
+    .dashboard .module table tbody tr th {
+      border-radius: 16px 0 0 16px;
+      font-weight: 700;
+      font-size: 15px;
+      color: #e8eefc;
+    }
+    
+    .dashboard .module table tbody tr td {
+      border-radius: 0 16px 16px 0;
+      text-align: right;
+    }
+    
+    .dashboard .module table tbody tr:only-child th,
+    .dashboard .module table tbody tr:only-child td {
+      border-radius: 16px;
     }
     
     .dashboard .module ul {
       list-style: none;
       padding: 0;
       margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
     }
     
     .dashboard .module li {
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(255,255,255,.05);
+      padding: 0;
+      border-bottom: none;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px;
+      padding: 14px 18px;
+      transition: all 0.2s;
+    }
+    
+    .dashboard .module li:hover {
+      background: rgba(185,210,255,.08);
+      border-color: rgba(44,102,255,.25);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0,0,0,.15);
     }
     
     .dashboard .module li:last-child {
@@ -177,31 +233,94 @@
     .dashboard .module a {
       color: #b9d2ff;
       text-decoration: none;
-      font-weight: 500;
+      font-weight: 600;
       transition: color 0.2s;
+      font-size: 14px;
     }
     
     .dashboard .module a:hover {
       color: #d2e4ff;
-      text-decoration: underline;
+      text-decoration: none;
     }
     
     .dashboard .module .addlink {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 12px;
-      background: linear-gradient(135deg, #2c66ff, #4b87ff);
+      padding: 8px 16px;
+      background: linear-gradient(135deg, #22c55e, #16a34a);
       color: white;
-      border-radius: 16px;
-      font-weight: 700;
+      border-radius: 20px;
+      font-weight: 800;
       font-size: 12px;
-      margin-top: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      border: 1px solid rgba(34,197,94,.4);
+      box-shadow: 0 2px 8px rgba(34,197,94,.2);
+      transition: all 0.2s;
+    }
+    
+    .dashboard .module .addlink::before {
+      content: "+";
+      font-size: 16px;
+      font-weight: 900;
+      line-height: 1;
     }
     
     .dashboard .module .addlink:hover {
-      filter: brightness(1.1);
+      filter: brightness(1.15);
       text-decoration: none;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(34,197,94,.3);
+    }
+    
+    /* Model name links styling */
+    .dashboard .module table tbody tr th a,
+    .dashboard .module li a:not(.addlink) {
+      font-size: 15px;
+      font-weight: 700;
+      color: #b9d2ff;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: color 0.2s;
+    }
+    
+    .dashboard .module table tbody tr th a::after,
+    .dashboard .module li a:not(.addlink)::after {
+      content: "→";
+      opacity: 0;
+      transition: opacity 0.2s, transform 0.2s;
+      transform: translateX(-4px);
+      color: #2c66ff;
+      font-weight: 900;
+      margin-left: 4px;
+    }
+    
+    .dashboard .module table tbody tr:hover th a::after,
+    .dashboard .module li:hover a:not(.addlink)::after {
+      opacity: 1;
+      transform: translateX(0);
+    }
+    
+    .dashboard .module table tbody tr th a:hover,
+    .dashboard .module li a:not(.addlink):hover {
+      color: #d2e4ff;
+    }
+    
+    /* Ensure Add buttons are properly styled in table cells */
+    .dashboard .module table tbody tr td .addlink {
+      margin: 0;
+    }
+    
+    /* Module spacing improvements */
+    .dashboard .module {
+      margin-bottom: 0;
+    }
+    
+    /* Better visual separation */
+    .dashboard #content-main {
+      gap: 24px;
     }
     
     /* Recent Activity Section */

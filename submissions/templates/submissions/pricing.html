@@ -1,0 +1,50 @@
+{% extends "submissions/base.html" %}
+
+{% block content %}
+<h1>Pricing</h1>
+<p class="muted">
+  Simple, transparent pricing for teams that want a safe channel for employee feedback.
+</p>
+
+<div class="grid2" style="margin-top: 14px;">
+  <div class="card" style="padding: 18px; border-radius: 18px;">
+    <h2>Starter</h2>
+    <p class="muted">For small teams getting started.</p>
+    <p style="font-size: 28px; font-weight: 900; margin: 10px 0 6px;">$0</p>
+    <p class="muted" style="margin-top: 0;">Internal use / pilot</p>
+    <ul class="muted" style="line-height: 1.8; padding-left: 18px;">
+      <li>Anonymous submissions</li>
+      <li>Receipt-code status tracking</li>
+      <li>HR dashboard</li>
+      <li>Security & privacy pages</li>
+    </ul>
+    <div class="actions">
+      <a class="btn btn-primary" href="/submit/">Try it now</a>
+      <a class="btn" href="/contact/">Talk to us</a>
+    </div>
+  </div>
+
+  <div class="card" style="padding: 18px; border-radius: 18px; border-color: rgba(44,102,255,.35);">
+    <h2>Business</h2>
+    <p class="muted">For companies that need onboarding and support.</p>
+    <p style="font-size: 28px; font-weight: 900; margin: 10px 0 6px;">Custom</p>
+    <p class="muted" style="margin-top: 0;">Per org / per month</p>
+    <ul class="muted" style="line-height: 1.8; padding-left: 18px;">
+      <li>Everything in Starter</li>
+      <li>Deployment help (Railway/Render/Fly)</li>
+      <li>HR roles & access setup</li>
+      <li>Data retention policy tailoring</li>
+      <li>Support & maintenance</li>
+    </ul>
+    <div class="actions">
+      <a class="btn btn-primary" href="/contact/">Book a demo</a>
+      <a class="btn" href="/security/">Security details</a>
+    </div>
+  </div>
+</div>
+
+<p class="hint" style="margin-top: 16px;">
+  This page is a template — edit prices and plan details to match your business.
+</p>
+{% endblock %}
+

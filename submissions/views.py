@@ -176,3 +176,75 @@ def status_lookup(request: HttpRequest) -> HttpResponse:
         "submissions/status_result.html",
         {"submission": submission},
     )
+
+
+def privacy_policy(request: HttpRequest) -> HttpResponse:
+    """Privacy Policy page."""
+    return render(request, "submissions/privacy.html")
+
+
+def terms_of_service(request: HttpRequest) -> HttpResponse:
+    """Terms of Service page."""
+    return render(request, "submissions/terms.html")
+
+
+def security_transparency(request: HttpRequest) -> HttpResponse:
+    """Security & Transparency page."""
+    return render(request, "submissions/security.html")
+
+
+def how_it_works(request: HttpRequest) -> HttpResponse:
+    """Marketing: How it works page."""
+    return render(request, "submissions/how_it_works.html")
+
+
+def pricing(request: HttpRequest) -> HttpResponse:
+    """Marketing: Pricing page."""
+    return render(request, "submissions/pricing.html")
+
+
+@require_http_methods(["GET", "POST"])
+def contact(request: HttpRequest) -> HttpResponse:
+    """Contact / Book demo page."""
+    if request.method == "GET":
+        return render(request, "submissions/contact.html")
+
+    name = sanitize_input(request.POST.get("name") or "", max_length=120)
+    email = sanitize_input(request.POST.get("email") or "", max_length=254)
+    message = sanitize_input(request.POST.get("message") or "", max_length=4000)
+
+    errors = []
+    if not name or len(name) < 2:
+        errors.append("Name must be at least 2 characters.")
+    if not email or "@" not in email:
+        errors.append("Please enter a valid email address.")
+    if not message or len(message) < 10:
+        errors.append("Message must be at least 10 characters.")
+
+    if errors:
+        return render(
+            request,
+            "submissions/contact.html",
+            {"error": " ".join(errors), "name": html.unescape(name), "email": html.unescape(email), "message": html.unescape(message)},
+            status=400,
+        )
+
+    # Send to HR notify emails if configured; otherwise just show success.
+    recipients = settings.HR_NOTIFY_EMAILS or []
+    if recipients:
+        try:
+            send_mail(
+                subject="Demo / Contact request (Anonymous Employee Platform)",
+                message=(
+                    f"Name: {html.unescape(name)}\n"
+                    f"Email: {html.unescape(email)}\n\n"
+                    f"Message:\n{html.unescape(message)}\n"
+                ),
+                from_email=settings.DEFAULT_FROM_EMAIL,
+                recipient_list=recipients,
+                fail_silently=True,
+            )
+        except Exception:
+            pass
+
+    return render(request, "submissions/contact.html", {"success": True})

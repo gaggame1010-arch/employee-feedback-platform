@@ -92,10 +92,28 @@ WSGI_APPLICATION = 'anonplatform.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 # Use PostgreSQL in production if DATABASE_URL is set, otherwise SQLite for development
-if 'DATABASE_URL' in os.environ and dj_database_url:
-    DATABASES = {
-        'default': dj_database_url.config(default=os.environ.get('DATABASE_URL'))
-    }
+DATABASE_URL = os.environ.get('DATABASE_URL')
+
+if DATABASE_URL and dj_database_url:
+    # Parse DATABASE_URL and ensure it's a valid PostgreSQL connection
+    try:
+        db_config = dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+        )
+        DATABASES = {
+            'default': db_config
+        }
+    except Exception as e:
+        # Fallback to SQLite if database URL parsing fails
+        print(f"Warning: Failed to parse DATABASE_URL: {e}")
+        DATABASES = {
+            'default': {
+                'ENGINE': 'django.db.backends.sqlite3',
+                'NAME': BASE_DIR / 'db.sqlite3',
+            }
+        }
 else:
     DATABASES = {
         'default': {
@@ -159,14 +177,51 @@ COMPANY_ACCESS_CODE = os.environ.get("COMPANY_ACCESS_CODE", "123456")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# Security settings
-SECURE_BROWSER_XSS_FILTER = True
-SECURE_CONTENT_TYPE_NOSNIFF = True
-X_FRAME_OPTIONS = 'DENY'
+# Security settings - HTTPS Enforcement & Data Encryption
+# These settings ensure all pages use HTTPS and encrypt data in transit
+
+# Force HTTPS in production (disable in development)
+SECURE_SSL_REDIRECT = not DEBUG  # Redirect all HTTP to HTTPS
+# For Railway/Heroku/Fly.io behind proxy - all use X-Forwarded-Proto header
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https') if not DEBUG else None
+
+# HTTP Strict Transport Security (HSTS) - Force browsers to use HTTPS
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0  # 1 year in production
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Apply to all subdomains
+SECURE_HSTS_PRELOAD = True  # Allow HSTS preload list
+
+# Content Security Policy (CSP) - Prevent XSS attacks
+# Note: For full CSP support, install django-csp package
+# For now, we rely on Django's built-in XSS protection
+# SECURE_CONTENT_SECURITY_POLICY = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline';"
+
+# Browser Security Headers
+SECURE_BROWSER_XSS_FILTER = True  # Enable XSS filtering
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME type sniffing
+X_FRAME_OPTIONS = 'DENY'  # Prevent clickjacking
+X_CONTENT_TYPE_OPTIONS = 'nosniff'  # Prevent MIME sniffing
+X_XSS_PROTECTION = '1; mode=block'  # XSS protection
+
+# Cookie Security - Only send cookies over HTTPS
 SESSION_COOKIE_SECURE = not DEBUG  # HTTPS only in production
 CSRF_COOKIE_SECURE = not DEBUG  # HTTPS only in production
-SESSION_COOKIE_HTTPONLY = True
-CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_HTTPONLY = True  # Prevent JavaScript access to cookies
+CSRF_COOKIE_HTTPONLY = True  # Prevent JavaScript access to CSRF token
+SESSION_COOKIE_SAMESITE = 'Lax'  # CSRF protection
+CSRF_COOKIE_SAMESITE = 'Lax'  # CSRF protection
+
+# CSRF trusted origins for Railway/production
+CSRF_TRUSTED_ORIGINS = [
+    origin.strip()
+    for origin in os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
+    if origin.strip()
+]
+
+# Referrer Policy - Control referrer information
+SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+
+# Cross-Origin Policies
+SECURE_CROSS_ORIGIN_OPENER_POLICY = 'same-origin'
 
 # Cache configuration (for rate limiting)
 CACHES = {

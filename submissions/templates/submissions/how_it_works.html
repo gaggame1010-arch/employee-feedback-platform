@@ -1,0 +1,47 @@
+{% extends "submissions/base.html" %}
+
+{% block content %}
+<h1>How it works</h1>
+<p class="muted">
+  A simple, anonymous workflow for employees and HR — no employee accounts required.
+</p>
+
+<div class="grid2" style="margin-top: 12px;">
+  <div>
+    <h2>For employees</h2>
+    <p class="muted"><span class="pill neutral">1</span> Open the platform and choose <strong>Submit</strong>.</p>
+    <p class="muted"><span class="pill neutral">2</span> Enter the <strong>company access code</strong> (shared internally).</p>
+    <p class="muted"><span class="pill neutral">3</span> Select a type: Issue, Concern, Question, or Suggestion.</p>
+    <p class="muted"><span class="pill neutral">4</span> Write your message. Avoid names or identifying details unless necessary.</p>
+    <p class="muted"><span class="pill neutral">5</span> You receive a <strong>receipt code</strong> to check updates later.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/submit/">Submit anonymously</a>
+      <a class="btn" href="/status/">Check status</a>
+    </div>
+  </div>
+  <div>
+    <h2>For HR</h2>
+    <p class="muted"><span class="pill neutral">1</span> Log in to the <strong>HR Dashboard</strong>.</p>
+    <p class="muted"><span class="pill neutral">2</span> Review and filter submissions by type/status/date.</p>
+    <p class="muted"><span class="pill neutral">3</span> Respond from the dashboard. The employee can see your reply using their receipt code.</p>
+    <p class="muted"><span class="pill neutral">4</span> Update status: New → In Review → Responded → Closed.</p>
+    <div class="actions">
+      <a class="btn" href="/admin/">HR login</a>
+    </div>
+  </div>
+</div>
+
+<hr />
+
+<h2>Anonymity, explained</h2>
+<p class="muted">
+  The platform is designed so submissions are stored <strong>without employee identity</strong>.
+  Access is controlled by (1) a shared company access code for submissions and (2) staff-only login for HR.
+</p>
+<div class="actions" style="margin-top: 10px;">
+  <a class="btn" href="/security/">Security & Transparency</a>
+  <a class="btn" href="/privacy/">Privacy Policy</a>
+  <a class="btn" href="/contact/">Contact / Book demo</a>
+</div>
+{% endblock %}
+

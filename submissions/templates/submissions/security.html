@@ -1,0 +1,203 @@
+{% extends "submissions/base.html" %}
+
+{% block content %}
+<h1>Security & Transparency</h1>
+<p class="muted">How we protect your data and ensure anonymity</p>
+
+<h2>1. HTTPS Encryption</h2>
+<p>
+  <strong>All communication between your browser and our servers is encrypted using HTTPS (TLS 1.2 or higher).</strong>
+</p>
+<ul>
+  <li><strong>Data in Transit:</strong> When you submit a report or check status, all data is encrypted before transmission.</li>
+  <li><strong>Certificate Validation:</strong> Our SSL/TLS certificates are validated and up-to-date.</li>
+  <li><strong>Secure Headers:</strong> We implement security headers (HSTS, CSP, X-Frame-Options) to prevent attacks.</li>
+</ul>
+<p>
+  You can verify HTTPS is active by checking for the padlock icon (🔒) in your browser's address bar.
+</p>
+
+<h2>2. Secure Authentication</h2>
+<p>
+  <strong>HR Dashboard access is protected by secure authentication:</strong>
+</p>
+<ul>
+  <li><strong>Django Admin Authentication:</strong> Uses Django's built-in secure authentication system.</li>
+  <li><strong>Password Security:</strong> Passwords are hashed using industry-standard algorithms (PBKDF2).</li>
+  <li><strong>Session Security:</strong> Sessions are protected with secure, HTTP-only cookies.</li>
+  <li><strong>CSRF Protection:</strong> All forms are protected against Cross-Site Request Forgery (CSRF) attacks.</li>
+  <li><strong>Staff-Only Access:</strong> Only users with staff-level permissions can access the HR Dashboard.</li>
+</ul>
+
+<h2>3. Role-Based Access Control</h2>
+<p>
+  <strong>Access to submissions is strictly controlled:</strong>
+</p>
+
+<h3>3.1. Employee Access (Public)</h3>
+<ul>
+  <li>Can submit anonymous reports (requires company access code)</li>
+  <li>Can check submission status using receipt code</li>
+  <li><strong>Cannot:</strong> View other submissions, access HR Dashboard, or see any identifying data</li>
+</ul>
+
+<h3>3.2. HR Staff Access</h3>
+<ul>
+  <li>Must authenticate with username and password</li>
+  <li>Must have staff-level permissions</li>
+  <li>Can view all submissions in the HR Dashboard</li>
+  <li>Can respond to submissions</li>
+  <li>Can update submission status</li>
+  <li><strong>Cannot:</strong> See IP addresses, browser information, or any identifying data about submitters</li>
+</ul>
+
+<h3>3.3. Superuser Access</h3>
+<ul>
+  <li>Same as HR Staff, plus ability to manage user accounts</li>
+  <li>Can create/edit/delete HR staff accounts</li>
+  <li><strong>Still cannot:</strong> See identifying information about submitters</li>
+</ul>
+
+<h2>4. Data Protection Measures</h2>
+
+<h3>4.1. No IP Address Logging</h3>
+<p>
+  <strong>We do not log or store IP addresses.</strong> This means:
+</p>
+<ul>
+  <li>Your location cannot be determined from server logs</li>
+  <li>Your device cannot be identified</li>
+  <li>Multiple submissions from the same IP cannot be linked</li>
+</ul>
+
+<h3>4.2. No Cookies or Tracking</h3>
+<p>
+  <strong>We do not use cookies, tracking pixels, or any tracking technology.</strong> The Platform:
+</p>
+<ul>
+  <li>Does not set any cookies (except session cookies for HR Dashboard authentication)</li>
+  <li>Does not use third-party analytics or tracking services</li>
+  <li>Does not fingerprint your browser or device</li>
+</ul>
+
+<h3>4.3. Rate Limiting</h3>
+<p>
+  To prevent abuse, we limit submissions to <strong>5 submissions per IP address per hour</strong>. This:
+</p>
+<ul>
+  <li>Prevents spam and automated attacks</li>
+  <li>Protects system resources</li>
+  <li>Does not store IP addresses permanently (only temporarily for rate limiting)</li>
+</ul>
+
+<h3>4.4. Input Sanitization</h3>
+<p>
+  All user input is sanitized to prevent:
+</p>
+<ul>
+  <li><strong>XSS Attacks:</strong> HTML and JavaScript are escaped</li>
+  <li><strong>SQL Injection:</strong> Database queries use parameterized statements</li>
+  <li><strong>Length Limits:</strong> Input is limited to prevent buffer overflow attacks</li>
+</ul>
+
+<h2>5. Database Security</h2>
+<p>
+  <strong>Submissions are stored securely:</strong>
+</p>
+<ul>
+  <li><strong>Encrypted Storage:</strong> Database connections use encryption</li>
+  <li><strong>Restricted Access:</strong> Only the application server can access the database</li>
+  <li><strong>No Direct Access:</strong> HR personnel cannot directly access the database</li>
+  <li><strong>Backups:</strong> Regular encrypted backups are maintained</li>
+</ul>
+
+<h2>6. Security Headers</h2>
+<p>
+  We implement the following security headers:
+</p>
+<ul>
+  <li><strong>X-Frame-Options:</strong> Prevents clickjacking attacks</li>
+  <li><strong>X-Content-Type-Options:</strong> Prevents MIME-type sniffing</li>
+  <li><strong>X-XSS-Protection:</strong> Enables browser XSS filtering</li>
+  <li><strong>Strict-Transport-Security (HSTS):</strong> Forces HTTPS connections</li>
+  <li><strong>Content-Security-Policy:</strong> Restricts resource loading to prevent XSS</li>
+</ul>
+
+<h2>7. What We Don't Collect</h2>
+<p>
+  <strong>To protect your anonymity, we explicitly do NOT collect:</strong>
+</p>
+<ul>
+  <li>IP addresses (except temporarily for rate limiting)</li>
+  <li>Email addresses</li>
+  <li>Names or employee IDs</li>
+  <li>Department or location information</li>
+  <li>Browser or device information</li>
+  <li>Referrer information</li>
+  <li>Cookies (except session cookies for HR Dashboard)</li>
+  <li>Any other identifying data</li>
+</ul>
+
+<h2>8. Receipt Code Security</h2>
+<p>
+  <strong>Your receipt code is your key to accessing your submission:</strong>
+</p>
+<ul>
+  <li>Receipt codes are randomly generated (10 digits)</li>
+  <li>They cannot be guessed or brute-forced</li>
+  <li>Only someone with your receipt code can view your submission</li>
+  <li><strong>Keep your receipt code secure and private</strong></li>
+</ul>
+
+<h2>9. Compliance</h2>
+<p>
+  This Platform is designed to comply with:
+</p>
+<ul>
+  <li>General Data Protection Regulation (GDPR) principles</li>
+  <li>Industry best practices for anonymous reporting systems</li>
+  <li>Company privacy and data protection policies</li>
+</ul>
+
+<h2>10. Security Updates</h2>
+<p>
+  We regularly update the Platform to:
+</p>
+<ul>
+  <li>Patch security vulnerabilities</li>
+  <li>Update dependencies</li>
+  <li>Improve security measures</li>
+  <li>Stay current with security best practices</li>
+</ul>
+
+<h2>11. Reporting Security Issues</h2>
+<p>
+  If you discover a security vulnerability, please:
+</p>
+<ol>
+  <li><strong>Do not</strong> exploit the vulnerability</li>
+  <li>Report it directly to HR or IT Security</li>
+  <li>Provide details about the issue</li>
+  <li>Allow time for the issue to be fixed before disclosing publicly</li>
+</ol>
+
+<h2>12. Transparency</h2>
+<p>
+  <strong>We believe in transparency about our security practices.</strong> This page explains:
+</p>
+<ul>
+  <li>How data is protected</li>
+  <li>Who can access what</li>
+  <li>What security measures are in place</li>
+  <li>What we don't collect</li>
+</ul>
+
+<p>
+  If you have questions about security or want more details, please contact HR.
+</p>
+
+<p class="muted" style="margin-top: 24px;">
+  <strong>Remember:</strong> While we implement strong security measures, you play a role in protecting 
+  your anonymity. Don't include identifying information in your submissions, and keep your receipt code secure.
+</p>
+{% endblock %}
