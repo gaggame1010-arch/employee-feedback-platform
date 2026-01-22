@@ -1,5 +1,7 @@
 from django.db import models
 from django.db import IntegrityError
+from django.contrib.auth.models import User
+import secrets
 
 from .utils import generate_receipt_code
 
@@ -39,6 +41,52 @@ class Submission(models.Model):
             except IntegrityError:
                 continue
         raise RuntimeError("Failed to generate unique receipt code after multiple attempts.")
+
+
+class HrAccessCode(models.Model):
+    """
+    Unique access code for each HR user.
+    Employees use this code to submit feedback.
+    """
+    user = models.OneToOneField(
+        User,
+        on_delete=models.CASCADE,
+        related_name="hr_access_code",
+        limit_choices_to={"is_staff": True},  # Only staff users can have access codes
+    )
+    access_code = models.CharField(max_length=20, unique=True, db_index=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = "HR Access Code"
+        verbose_name_plural = "HR Access Codes"
+
+    def __str__(self) -> str:
+        return f"{self.user.username} - {self.access_code}"
+
+    @classmethod
+    def generate_unique_code(cls) -> str:
+        """Generate a unique 6-digit access code."""
+        max_attempts = 100
+        for _ in range(max_attempts):
+            code = ''.join(secrets.choice('0123456789') for _ in range(6))
+            if not cls.objects.filter(access_code=code).exists():
+                return code
+        raise RuntimeError("Failed to generate unique access code after multiple attempts.")
+
+    @classmethod
+    def get_or_create_for_user(cls, user: User) -> "HrAccessCode":
+        """Get or create access code for a user."""
+        if not user.is_staff:
+            raise ValueError("Only staff users can have access codes")
+        
+        access_code, created = cls.objects.get_or_create(
+            user=user,
+            defaults={"access_code": cls.generate_unique_code()}
+        )
+        return access_code
 
 
 class HrResponse(models.Model):

@@ -6,7 +6,7 @@ from django.utils.safestring import mark_safe
 from django.template.response import TemplateResponse
 from django.urls import path
 
-from .models import HrResponse, Submission
+from .models import HrAccessCode, HrResponse, Submission
 
 admin.site.site_header = "HR Dashboard"
 admin.site.site_title = "HR Dashboard"
@@ -59,14 +59,92 @@ admin.site.unregister(User)
 admin.site.unregister(Group)
 
 
+# HR Access Code Admin
+@admin.register(HrAccessCode)
+class HrAccessCodeAdmin(admin.ModelAdmin):
+    list_display = ("user", "access_code_display", "is_active_badge", "created_at")
+    list_filter = ("is_active", "created_at")
+    search_fields = ("user__username", "user__email", "access_code")
+    readonly_fields = ("access_code", "created_at", "updated_at")
+    list_per_page = 25
+    actions = ["generate_new_code", "activate_codes", "deactivate_codes"]
+    
+    fieldsets = (
+        ("HR User", {
+            "fields": ("user", "access_code"),
+            "description": "Each HR user gets a unique 6-digit access code. Employees use this code to submit feedback."
+        }),
+        ("Status", {
+            "fields": ("is_active",)
+        }),
+        ("Timestamps", {
+            "fields": ("created_at", "updated_at"),
+            "classes": ("collapse",)
+        }),
+    )
+    
+    def access_code_display(self, obj):
+        """Display access code with monospace font."""
+        if not obj:
+            return "—"
+        return format_html(
+            '<span style="font-family: ui-monospace, monospace; font-size: 16px; letter-spacing: 2px; color: #2c66ff; font-weight: 700; padding: 4px 12px; background: rgba(44, 102, 255, 0.1); border-radius: 6px;">{}</span>',
+            obj.access_code
+        )
+    access_code_display.short_description = "Access Code"
+    access_code_display.admin_order_field = "access_code"
+    
+    def is_active_badge(self, obj):
+        """Display active status with badge."""
+        if obj.is_active:
+            return format_html(
+                '<span style="display: inline-block; padding: 4px 10px; border-radius: 12px; background: rgba(34, 197, 94, 0.2); color: #22c55e; border: 1px solid rgba(34, 197, 94, 0.4); font-size: 11px; font-weight: 700;">Active</span>'
+            )
+        return format_html(
+            '<span style="display: inline-block; padding: 4px 10px; border-radius: 12px; background: rgba(107, 114, 128, 0.2); color: #6b7280; border: 1px solid rgba(107, 114, 128, 0.4); font-size: 11px; font-weight: 700;">Inactive</span>'
+        )
+    is_active_badge.short_description = "Status"
+    is_active_badge.admin_order_field = "is_active"
+    
+    def generate_new_code(self, request, queryset):
+        """Generate new access codes for selected HR users."""
+        count = 0
+        for hr_code in queryset:
+            hr_code.access_code = HrAccessCode.generate_unique_code()
+            hr_code.save()
+            count += 1
+        self.message_user(request, f"Generated new access codes for {count} HR user(s).")
+    generate_new_code.short_description = "Generate new access code for selected"
+    
+    def activate_codes(self, request, queryset):
+        """Activate selected access codes."""
+        queryset.update(is_active=True)
+        self.message_user(request, f"{queryset.count()} access code(s) activated.")
+    activate_codes.short_description = "Activate selected access codes"
+    
+    def deactivate_codes(self, request, queryset):
+        """Deactivate selected access codes."""
+        queryset.update(is_active=False)
+        self.message_user(request, f"{queryset.count()} access code(s) deactivated.")
+    deactivate_codes.short_description = "Deactivate selected access codes"
+    
+    def save_model(self, request, obj, form, change):
+        """Auto-generate access code if creating new."""
+        if not change:  # Creating new
+            if not obj.access_code:
+                obj.access_code = HrAccessCode.generate_unique_code()
+        super().save_model(request, obj, form, change)
+
+
 # Custom User Admin for Authentication and Authorization
 @admin.register(User)
 class CustomUserAdmin(BaseUserAdmin):
-    list_display = ("username", "email", "full_name", "is_active_badge", "is_staff_badge", "is_superuser_badge", "date_joined", "last_login")
+    list_display = ("username", "email", "full_name", "access_code_display", "is_active_badge", "is_staff_badge", "is_superuser_badge", "date_joined", "last_login")
     list_filter = ("is_staff", "is_superuser", "is_active", "date_joined", "groups")
     search_fields = ("username", "email", "first_name", "last_name")
     ordering = ("-date_joined",)
     list_per_page = 25
+    actions = ["create_access_codes"]
     
     fieldsets = (
         (None, {"fields": ("username", "password")}),
@@ -76,6 +154,38 @@ class CustomUserAdmin(BaseUserAdmin):
     )
     
     readonly_fields = ("last_login", "date_joined")
+    
+    def access_code_display(self, obj):
+        """Display HR access code if user is staff."""
+        if not obj.is_staff:
+            return format_html('<span style="color: #6b7280;">—</span>')
+        try:
+            hr_code = obj.hr_access_code
+            if hr_code.is_active:
+                return format_html(
+                    '<a href="/admin/submissions/hraccesscode/{}/change/" style="font-family: ui-monospace, monospace; font-size: 13px; letter-spacing: 1px; color: #2c66ff; font-weight: 700; text-decoration: none;">{}</a>',
+                    hr_code.id,
+                    hr_code.access_code
+                )
+            return format_html(
+                '<span style="font-family: ui-monospace, monospace; font-size: 13px; letter-spacing: 1px; color: #6b7280; text-decoration: line-through;">{}</span>',
+                hr_code.access_code
+            )
+        except HrAccessCode.DoesNotExist:
+            return format_html(
+                '<span style="color: #f59e0b; font-size: 11px;">No code</span>'
+            )
+    access_code_display.short_description = "Access Code"
+    
+    def create_access_codes(self, request, queryset):
+        """Create access codes for selected staff users."""
+        count = 0
+        for user in queryset:
+            if user.is_staff:
+                HrAccessCode.get_or_create_for_user(user)
+                count += 1
+        self.message_user(request, f"Created access codes for {count} staff user(s).")
+    create_access_codes.short_description = "Create access codes for selected staff users"
     
     def full_name(self, obj):
         """Display full name or username if no name."""

@@ -46,18 +46,27 @@ def submit(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
         return render(request, "submissions/submit.html")
 
-    # Validate access code
+    # Validate access code - check against HR access codes
     access_code = (request.POST.get("access_code") or "").strip()
-    if access_code != settings.COMPANY_ACCESS_CODE:
-        return render(
-            request,
-            "submissions/submit.html",
-            {
-                "error": "Invalid company access code. Please check and try again.",
-                "access_code": access_code,  # Preserve input
-            },
-            status=400,
-        )
+    
+    # Check if code matches any HR access code
+    from .models import HrAccessCode
+    try:
+        hr_code = HrAccessCode.objects.get(access_code=access_code, is_active=True)
+    except HrAccessCode.DoesNotExist:
+        # Fallback to old COMPANY_ACCESS_CODE for backward compatibility
+        if hasattr(settings, 'COMPANY_ACCESS_CODE') and access_code == settings.COMPANY_ACCESS_CODE:
+            pass  # Allow old code to work
+        else:
+            return render(
+                request,
+                "submissions/submit.html",
+                {
+                    "error": "Invalid access code. Please check and try again.",
+                    "access_code": access_code,  # Preserve input
+                },
+                status=400,
+            )
 
     # Validate and sanitize inputs
     submission_type = (request.POST.get("type") or "").strip()
