@@ -16,18 +16,18 @@ Update these in **Railway → Your Service → Variables**:
 
 1. **HR_NOTIFY_EMAILS**
    ```
-   hr@kyrex.co
+   sales@kyrex.co
    ```
-   (Or multiple emails: `hr@kyrex.co,admin@kyrex.co`)
+   (Or multiple emails: `sales@kyrex.co,admin@kyrex.co`)
 
 2. **DJANGO_DEFAULT_FROM_EMAIL**
    ```
-   no-reply@kyrex.co
+   sales@kyrex.co
    ```
 
 3. **DJANGO_SUPERUSER_EMAIL** (for auto-creating admin)
    ```
-   hr@kyrex.co
+   sales@kyrex.co
    ```
 
 ## Custom Domain Setup

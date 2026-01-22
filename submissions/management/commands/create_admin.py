@@ -12,7 +12,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         username = os.environ.get('DJANGO_SUPERUSER_USERNAME', 'hr_admin')
-        email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'hr@kyrex.co')
+        email = os.environ.get('DJANGO_SUPERUSER_EMAIL', 'sales@kyrex.co')
         password = os.environ.get('DJANGO_SUPERUSER_PASSWORD')
 
         if not password:
