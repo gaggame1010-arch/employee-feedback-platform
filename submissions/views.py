@@ -100,6 +100,10 @@ def submit(request: HttpRequest) -> HttpResponse:
             body=html.unescape(body),  # Store unescaped in DB
         )
     except Exception as e:
+        # Log the actual error for debugging
+        import logging
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error creating submission: {e}", exc_info=True)
         return render(
             request,
             "submissions/submit.html",
