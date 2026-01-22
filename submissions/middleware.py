@@ -1,6 +1,7 @@
 """
 Rate limiting middleware for anonymous submissions.
 """
+import os
 from django.core.cache import cache
 from django.http import HttpResponse
 from django.utils import timezone
@@ -23,14 +24,18 @@ class RateLimitMiddleware:
             # Get current count
             count = cache.get(cache_key, 0)
             
-            if count >= 5:  # Max 5 submissions per hour
+            # Rate limit: 10 submissions per hour (configurable via environment variable)
+            max_submissions = int(os.environ.get("RATE_LIMIT_MAX_SUBMISSIONS", "10"))
+            rate_limit_window = int(os.environ.get("RATE_LIMIT_WINDOW_SECONDS", "3600"))  # 1 hour default
+            
+            if count >= max_submissions:
                 return HttpResponse(
                     "Too many submissions. Please try again later.",
                     status=429,
                 )
             
-            # Increment counter (expires in 3600 seconds = 1 hour)
-            cache.set(cache_key, count + 1, 3600)
+            # Increment counter (expires in rate_limit_window seconds)
+            cache.set(cache_key, count + 1, rate_limit_window)
         
         response = self.get_response(request)
         return response
