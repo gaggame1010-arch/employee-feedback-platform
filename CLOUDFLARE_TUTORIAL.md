@@ -1,4 +1,4 @@
-# Complete Cloudflare Tutorial: Register kanvo.io & Connect to Railway
+# Complete Cloudflare Tutorial: Register kyrex.co & Connect to Railway
 
 ## Step-by-Step Guide
 
@@ -20,23 +20,23 @@
 
 ---
 
-### Step 2: Register kanvo.io Domain
+### Step 2: Register kyrex.co Domain
 
 1. **Access Domain Registration**
    - Once logged in, look for **"Domain Registration"** or **"Register Domains"**
    - Or go directly to: https://www.cloudflare.com/products/registrar/
 
 2. **Search for Domain**
-   - In the search box, type: `kanvo.io`
+   - In the search box, type: `kyrex.co`
    - Click **"Search"** or press Enter
 
 3. **Check Availability**
-   - Cloudflare will show if `kanvo.io` is available
+   - Cloudflare will show if `kyrex.co` is available
    - If available, you'll see the price
-   - If taken, try variations like `kanvo-app.io` or `getkanvo.io`
+   - If taken, try variations like `kyrex-app.co` or `getkyrex.co`
 
 4. **Add to Cart**
-   - Click **"Add to Cart"** next to `kanvo.io`
+   - Click **"Add to Cart"** next to `kyrex.co`
    - You might see options for additional services (optional):
      - ❌ Skip "WHOIS Privacy" (it's free anyway)
      - ❌ Skip any premium features (not needed)
@@ -60,8 +60,8 @@ After purchasing:
    - Or go to: https://dash.cloudflare.com/
 
 2. **Find Your Domain**
-   - Look for `kanvo.io` in your domain list
-   - Click on `kanvo.io` to open it
+   - Look for `kyrex.co` in your domain list
+   - Click on `kyrex.co` to open it
 
 3. **Go to DNS**
    - In the left sidebar, click **"DNS"**
@@ -78,7 +78,7 @@ After purchasing:
    - Click **"Custom Domain"** or **"Add Domain"**
 
 2. **Enter Domain**
-   - Type: `kanvo.io`
+   - Type: `kyrex.co`
    - Click **"Add"** or **"Save"**
 
 3. **Copy DNS Records**
@@ -102,7 +102,7 @@ After purchasing:
 
    - **If Railway shows CNAME:**
      - **Type**: Select `CNAME`
-     - **Name**: Enter `@` (or `kanvo.io`, or leave blank - depends on Cloudflare's interface)
+     - **Name**: Enter `@` (or `kyrex.co`, or leave blank - depends on Cloudflare's interface)
      - **Target**: Paste Railway's value (e.g., `web-production-593fc.up.railway.app`)
      - **Proxy status**: Click the **orange cloud** icon (🟠) to turn it **gray** (⚪) - **disable proxy** for Railway
      - **TTL**: Select `Auto`
@@ -118,15 +118,24 @@ After purchasing:
 
 2. **Add www Subdomain (Recommended)**
 
-   - Click **"Add record"** again
-   - **Type**: Select `CNAME`
-   - **Name**: Enter `www`
-   - **Target**: Paste the same Railway value (e.g., `web-production-593fc.up.railway.app`)
-   - **Proxy status**: **Disable proxy** (gray cloud ⚪)
-   - **TTL**: Select `Auto`
-   - Click **"Save"**
+    - Click **"Add record"** again
+    - **Type**: Select `CNAME`
+    - **Name**: Enter `www`
+    - **Target**: Paste the same Railway value (e.g., `web-production-593fc.up.railway.app`)
+    - **Proxy status**: **Disable proxy** (gray cloud ⚪)
+    - **TTL**: Select `Auto`
+    - Click **"Save"**
 
-3. **Verify Records**
+3. **Add Google Site Verification (Required)**
+
+    - Click **"Add record"** again
+    - **Type**: Select `TXT`
+    - **Name**: Enter `@` (or leave blank)
+    - **Content**: Enter `google-site-verification=ra9ZCbxVLoy5PHsAR0N9ScnmiObzzPZlA9MCN32clPc`
+    - **TTL**: Select `Auto`
+    - Click **"Save"**
+
+4. **Verify Records**
 
    Your DNS records should look like:
    ```
@@ -150,14 +159,14 @@ After purchasing:
    - Find or add: `DJANGO_ALLOWED_HOSTS`
    - Set value to:
      ```
-     kanvo.io,www.kanvo.io,*.up.railway.app
+     kyrex.co,www.kyrex.co,*.up.railway.app
      ```
 
 3. **Update CSRF_TRUSTED_ORIGINS**
    - Find or add: `CSRF_TRUSTED_ORIGINS`
    - Set value to:
      ```
-     https://kanvo.io,https://www.kanvo.io,https://*.up.railway.app
+     https://kyrex.co,https://www.kyrex.co,https://*.up.railway.app
      ```
 
 4. **Save Changes**
@@ -171,7 +180,7 @@ After purchasing:
 
 1. **Check DNS Propagation**
    - Visit: https://dnschecker.org/
-   - Enter: `kanvo.io`
+   - Enter: `kyrex.co`
    - Select record type: `CNAME` (or `A` if you used that)
    - Click **"Search"**
    - Wait for green checkmarks across the globe (usually 5-30 minutes)
@@ -183,7 +192,7 @@ After purchasing:
 
 3. **Check in Railway**
    - Railway → Settings → Domains
-   - `kanvo.io` should show as "Active" or "Verified"
+   - `kyrex.co` should show as "Active" or "Verified"
    - SSL certificate will be automatically provisioned (takes 5-15 minutes)
 
 ---
@@ -198,11 +207,11 @@ After purchasing:
 
 2. **Visit Your Site**
    - Open browser
-   - Go to: `https://kanvo.io`
+   - Go to: `https://kyrex.co`
    - Should load your application! 🎉
 
 3. **Test www Subdomain**
-   - Also test: `https://www.kanvo.io`
+   - Also test: `https://www.kyrex.co`
    - Should redirect or load the same site
 
 ---
@@ -247,7 +256,7 @@ After purchasing:
    - Should show SSL as "Active" or "Valid"
 
 3. **Verify HTTPS**
-   - Make sure you're using `https://kanvo.io` (not `http://`)
+   - Make sure you're using `https://kyrex.co` (not `http://`)
    - Railway automatically redirects HTTP to HTTPS
 
 ---
@@ -291,27 +300,28 @@ After purchasing:
 ## Quick Checklist
 
 - [ ] Created Cloudflare account
-- [ ] Registered `kanvo.io` domain
+- [ ] Registered `kyrex.co` domain
 - [ ] Got DNS records from Railway
 - [ ] Added CNAME record in Cloudflare (proxy disabled)
 - [ ] Added www CNAME record (proxy disabled)
+- [ ] Added Google site verification TXT record
 - [ ] Updated `DJANGO_ALLOWED_HOSTS` in Railway
 - [ ] Updated `CSRF_TRUSTED_ORIGINS` in Railway
 - [ ] Waited for DNS propagation (15-30 min)
 - [ ] Verified DNS at dnschecker.org
-- [ ] Tested `https://kanvo.io` in browser
+- [ ] Tested `https://kyrex.co` in browser
 - [ ] SSL certificate active
 
 ---
 
 ## Summary
 
-1. ✅ **Register** `kanvo.io` on Cloudflare
+1. ✅ **Register** `kyrex.co` on Cloudflare
 2. ✅ **Get DNS records** from Railway
 3. ✅ **Add DNS records** in Cloudflare (disable proxy!)
 4. ✅ **Update Railway** environment variables
 5. ✅ **Wait** for DNS propagation
-6. ✅ **Test** your site at `https://kanvo.io`
+6. ✅ **Test** your site at `https://kyrex.co`
 
 **Total Time**: ~30-45 minutes (mostly waiting for DNS)
 

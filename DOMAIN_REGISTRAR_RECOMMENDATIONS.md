@@ -1,4 +1,4 @@
-# Domain Registrar Recommendations for kanvo.io
+# Domain Registrar Recommendations for kyrex.co
 
 ## Top Recommendations
 
@@ -19,7 +19,7 @@
 
 **Setup**:
 1. Sign up at Cloudflare
-2. Search for `kanvo.io`
+2. Search for `kyrex.co`
 3. Add to cart and checkout
 4. DNS management is automatic in Cloudflare dashboard
 
@@ -41,7 +41,7 @@
 
 **Setup**:
 1. Sign up at Namecheap
-2. Search for `kanvo.io`
+2. Search for `kyrex.co`
 3. Add to cart (check for coupons!)
 4. Complete purchase
 5. Manage DNS in Advanced DNS section
@@ -127,7 +127,7 @@
 **How to get started with Cloudflare:**
 1. Go to https://www.cloudflare.com/products/registrar/
 2. Sign up for free account
-3. Search for `kanvo.io`
+3. Search for `kyrex.co`
 4. Add to cart and complete purchase
 5. DNS management is automatically available in your dashboard
 
@@ -135,13 +135,13 @@
 
 ## What You'll Need After Registration
 
-Once you register `kanvo.io`, you'll need to:
+Once you register `kyrex.co`, you'll need to:
 
 1. **Add DNS records** Railway provides (CNAME or A record)
 2. **Wait for DNS propagation** (15-30 minutes usually)
 3. **Update Railway environment variables**:
-   - `DJANGO_ALLOWED_HOSTS` = `kanvo.io,www.kanvo.io,*.up.railway.app`
-   - `CSRF_TRUSTED_ORIGINS` = `https://kanvo.io,https://www.kanvo.io,https://*.up.railway.app`
+   - `DJANGO_ALLOWED_HOSTS` = `kyrex.co,www.kyrex.co,*.up.railway.app`
+   - `CSRF_TRUSTED_ORIGINS` = `https://kyrex.co,https://www.kyrex.co,https://*.up.railway.app`
 
 ---
 

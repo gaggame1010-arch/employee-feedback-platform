@@ -6,6 +6,7 @@ Your application is now configured to use **kyrex.co** as the domain.
 
 ✅ `env.example` - Updated default emails to use `kyrex.co`
 ✅ `submissions/management/commands/create_admin.py` - Updated default admin email
+✅ All documentation updated to reference `kyrex.co`
 
 ## Railway Environment Variables
 
@@ -29,7 +30,7 @@ Update these in **Railway → Your Service → Variables**:
    hr@kyrex.co
    ```
 
-## Custom Domain Setup (Future)
+## Custom Domain Setup
 
 When you're ready to use `kyrex.co` as your actual domain:
 
@@ -83,3 +84,12 @@ Then update Railway variables:
 2. **Verify Domain Ownership** - Make sure you own `kyrex.co`
 3. **Configure DNS** - Point `kyrex.co` to Railway when ready
 4. **Setup Email** - Configure email sending for `@kyrex.co` addresses
+
+## Domain Registration
+
+To register `kyrex.co`:
+- **Cloudflare**: https://www.cloudflare.com/products/registrar/ (Recommended - cheapest)
+- **Namecheap**: https://www.namecheap.com/
+- **Google Domains**: https://domains.google/
+
+See `CLOUDFLARE_TUTORIAL.md` for detailed setup instructions.
