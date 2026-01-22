@@ -18,6 +18,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
                 ('access_code', models.CharField(db_index=True, max_length=20, unique=True)),
+                ('notification_email', models.EmailField(blank=True, help_text="Email address to receive notifications for submissions using this code. If empty, uses user's email.")),
                 ('created_at', models.DateTimeField(auto_now_add=True)),
                 ('updated_at', models.DateTimeField(auto_now=True)),
                 ('is_active', models.BooleanField(default=True)),
@@ -27,5 +28,10 @@ class Migration(migrations.Migration):
                 'verbose_name': 'HR Access Code',
                 'verbose_name_plural': 'HR Access Codes',
             },
+        ),
+        migrations.AddField(
+            model_name='submission',
+            name='hr_access_code',
+            field=models.ForeignKey(blank=True, help_text='The HR access code used to submit this feedback', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='submissions', to='submissions.hraccesscode'),
         ),
     ]

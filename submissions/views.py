@@ -51,6 +51,7 @@ def submit(request: HttpRequest) -> HttpResponse:
     
     # Check if code matches any HR access code
     from .models import HrAccessCode
+    hr_code = None
     try:
         hr_code = HrAccessCode.objects.get(access_code=access_code, is_active=True)
     except HrAccessCode.DoesNotExist:
@@ -107,6 +108,7 @@ def submit(request: HttpRequest) -> HttpResponse:
             type=submission_type,
             title=html.unescape(title),  # Store unescaped in DB
             body=html.unescape(body),  # Store unescaped in DB
+            hr_access_code=hr_code,  # Link to the HR access code used
         )
     except Exception as e:
         # Log the actual error for debugging
@@ -123,8 +125,19 @@ def submit(request: HttpRequest) -> HttpResponse:
             status=500,
         )
 
-    # Notify HR (dev default prints email to console)
-    if settings.HR_NOTIFY_EMAILS:
+    # Notify HR - send to specific HR if code was used, otherwise use default
+    recipient_emails = []
+    
+    if hr_code:
+        # Send to the specific HR whose code was used
+        hr_email = hr_code.get_notification_email()
+        if hr_email:
+            recipient_emails = [hr_email]
+    elif settings.HR_NOTIFY_EMAILS:
+        # Fallback to default HR emails for old access codes
+        recipient_emails = settings.HR_NOTIFY_EMAILS
+    
+    if recipient_emails:
         try:
             send_mail(
                 subject=f"New anonymous submission: {s.get_type_display()}",
@@ -136,7 +149,7 @@ def submit(request: HttpRequest) -> HttpResponse:
                     f"View in admin: {request.build_absolute_uri(f'/admin/submissions/submission/{s.id}/change/')}\n"
                 ),
                 from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=settings.HR_NOTIFY_EMAILS,
+                recipient_list=recipient_emails,
                 fail_silently=True,
             )
         except Exception:

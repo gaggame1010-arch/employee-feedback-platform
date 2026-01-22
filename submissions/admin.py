@@ -62,10 +62,26 @@ admin.site.unregister(Group)
 # HR Access Code Admin
 @admin.register(HrAccessCode)
 class HrAccessCodeAdmin(admin.ModelAdmin):
-    list_display = ("user", "access_code_display", "is_active_badge", "created_at")
+    list_display = ("user", "access_code_display", "notification_email_display", "is_active_badge", "created_at")
     list_filter = ("is_active", "created_at")
     search_fields = ("user__username", "user__email", "access_code")
     readonly_fields = ("access_code", "created_at", "updated_at")
+    
+    def notification_email_display(self, obj):
+        """Display notification email."""
+        if not obj:
+            return "—"
+        email = obj.get_notification_email()
+        if obj.notification_email:
+            return format_html(
+                '<span style="color: #2c66ff; font-weight: 700;">{}</span>',
+                email
+            )
+        return format_html(
+            '<span style="color: #6b7280;">{} <span style="font-size: 10px;">(user email)</span></span>',
+            email
+        )
+    notification_email_display.short_description = "Notification Email"
     list_per_page = 25
     actions = ["generate_new_code", "activate_codes", "deactivate_codes"]
     
@@ -73,6 +89,10 @@ class HrAccessCodeAdmin(admin.ModelAdmin):
         ("HR User", {
             "fields": ("user", "access_code"),
             "description": "Each HR user gets a unique 6-digit access code. Employees use this code to submit feedback."
+        }),
+        ("Email Notifications", {
+            "fields": ("notification_email",),
+            "description": "Email address to receive notifications when employees submit feedback using this code. If empty, uses the user's email address."
         }),
         ("Status", {
             "fields": ("is_active",)
@@ -269,10 +289,10 @@ class HrResponseInline(admin.StackedInline):
 
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ("receipt_code_display", "type_badge", "status_badge", "title_truncated", "submitted_time", "has_response", "updated_at")
+    list_display = ("receipt_code_display", "type_badge", "status_badge", "hr_code_display", "title_truncated", "submitted_time", "has_response", "updated_at")
     list_filter = ("type", "status", "created_at", "updated_at")
     search_fields = ("receipt_code", "title", "body")
-    readonly_fields = ("receipt_code", "created_at", "updated_at", "submission_preview")
+    readonly_fields = ("receipt_code", "hr_access_code", "created_at", "updated_at", "submission_preview")
     inlines = [HrResponseInline]
     list_per_page = 25
     date_hierarchy = "created_at"
@@ -282,7 +302,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ("Submission Details", {
-            "fields": ("receipt_code", "type", "status", "title", "body", "submission_preview"),
+            "fields": ("receipt_code", "hr_access_code", "type", "status", "title", "body", "submission_preview"),
             "description": "View the employee's submission below. Scroll down to the 'HR Responses' section to add your reply."
         }),
         ("Timestamps", {
@@ -290,6 +310,17 @@ class SubmissionAdmin(admin.ModelAdmin):
             "classes": ("collapse",)
         }),
     )
+    
+    def hr_code_display(self, obj):
+        """Display which HR access code was used."""
+        if not obj or not obj.hr_access_code:
+            return format_html('<span style="color: #6b7280;">—</span>')
+        return format_html(
+            '<span style="font-family: ui-monospace, monospace; font-size: 12px; color: #2c66ff; font-weight: 700;">{}</span><br><span style="font-size: 11px; color: #6b7280;">{}</span>',
+            obj.hr_access_code.access_code,
+            obj.hr_access_code.user.username
+        )
+    hr_code_display.short_description = "HR Code"
     
     def mark_as_in_review(self, request, queryset):
         """Mark selected submissions as in review."""

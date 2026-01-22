@@ -23,6 +23,14 @@ class Submission(models.Model):
     body = models.TextField()
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.NEW)
     receipt_code = models.CharField(max_length=20, unique=True, db_index=True)
+    hr_access_code = models.ForeignKey(
+        HrAccessCode,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="submissions",
+        help_text="The HR access code used to submit this feedback"
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
@@ -55,9 +63,17 @@ class HrAccessCode(models.Model):
         limit_choices_to={"is_staff": True},  # Only staff users can have access codes
     )
     access_code = models.CharField(max_length=20, unique=True, db_index=True)
+    notification_email = models.EmailField(
+        blank=True,
+        help_text="Email address to receive notifications for submissions using this code. If empty, uses user's email."
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     is_active = models.BooleanField(default=True)
+    
+    def get_notification_email(self):
+        """Get the email address for notifications."""
+        return self.notification_email or self.user.email
 
     class Meta:
         verbose_name = "HR Access Code"
