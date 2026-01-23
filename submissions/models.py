@@ -56,27 +56,30 @@ class HrAccessCode(models.Model):
         if not user.is_staff:
             raise ValueError("Only staff users can have access codes")
         
-        # Try to get existing first (this will work even if new columns don't exist)
+        # Try to get existing first using raw SQL to avoid column selection issues
+        from django.db import connection
         try:
-            # Use values() to get a dict, avoiding column selection issues
-            existing = cls.objects.filter(user=user).first()
-            if existing:
-                return existing
+            with connection.cursor() as cursor:
+                # Only select columns that definitely exist (from initial migration)
+                cursor.execute(
+                    "SELECT id, access_code, notification_email, is_active, user_id FROM submissions_hraccesscode WHERE user_id = %s LIMIT 1",
+                    [user.id]
+                )
+                row = cursor.fetchone()
+                if row:
+                    # Reconstruct object (minimal)
+                    obj = cls(id=row[0], user=user, access_code=row[1], is_active=row[3])
+                    obj.notification_email = row[2] if row[2] else ""
+                    # Don't trigger a save - just return the object
+                    obj._state.adding = False
+                    obj._state.db = 'default'
+                    return obj
         except Exception:
-            # If query fails due to missing columns, try raw SQL approach
-            from django.db import connection
+            # If raw SQL fails, try Django ORM as fallback
             try:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        "SELECT id, access_code, notification_email, is_active FROM submissions_hraccesscode WHERE user_id = %s",
-                        [user.id]
-                    )
-                    row = cursor.fetchone()
-                    if row:
-                        # Reconstruct object (minimal)
-                        obj = cls(id=row[0], user=user, access_code=row[1], is_active=row[3])
-                        obj.notification_email = row[2] if row[2] else ""
-                        return obj
+                existing = cls.objects.filter(user=user).first()
+                if existing:
+                    return existing
             except Exception:
                 pass  # Fall through to create new
         
