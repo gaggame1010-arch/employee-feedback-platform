@@ -1,2 +1,2 @@
-release: python manage.py migrate --noinput && python manage.py collectstatic --noinput && python manage.py create_admin || true
+release: python manage.py migrate --noinput; python manage.py collectstatic --noinput; python manage.py create_admin
 web: gunicorn anonplatform.wsgi:application
