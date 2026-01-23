@@ -511,15 +511,37 @@ def hr_register(request: HttpRequest) -> HttpResponse:
         raise
     
     hr_access.notification_email = html.unescape(email)
-    # Only set company fields if they exist (migration has run)
+    hr_access.is_active = True
+    
+    # Try to set company fields if they exist (migration has run)
+    # Then save, handling case where columns don't exist yet
     try:
         hr_access.company_name = html.unescape(company_name)
         hr_access.company_website = html.unescape(website)
     except AttributeError:
-        # Fields don't exist yet - migration hasn't run
+        # Fields don't exist on model yet - migration hasn't run
         pass
-    hr_access.is_active = True
-    hr_access.save()
+    
+    # Save, handling case where database columns don't exist
+    try:
+        hr_access.save()
+    except Exception as save_error:
+        error_str = str(save_error)
+        if "company_name" in error_str or "company_website" in error_str or "does not exist" in error_str:
+            # Migration hasn't run - save without company fields using raw SQL
+            from django.db import connection
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    UPDATE submissions_hraccesscode 
+                    SET notification_email = %s, is_active = %s, updated_at = NOW()
+                    WHERE id = %s
+                    """,
+                    [html.unescape(email), True, hr_access.id]
+                )
+        else:
+            # Different error - re-raise it
+            raise
 
     # Email the access code (async to prevent timeout)
     import logging
