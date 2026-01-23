@@ -53,30 +53,38 @@ def submit(request: HttpRequest) -> HttpResponse:
     
     # Check if code matches any HR access code
     from .models import HrAccessCode
-    from django.db import OperationalError, ProgrammingError
+    from django.db import OperationalError, ProgrammingError, connection
     
     hr_code = None
     try:
-        # Try to query HR access codes (only works if migrations have run)
-        hr_code = HrAccessCode.objects.get(access_code=access_code, is_active=True)
-    except HrAccessCode.DoesNotExist:
-        # Code doesn't match any HR access code
-        # Fallback to old COMPANY_ACCESS_CODE for backward compatibility
-        if hasattr(settings, 'COMPANY_ACCESS_CODE') and access_code == settings.COMPANY_ACCESS_CODE:
-            pass  # Allow old code to work
-        else:
-            return render(
-                request,
-                "submissions/submit.html",
-                {
-                    "error": "Invalid access code. Please check and try again.",
-                    "access_code": access_code,  # Preserve input
-                },
-                status=400,
+        # Use raw SQL to query HR access codes (works even if company_name column doesn't exist)
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT id, access_code, notification_email, is_active, user_id FROM submissions_hraccesscode WHERE access_code = %s AND is_active = %s LIMIT 1",
+                [access_code, True]
             )
-    except (OperationalError, ProgrammingError):
-        # Table doesn't exist yet - migrations haven't run (SQLite or PostgreSQL)
-        # Fallback to old COMPANY_ACCESS_CODE for backward compatibility
+            row = cursor.fetchone()
+            if row:
+                # Reconstruct object
+                hr_code = HrAccessCode(id=row[0], access_code=row[1], is_active=row[3])
+                hr_code.notification_email = row[2] if row[2] else ""
+                hr_code._state.adding = False
+                hr_code._state.db = 'default'
+    except (OperationalError, ProgrammingError) as e:
+        # Table doesn't exist yet or column issue - try Django ORM as fallback
+        try:
+            hr_code = HrAccessCode.objects.get(access_code=access_code, is_active=True)
+        except (HrAccessCode.DoesNotExist, OperationalError, ProgrammingError):
+            hr_code = None
+    except Exception as e:
+        # Other error - try Django ORM as fallback
+        try:
+            hr_code = HrAccessCode.objects.get(access_code=access_code, is_active=True)
+        except (HrAccessCode.DoesNotExist, Exception):
+            hr_code = None
+    
+    # If no HR code found, check old COMPANY_ACCESS_CODE for backward compatibility
+    if not hr_code:
         if hasattr(settings, 'COMPANY_ACCESS_CODE') and access_code == settings.COMPANY_ACCESS_CODE:
             pass  # Allow old code to work
         else:
