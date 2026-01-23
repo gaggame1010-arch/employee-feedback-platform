@@ -1,4 +1,5 @@
 import html
+import os
 import re
 
 from django.conf import settings
@@ -303,22 +304,31 @@ def contact(request: HttpRequest) -> HttpResponse:
             status=400,
         )
 
-    # Send to HR notify emails if configured; otherwise just show success.
-    recipients = settings.HR_NOTIFY_EMAILS or []
-    if recipients:
-        try:
-            send_mail(
-                subject="Demo / Contact request (Anonymous Employee Platform)",
-                message=(
-                    f"Name: {html.unescape(name)}\n"
-                    f"Email: {html.unescape(email)}\n\n"
-                    f"Message:\n{html.unescape(message)}\n"
-                ),
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=recipients,
-                fail_silently=True,
-            )
-        except Exception:
-            pass
+    # Send contact form email to sales@kyrex.co
+    contact_email = os.environ.get("CONTACT_EMAIL", "sales@kyrex.co")
+    try:
+        send_mail(
+            subject=f"Contact Form Submission from {html.unescape(name)}",
+            message=(
+                f"New contact form submission:\n\n"
+                f"Name: {html.unescape(name)}\n"
+                f"Email: {html.unescape(email)}\n\n"
+                f"Message:\n{html.unescape(message)}\n\n"
+                f"---\n"
+                f"This message was sent from the contact form on {request.build_absolute_uri('/contact/')}"
+            ),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[contact_email],
+            fail_silently=False,  # Set to False to log email errors
+        )
+    except Exception as e:
+        # Log email sending errors but don't fail the form submission
+        import logging
+        import traceback
+        logger = logging.getLogger(__name__)
+        logger.error(f"Error sending contact form email: {e}")
+        logger.error(traceback.format_exc())
+        # Still show success to user even if email fails
+        pass
 
     return render(request, "submissions/contact.html", {"success": True})
