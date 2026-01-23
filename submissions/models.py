@@ -56,34 +56,44 @@ class HrAccessCode(models.Model):
         if not user.is_staff:
             raise ValueError("Only staff users can have access codes")
         
-        # Try to get or create, handling case where company_name column doesn't exist yet
+        # Try to get existing first (this will work even if new columns don't exist)
         try:
-            access_code, created = cls.objects.get_or_create(
-                user=user,
-                defaults={"access_code": cls.generate_unique_code()}
-            )
-        except Exception as e:
-            # If it's a missing column error, try with only() to exclude new fields
-            error_str = str(e)
-            if "company_name" in error_str or "does not exist" in error_str:
-                # Migration hasn't run - use only() to select existing fields
-                try:
-                    existing = cls.objects.only('id', 'user_id', 'access_code', 'notification_email', 'created_at', 'updated_at', 'is_active').get(user=user)
-                    return existing
-                except cls.DoesNotExist:
-                    # Create new one - but we can't use get_or_create with only()
-                    # So we'll create it with minimal fields
-                    new_code = cls(
-                        user=user,
-                        access_code=cls.generate_unique_code(),
-                        is_active=True
+            # Use values() to get a dict, avoiding column selection issues
+            existing = cls.objects.filter(user=user).first()
+            if existing:
+                return existing
+        except Exception:
+            # If query fails due to missing columns, try raw SQL approach
+            from django.db import connection
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT id, access_code, notification_email, is_active FROM submissions_hraccesscode WHERE user_id = %s",
+                        [user.id]
                     )
-                    new_code.save()
-                    return new_code
-            # Re-raise other errors
-            raise
+                    row = cursor.fetchone()
+                    if row:
+                        # Reconstruct object (minimal)
+                        obj = cls(id=row[0], user=user, access_code=row[1], is_active=row[3])
+                        obj.notification_email = row[2] if row[2] else ""
+                        return obj
+            except Exception:
+                pass  # Fall through to create new
         
-        return access_code
+        # Create new access code
+        # Use minimal fields to avoid column issues
+        new_code = cls(
+            user=user,
+            access_code=cls.generate_unique_code(),
+            is_active=True
+        )
+        # Only set notification_email if we can (avoid AttributeError if column doesn't exist)
+        try:
+            new_code.notification_email = user.email
+        except (AttributeError, Exception):
+            pass
+        new_code.save()
+        return new_code
 
 
 class Submission(models.Model):
