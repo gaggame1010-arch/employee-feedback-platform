@@ -284,13 +284,13 @@ def contact(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
         return render(request, "submissions/contact.html")
 
-    name = sanitize_input(request.POST.get("name") or "", max_length=120)
+    company_name = sanitize_input(request.POST.get("company_name") or "", max_length=120)
     email = sanitize_input(request.POST.get("email") or "", max_length=254)
     message = sanitize_input(request.POST.get("message") or "", max_length=4000)
 
     errors = []
-    if not name or len(name) < 2:
-        errors.append("Name must be at least 2 characters.")
+    if not company_name or len(company_name) < 2:
+        errors.append("Company name must be at least 2 characters.")
     if not email or "@" not in email:
         errors.append("Please enter a valid email address.")
     if not message or len(message) < 10:
@@ -300,7 +300,7 @@ def contact(request: HttpRequest) -> HttpResponse:
         return render(
             request,
             "submissions/contact.html",
-            {"error": " ".join(errors), "name": html.unescape(name), "email": html.unescape(email), "message": html.unescape(message)},
+            {"error": " ".join(errors), "company_name": html.unescape(company_name), "email": html.unescape(email), "message": html.unescape(message)},
             status=400,
         )
 
@@ -319,10 +319,10 @@ def contact(request: HttpRequest) -> HttpResponse:
         logger.info(f"From email: {settings.DEFAULT_FROM_EMAIL}")
         
         send_mail(
-            subject=f"Contact Form Submission from {html.unescape(name)}",
+            subject=f"Contact Form Submission from {html.unescape(company_name)}",
             message=(
                 f"New contact form submission:\n\n"
-                f"Name: {html.unescape(name)}\n"
+                f"Company name: {html.unescape(company_name)}\n"
                 f"Email: {html.unescape(email)}\n\n"
                 f"Message:\n{html.unescape(message)}\n\n"
                 f"---\n"
