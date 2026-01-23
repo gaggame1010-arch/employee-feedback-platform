@@ -462,206 +462,202 @@ def hr_register(request: HttpRequest) -> HttpResponse:
                 status=400,
             )
 
-    # Create staff user + HrAccessCode
-    from django.contrib.auth.models import User
-    from .models import HrAccessCode
-    import secrets
+        # Create staff user + HrAccessCode
+        from django.contrib.auth.models import User
+        from .models import HrAccessCode
+        import secrets
 
-    base_username = (email.split("@")[0] or "hr").lower()
-    base_username = re.sub(r"[^a-z0-9_]", "_", base_username)[:20] or "hr"
+        base_username = (email.split("@")[0] or "hr").lower()
+        base_username = re.sub(r"[^a-z0-9_]", "_", base_username)[:20] or "hr"
 
-    # Ensure unique username
-    username = base_username
-    for _ in range(10):
-        if not User.objects.filter(username=username).exists():
-            break
-        username = f"{base_username}_{secrets.randbelow(9999)}"
-    else:
-        username = f"hr_{secrets.token_hex(4)}"
-
-    # If user already exists, re-use it; otherwise create a new one
-    user, created = User.objects.get_or_create(
-        email=html.unescape(email),
-        defaults={"username": username},
-    )
-
-    # Make sure it's staff so it can have an access code
-    if not user.is_staff:
-        user.is_staff = True
-    if not user.username:
-        user.username = username
-    if created:
-        user.set_unusable_password()
-    user.save()
-
-    # Try to get or create HR access code
-    try:
-        hr_access = HrAccessCode.get_or_create_for_user(user)
-    except Exception as db_error:
-        # Log the error for debugging
-        import traceback
-        import sys
-        error_str = str(db_error)
-        print(f"\n[HR REGISTRATION ERROR] {type(db_error).__name__}: {error_str}\n{traceback.format_exc()}\n", file=sys.stderr, flush=True)
-        
-        # Check if it's a missing column error (migration hasn't run)
-        if "company_name" in error_str or "does not exist" in error_str:
-            return render(
-                request,
-                "submissions/hr_register.html",
-                {
-                    "error": "Database migration required. Please contact support or wait a few minutes for the system to update.",
-                    "company_name": html.unescape(company_name),
-                    "email": html.unescape(email),
-                    "website": html.unescape(website),
-                },
-                status=503,
-            )
-        # Re-raise other errors
-        raise
-    
-    hr_access.notification_email = html.unescape(email)
-    hr_access.is_active = True
-    
-    # Try to set company fields if they exist (migration has run)
-    # Then save, handling case where columns don't exist yet
-    try:
-        hr_access.company_name = html.unescape(company_name)
-        hr_access.company_website = html.unescape(website)
-    except AttributeError:
-        # Fields don't exist on model yet - migration hasn't run
-        pass
-    
-    # Save, handling case where database columns don't exist
-    try:
-        hr_access.save()
-    except Exception as save_error:
-        error_str = str(save_error)
-        if "company_name" in error_str or "company_website" in error_str or "does not exist" in error_str:
-            # Migration hasn't run - save without company fields using raw SQL
-            from django.db import connection
-            with connection.cursor() as cursor:
-                cursor.execute(
-                    """
-                    UPDATE submissions_hraccesscode 
-                    SET notification_email = %s, is_active = %s, updated_at = NOW()
-                    WHERE id = %s
-                    """,
-                    [html.unescape(email), True, hr_access.id]
-                )
+        # Ensure unique username
+        username = base_username
+        for _ in range(10):
+            if not User.objects.filter(username=username).exists():
+                break
+            username = f"{base_username}_{secrets.randbelow(9999)}"
         else:
-            # Different error - re-raise it
-            raise
+            username = f"hr_{secrets.token_hex(4)}"
 
-    # Email the access code (async to prevent timeout)
-    import logging
-    import traceback
-    import sys
-    import threading
-    from datetime import datetime
-    
-    logger = logging.getLogger(__name__)
-    
-    # Get company name for email (handle case where field doesn't exist yet)
-    company_display = getattr(hr_access, 'company_name', None) or company_name or "there"
-    
-    # Store access code for display on success page (backup if email fails)
-    # Ensure we can access the access_code attribute
-    try:
-        access_code_to_display = hr_access.access_code
-    except AttributeError:
-        # If access_code doesn't exist, try to get it from the database directly
-        from django.db import connection
-        with connection.cursor() as cursor:
-            cursor.execute(
-                "SELECT access_code FROM submissions_hraccesscode WHERE id = %s",
-                [hr_access.id]
-            )
-            row = cursor.fetchone()
-            access_code_to_display = row[0] if row else "ERROR_NO_CODE"
-        print(f"[HR REGISTRATION] Had to fetch access_code from DB: {access_code_to_display}", file=sys.stdout, flush=True)
-    
-    def send_email_async():
-        """Send email in background thread to prevent blocking."""
+        # If user already exists, re-use it; otherwise create a new one
+        user, created = User.objects.get_or_create(
+            email=html.unescape(email),
+            defaults={"username": username},
+        )
+
+        # Make sure it's staff so it can have an access code
+        if not user.is_staff:
+            user.is_staff = True
+        if not user.username:
+            user.username = username
+        if created:
+            user.set_unusable_password()
+        user.save()
+
+        # Try to get or create HR access code
         try:
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            print("\n" + "=" * 80, file=sys.stdout, flush=True)
-            print(f"[{timestamp}] *** HR REGISTRATION: Starting email send ***", file=sys.stdout, flush=True)
-            print(f"HR REGISTRATION: Recipient: {html.unescape(email)}", file=sys.stdout, flush=True)
-            print(f"HR REGISTRATION: Access code: {access_code_to_display}", file=sys.stdout, flush=True)
-            print(f"HR REGISTRATION: Email backend: {settings.EMAIL_BACKEND}", file=sys.stdout, flush=True)
-            print(f"HR REGISTRATION: From email: {settings.DEFAULT_FROM_EMAIL}", file=sys.stdout, flush=True)
-            print("=" * 80 + "\n", file=sys.stdout, flush=True)
+            hr_access = HrAccessCode.get_or_create_for_user(user)
+        except Exception as db_error:
+            # Log the error for debugging
+            error_str = str(db_error)
+            print(f"\n[HR REGISTRATION ERROR] {type(db_error).__name__}: {error_str}\n{traceback.format_exc()}\n", file=sys.stderr, flush=True)
             
-            logger.info(f"Attempting to send HR registration email to {html.unescape(email)}")
-            logger.info(f"Access code: {access_code_to_display}")
-            
-            try:
-                result = send_mail(
-                    subject="Your KYREX HR access code",
-                    message=(
-                        f"Hi {company_display},\n\n"
-                        f"Your HR access code is: {access_code_to_display}\n\n"
-                        f"Employees can submit feedback using this code at:\n"
-                        f"{request.build_absolute_uri('/submit/')}\n\n"
-                        f"If you did not request this, you can ignore this email.\n"
-                    ),
-                    from_email=settings.DEFAULT_FROM_EMAIL,
-                    recipient_list=[html.unescape(email)],
-                    fail_silently=False,
+            # Check if it's a missing column error (migration hasn't run)
+            if "company_name" in error_str or "does not exist" in error_str:
+                return render(
+                    request,
+                    "submissions/hr_register.html",
+                    {
+                        "error": "Database migration required. Please contact support or wait a few minutes for the system to update.",
+                        "company_name": html.unescape(company_name),
+                        "email": html.unescape(email),
+                        "website": html.unescape(website),
+                    },
+                    status=503,
                 )
-                
-                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                print("\n" + "=" * 80, file=sys.stdout, flush=True)
-                print(f"[{timestamp}] *** HR REGISTRATION: Email sent successfully ***", file=sys.stdout, flush=True)
-                print(f"HR REGISTRATION: Result: {result}", file=sys.stdout, flush=True)
-                print("=" * 80 + "\n", file=sys.stdout, flush=True)
-                logger.info(f"HR registration email sent successfully to {html.unescape(email)}, result: {result}")
-            except Exception as send_error:
-                error_msg = f"Error sending HR registration email: {type(send_error).__name__}: {send_error}"
-                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                print("\n" + "=" * 80, file=sys.stderr, flush=True)
-                print(f"[{timestamp}] *** HR REGISTRATION: EMAIL ERROR ***", file=sys.stderr, flush=True)
-                print(error_msg, file=sys.stderr, flush=True)
-                print(traceback.format_exc(), file=sys.stderr, flush=True)
-                print("=" * 80 + "\n", file=sys.stderr, flush=True)
-                logger.error(error_msg)
-                logger.error(traceback.format_exc())
-        except Exception as e:
-            error_msg = f"Error in HR registration email thread: {type(e).__name__}: {e}"
-            logger.error(error_msg, exc_info=True)
-            print(f"HR REGISTRATION EMAIL THREAD ERROR: {error_msg}", file=sys.stderr, flush=True)
-    
-    # Send email in background thread
-    email_thread = threading.Thread(target=send_email_async, daemon=True)
-    email_thread.start()
-
-    # Ensure we have the access code (should always be set, but double-check)
-    if not access_code_to_display or access_code_to_display == "ERROR_NO_CODE":
-        # Try multiple ways to get the access code
+            # Re-raise other errors
+            raise
+        
+        hr_access.notification_email = html.unescape(email)
+        hr_access.is_active = True
+        
+        # Try to set company fields if they exist (migration has run)
+        # Then save, handling case where columns don't exist yet
         try:
-            access_code_to_display = hr_access.access_code
-        except (AttributeError, Exception):
-            try:
-                # Try to refresh from database
+            hr_access.company_name = html.unescape(company_name)
+            hr_access.company_website = html.unescape(website)
+        except AttributeError:
+            # Fields don't exist on model yet - migration hasn't run
+            pass
+        
+        # Save, handling case where database columns don't exist
+        try:
+            hr_access.save()
+        except Exception as save_error:
+            error_str = str(save_error)
+            if "company_name" in error_str or "company_website" in error_str or "does not exist" in error_str:
+                # Migration hasn't run - save without company fields using raw SQL
                 from django.db import connection
                 with connection.cursor() as cursor:
                     cursor.execute(
-                        "SELECT access_code FROM submissions_hraccesscode WHERE id = %s",
-                        [hr_access.id]
+                        """
+                        UPDATE submissions_hraccesscode 
+                        SET notification_email = %s, is_active = %s, updated_at = NOW()
+                        WHERE id = %s
+                        """,
+                        [html.unescape(email), True, hr_access.id]
                     )
-                    row = cursor.fetchone()
-                    access_code_to_display = row[0] if row else "ERROR"
-            except Exception:
-                access_code_to_display = "ERROR"
+            else:
+                # Different error - re-raise it
+                raise
 
-    # Log success for debugging
-    logger.info(f"HR registration successful for {html.unescape(email)}, access code: {access_code_to_display}")
-    print(f"\n{'='*80}", file=sys.stdout, flush=True)
-    print(f"[HR REGISTRATION] SUCCESS! Rendering success page", file=sys.stdout, flush=True)
-    print(f"[HR REGISTRATION] Access code: {access_code_to_display}", file=sys.stdout, flush=True)
-    print(f"[HR REGISTRATION] Email: {html.unescape(email)}", file=sys.stdout, flush=True)
-    print(f"{'='*80}\n", file=sys.stdout, flush=True)
+        # Email the access code (async to prevent timeout)
+        import logging
+        import threading
+        from datetime import datetime
+        
+        logger = logging.getLogger(__name__)
+        
+        # Get company name for email (handle case where field doesn't exist yet)
+        company_display = getattr(hr_access, 'company_name', None) or company_name or "there"
+        
+        # Store access code for display on success page (backup if email fails)
+        # Ensure we can access the access_code attribute
+        try:
+            access_code_to_display = hr_access.access_code
+        except AttributeError:
+            # If access_code doesn't exist, try to get it from the database directly
+            from django.db import connection
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT access_code FROM submissions_hraccesscode WHERE id = %s",
+                    [hr_access.id]
+                )
+                row = cursor.fetchone()
+                access_code_to_display = row[0] if row else "ERROR_NO_CODE"
+            print(f"[HR REGISTRATION] Had to fetch access_code from DB: {access_code_to_display}", file=sys.stdout, flush=True)
+        
+        def send_email_async():
+            """Send email in background thread to prevent blocking."""
+            try:
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                print("\n" + "=" * 80, file=sys.stdout, flush=True)
+                print(f"[{timestamp}] *** HR REGISTRATION: Starting email send ***", file=sys.stdout, flush=True)
+                print(f"HR REGISTRATION: Recipient: {html.unescape(email)}", file=sys.stdout, flush=True)
+                print(f"HR REGISTRATION: Access code: {access_code_to_display}", file=sys.stdout, flush=True)
+                print(f"HR REGISTRATION: Email backend: {settings.EMAIL_BACKEND}", file=sys.stdout, flush=True)
+                print(f"HR REGISTRATION: From email: {settings.DEFAULT_FROM_EMAIL}", file=sys.stdout, flush=True)
+                print("=" * 80 + "\n", file=sys.stdout, flush=True)
+                
+                logger.info(f"Attempting to send HR registration email to {html.unescape(email)}")
+                logger.info(f"Access code: {access_code_to_display}")
+                
+                try:
+                    result = send_mail(
+                        subject="Your KYREX HR access code",
+                        message=(
+                            f"Hi {company_display},\n\n"
+                            f"Your HR access code is: {access_code_to_display}\n\n"
+                            f"Employees can submit feedback using this code at:\n"
+                            f"{request.build_absolute_uri('/submit/')}\n\n"
+                            f"If you did not request this, you can ignore this email.\n"
+                        ),
+                        from_email=settings.DEFAULT_FROM_EMAIL,
+                        recipient_list=[html.unescape(email)],
+                        fail_silently=False,
+                    )
+                    
+                    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    print("\n" + "=" * 80, file=sys.stdout, flush=True)
+                    print(f"[{timestamp}] *** HR REGISTRATION: Email sent successfully ***", file=sys.stdout, flush=True)
+                    print(f"HR REGISTRATION: Result: {result}", file=sys.stdout, flush=True)
+                    print("=" * 80 + "\n", file=sys.stdout, flush=True)
+                    logger.info(f"HR registration email sent successfully to {html.unescape(email)}, result: {result}")
+                except Exception as send_error:
+                    error_msg = f"Error sending HR registration email: {type(send_error).__name__}: {send_error}"
+                    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    print("\n" + "=" * 80, file=sys.stderr, flush=True)
+                    print(f"[{timestamp}] *** HR REGISTRATION: EMAIL ERROR ***", file=sys.stderr, flush=True)
+                    print(error_msg, file=sys.stderr, flush=True)
+                    print(traceback.format_exc(), file=sys.stderr, flush=True)
+                    print("=" * 80 + "\n", file=sys.stderr, flush=True)
+                    logger.error(error_msg)
+                    logger.error(traceback.format_exc())
+            except Exception as e:
+                error_msg = f"Error in HR registration email thread: {type(e).__name__}: {e}"
+                logger.error(error_msg, exc_info=True)
+                print(f"HR REGISTRATION EMAIL THREAD ERROR: {error_msg}", file=sys.stderr, flush=True)
+        
+        # Send email in background thread
+        email_thread = threading.Thread(target=send_email_async, daemon=True)
+        email_thread.start()
+
+        # Ensure we have the access code (should always be set, but double-check)
+        if not access_code_to_display or access_code_to_display == "ERROR_NO_CODE":
+            # Try multiple ways to get the access code
+            try:
+                access_code_to_display = hr_access.access_code
+            except (AttributeError, Exception):
+                try:
+                    # Try to refresh from database
+                    from django.db import connection
+                    with connection.cursor() as cursor:
+                        cursor.execute(
+                            "SELECT access_code FROM submissions_hraccesscode WHERE id = %s",
+                            [hr_access.id]
+                        )
+                        row = cursor.fetchone()
+                        access_code_to_display = row[0] if row else "ERROR"
+                except Exception:
+                    access_code_to_display = "ERROR"
+
+        # Log success for debugging
+        logger.info(f"HR registration successful for {html.unescape(email)}, access code: {access_code_to_display}")
+        print(f"\n{'='*80}", file=sys.stdout, flush=True)
+        print(f"[HR REGISTRATION] SUCCESS! Rendering success page", file=sys.stdout, flush=True)
+        print(f"[HR REGISTRATION] Access code: {access_code_to_display}", file=sys.stdout, flush=True)
+        print(f"[HR REGISTRATION] Email: {html.unescape(email)}", file=sys.stdout, flush=True)
+        print(f"{'='*80}\n", file=sys.stdout, flush=True)
 
         # Always render success page - this should never fail
         try:
