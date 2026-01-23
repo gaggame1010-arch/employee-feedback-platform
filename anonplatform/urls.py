@@ -15,9 +15,17 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import include, path
+
+
+def favicon_view(request):
+    """Return empty response for favicon requests to avoid 404 warnings."""
+    return HttpResponse(status=204)  # No Content
+
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('favicon.ico', favicon_view, name='favicon'),
     path("", include("submissions.urls")),
 ]
