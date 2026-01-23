@@ -489,19 +489,47 @@ def hr_register(request: HttpRequest) -> HttpResponse:
         user.set_unusable_password()
     user.save()
 
-    hr_access = HrAccessCode.get_or_create_for_user(user)
+    # Try to get or create HR access code
+    try:
+        hr_access = HrAccessCode.get_or_create_for_user(user)
+    except Exception as db_error:
+        # Check if it's a missing column error (migration hasn't run)
+        error_str = str(db_error)
+        if "company_name" in error_str or "does not exist" in error_str:
+            return render(
+                request,
+                "submissions/hr_register.html",
+                {
+                    "error": "Database migration required. Please contact support or wait a few minutes for the system to update.",
+                    "company_name": html.unescape(company_name),
+                    "email": html.unescape(email),
+                    "website": html.unescape(website),
+                },
+                status=503,
+            )
+        # Re-raise other errors
+        raise
+    
     hr_access.notification_email = html.unescape(email)
-    hr_access.company_name = html.unescape(company_name)
-    hr_access.company_website = html.unescape(website)
+    # Only set company fields if they exist (migration has run)
+    try:
+        hr_access.company_name = html.unescape(company_name)
+        hr_access.company_website = html.unescape(website)
+    except AttributeError:
+        # Fields don't exist yet - migration hasn't run
+        pass
     hr_access.is_active = True
     hr_access.save()
 
     # Email the access code
     try:
+        # Get company name for email (handle case where field doesn't exist yet)
+        company_display = getattr(hr_access, 'company_name', None) or company_name or "there"
+        
         send_mail(
             subject="Your KYREX HR access code",
             message=(
-                f"Hi {hr_access.company_name},\n\n"
+                f"Hi {company_display},\n\n"
                 f"Your HR access code is: {hr_access.access_code}\n\n"
                 f"Employees can submit feedback using this code at:\n"
                 f"{request.build_absolute_uri('/submit/')}\n\n"
