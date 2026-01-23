@@ -115,12 +115,24 @@ def submit(request: HttpRequest) -> HttpResponse:
         
         s = Submission.create_with_unique_receipt(**submission_kwargs)
     except Exception as e:
-        # Log the actual error for debugging
+        # Log the actual error for debugging - print to stdout so Railway captures it
         import logging
         import traceback
+        import sys
+        
         logger = logging.getLogger(__name__)
-        logger.error(f"Error creating submission: {e}")
-        logger.error(traceback.format_exc())
+        error_msg = f"Error creating submission: {e}"
+        traceback_str = traceback.format_exc()
+        
+        # Log to logger
+        logger.error(error_msg)
+        logger.error(traceback_str)
+        
+        # Also print to stdout/stderr so Railway captures it
+        print(f"ERROR: {error_msg}", file=sys.stderr)
+        print(traceback_str, file=sys.stderr)
+        sys.stderr.flush()
+        
         return render(
             request,
             "submissions/submit.html",
