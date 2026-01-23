@@ -310,28 +310,43 @@ def contact(request: HttpRequest) -> HttpResponse:
     import traceback
     import sys
     import threading
+    from datetime import datetime
     
     logger = logging.getLogger(__name__)
     
-    # Print immediately when form is submitted
-    print("=" * 60, file=sys.stdout)
-    print("CONTACT FORM: Form submitted successfully", file=sys.stdout)
-    print(f"CONTACT FORM: Company: {html.unescape(company_name)}", file=sys.stdout)
-    print(f"CONTACT FORM: Email: {html.unescape(email)}", file=sys.stdout)
-    print("CONTACT FORM: Starting email send in background thread", file=sys.stdout)
-    print("=" * 60, file=sys.stdout)
+    # Print immediately when form is submitted - use multiple methods to ensure visibility
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+    
+    # Force output to stdout/stderr with flush to ensure Railway captures it
+    try:
+        print("\n" + "=" * 80, file=sys.stdout, flush=True)
+        print(f"[{timestamp}] *** CONTACT FORM SUBMITTED ***", file=sys.stdout, flush=True)
+        print(f"Company: {html.unescape(company_name)}", file=sys.stdout, flush=True)
+        print(f"Email: {html.unescape(email)}", file=sys.stdout, flush=True)
+        print(f"Message length: {len(message)} characters", file=sys.stdout, flush=True)
+        print("=" * 80 + "\n", file=sys.stdout, flush=True)
+        
+        # Also print to stderr as backup
+        print(f"[{timestamp}] CONTACT FORM: Form submitted - {html.unescape(company_name)}", file=sys.stderr, flush=True)
+        
+        # Also log to logger
+        logger.info(f"CONTACT FORM SUBMITTED: Company={html.unescape(company_name)}, Email={html.unescape(email)}")
+    except Exception as log_error:
+        # Even if logging fails, don't break the form
+        print(f"Error in logging: {log_error}", file=sys.stderr, flush=True)
     
     def send_email_async():
         """Send email in background thread to prevent blocking."""
         try:
             # Print to stdout/stderr for immediate visibility in Railway logs
-            print("=" * 60, file=sys.stdout)
-            print("CONTACT FORM: Starting email send process", file=sys.stdout)
-            print(f"CONTACT FORM: Recipient: {contact_email}", file=sys.stdout)
-            print(f"CONTACT FORM: Email backend: {settings.EMAIL_BACKEND}", file=sys.stdout)
-            print(f"CONTACT FORM: Email host: {getattr(settings, 'EMAIL_HOST', 'Not set')}", file=sys.stdout)
-            print(f"CONTACT FORM: From email: {settings.DEFAULT_FROM_EMAIL}", file=sys.stdout)
-            print("=" * 60, file=sys.stdout)
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print("\n" + "=" * 80, file=sys.stdout, flush=True)
+            print(f"[{timestamp}] *** CONTACT FORM: Starting email send process ***", file=sys.stdout, flush=True)
+            print(f"CONTACT FORM: Recipient: {contact_email}", file=sys.stdout, flush=True)
+            print(f"CONTACT FORM: Email backend: {settings.EMAIL_BACKEND}", file=sys.stdout, flush=True)
+            print(f"CONTACT FORM: Email host: {getattr(settings, 'EMAIL_HOST', 'Not set')}", file=sys.stdout, flush=True)
+            print(f"CONTACT FORM: From email: {settings.DEFAULT_FROM_EMAIL}", file=sys.stdout, flush=True)
+            print("=" * 80 + "\n", file=sys.stdout, flush=True)
             
             # Also log to logger
             logger.info(f"Attempting to send contact form email to {contact_email}")
@@ -354,9 +369,10 @@ def contact(request: HttpRequest) -> HttpResponse:
                 fail_silently=True,  # Set to True to prevent hanging on email errors
             )
             
-            print("=" * 60, file=sys.stdout)
-            print(f"CONTACT FORM: Email sent successfully to {contact_email}", file=sys.stdout)
-            print("=" * 60, file=sys.stdout)
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print("\n" + "=" * 80, file=sys.stdout, flush=True)
+            print(f"[{timestamp}] *** CONTACT FORM: Email sent successfully to {contact_email} ***", file=sys.stdout, flush=True)
+            print("=" * 80 + "\n", file=sys.stdout, flush=True)
             logger.info(f"Contact form email sent successfully to {contact_email}")
         except Exception as e:
             # Log email sending errors but don't fail the form submission
@@ -364,10 +380,12 @@ def contact(request: HttpRequest) -> HttpResponse:
             traceback_str = traceback.format_exc()
             
             # Print to stderr for immediate visibility in Railway logs
-            print("=" * 60, file=sys.stderr)
-            print(f"CONTACT FORM ERROR: {error_msg}", file=sys.stderr)
-            print(traceback_str, file=sys.stderr)
-            print("=" * 60, file=sys.stderr)
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print("\n" + "=" * 80, file=sys.stderr, flush=True)
+            print(f"[{timestamp}] *** CONTACT FORM ERROR ***", file=sys.stderr, flush=True)
+            print(f"CONTACT FORM ERROR: {error_msg}", file=sys.stderr, flush=True)
+            print(traceback_str, file=sys.stderr, flush=True)
+            print("=" * 80 + "\n", file=sys.stderr, flush=True)
             
             # Also log to logger
             logger.error(error_msg)
