@@ -11,13 +11,29 @@
   {% endif %}
 
   {% if success %}
-    <div class="alert alert-success" style="margin: 1rem 0;">
-      <strong>Success.</strong> We sent your access code to <strong>{{ email }}</strong>.
+    <div style="background: rgba(34,197,94,.14); border: 1px solid rgba(34,197,94,.32); padding: 1rem; border-radius: 12px; margin: 1.5rem 0;">
+      <strong>Success!</strong> Your access code has been created.
     </div>
-    <p>
-      Next: share your access code with employees and send them to
-      <a href="{% url 'submissions:submit' %}">the submission page</a>.
-    </p>
+    
+    <div style="background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
+      <h2 style="margin-top: 0; font-size: 18px;">Your Access Code</h2>
+      <div style="font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 28px; font-weight: 800; letter-spacing: 3px; color: #2c66ff; margin: 1rem 0; padding: 1.5rem; background: rgba(0,0,0,.22); border-radius: 12px; text-align: center; border: 2px solid rgba(44,102,255,.30);">
+        {{ access_code }}
+      </div>
+      <p style="color: var(--muted); font-size: 13px; margin: 0.5rem 0 0; text-align: center;">
+        We also sent this code to <strong>{{ email }}</strong>. Check your inbox (and spam folder).
+      </p>
+    </div>
+    
+    <div style="margin: 1.5rem 0;">
+      <h3 style="font-size: 16px; margin-bottom: 0.5rem;">Next Steps:</h3>
+      <ol style="margin: 0.5rem 0; padding-left: 1.5rem; color: var(--muted); line-height: 1.8;">
+        <li>Share your access code with your employees</li>
+        <li>Direct them to <a href="{% url 'submissions:submit' %}" style="color: #b9d2ff;">the submission page</a></li>
+        <li>They'll use your code to submit anonymous feedback</li>
+        <li>You'll receive email notifications when submissions are made</li>
+      </ol>
+    </div>
   {% endif %}
 
   <form method="post" action="">
