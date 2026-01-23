@@ -104,17 +104,23 @@ def submit(request: HttpRequest) -> HttpResponse:
 
     # Create submission
     try:
-        s = Submission.create_with_unique_receipt(
-            type=submission_type,
-            title=html.unescape(title),  # Store unescaped in DB
-            body=html.unescape(body),  # Store unescaped in DB
-            hr_access_code=hr_code,  # Link to the HR access code used
-        )
+        # Only include hr_access_code if it exists
+        submission_kwargs = {
+            "type": submission_type,
+            "title": html.unescape(title),  # Store unescaped in DB
+            "body": html.unescape(body),  # Store unescaped in DB
+        }
+        if hr_code:
+            submission_kwargs["hr_access_code"] = hr_code
+        
+        s = Submission.create_with_unique_receipt(**submission_kwargs)
     except Exception as e:
         # Log the actual error for debugging
         import logging
+        import traceback
         logger = logging.getLogger(__name__)
-        logger.error(f"Error creating submission: {e}", exc_info=True)
+        logger.error(f"Error creating submission: {e}")
+        logger.error(traceback.format_exc())
         return render(
             request,
             "submissions/submit.html",
