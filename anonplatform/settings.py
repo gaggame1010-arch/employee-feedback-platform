@@ -100,8 +100,12 @@ if DATABASE_URL and dj_database_url:
         db_config = dj_database_url.config(
             default=DATABASE_URL,
             conn_max_age=600,
-            conn_health_checks=True,
+            conn_health_checks=False,  # Disable health checks to avoid slow startup
         )
+        # Add connection timeout settings to prevent hanging
+        db_config.setdefault('OPTIONS', {})
+        db_config['OPTIONS']['connect_timeout'] = 10  # 10 second connection timeout
+        db_config['CONN_MAX_AGE'] = 600  # Reuse connections for 10 minutes
         DATABASES = {
             'default': db_config
         }
