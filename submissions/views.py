@@ -313,10 +313,27 @@ def contact(request: HttpRequest) -> HttpResponse:
     
     logger = logging.getLogger(__name__)
     
+    # Print immediately when form is submitted
+    print("=" * 60, file=sys.stdout)
+    print("CONTACT FORM: Form submitted successfully", file=sys.stdout)
+    print(f"CONTACT FORM: Company: {html.unescape(company_name)}", file=sys.stdout)
+    print(f"CONTACT FORM: Email: {html.unescape(email)}", file=sys.stdout)
+    print("CONTACT FORM: Starting email send in background thread", file=sys.stdout)
+    print("=" * 60, file=sys.stdout)
+    
     def send_email_async():
         """Send email in background thread to prevent blocking."""
         try:
-            # Log email attempt
+            # Print to stdout/stderr for immediate visibility in Railway logs
+            print("=" * 60, file=sys.stdout)
+            print("CONTACT FORM: Starting email send process", file=sys.stdout)
+            print(f"CONTACT FORM: Recipient: {contact_email}", file=sys.stdout)
+            print(f"CONTACT FORM: Email backend: {settings.EMAIL_BACKEND}", file=sys.stdout)
+            print(f"CONTACT FORM: Email host: {getattr(settings, 'EMAIL_HOST', 'Not set')}", file=sys.stdout)
+            print(f"CONTACT FORM: From email: {settings.DEFAULT_FROM_EMAIL}", file=sys.stdout)
+            print("=" * 60, file=sys.stdout)
+            
+            # Also log to logger
             logger.info(f"Attempting to send contact form email to {contact_email}")
             logger.info(f"Email backend: {settings.EMAIL_BACKEND}")
             logger.info(f"Email host: {getattr(settings, 'EMAIL_HOST', 'Not set')}")
@@ -336,19 +353,25 @@ def contact(request: HttpRequest) -> HttpResponse:
                 recipient_list=[contact_email],
                 fail_silently=True,  # Set to True to prevent hanging on email errors
             )
+            
+            print("=" * 60, file=sys.stdout)
+            print(f"CONTACT FORM: Email sent successfully to {contact_email}", file=sys.stdout)
+            print("=" * 60, file=sys.stdout)
             logger.info(f"Contact form email sent successfully to {contact_email}")
         except Exception as e:
             # Log email sending errors but don't fail the form submission
             error_msg = f"Error sending contact form email to {contact_email}: {type(e).__name__}: {e}"
             traceback_str = traceback.format_exc()
             
-            # Log to logger
+            # Print to stderr for immediate visibility in Railway logs
+            print("=" * 60, file=sys.stderr)
+            print(f"CONTACT FORM ERROR: {error_msg}", file=sys.stderr)
+            print(traceback_str, file=sys.stderr)
+            print("=" * 60, file=sys.stderr)
+            
+            # Also log to logger
             logger.error(error_msg)
             logger.error(traceback_str)
-            
-            # Also print to stderr for immediate visibility in Railway logs
-            print(f"ERROR: {error_msg}", file=sys.stderr)
-            print(traceback_str, file=sys.stderr)
     
     # Send email in background thread to prevent worker timeout
     email_thread = threading.Thread(target=send_email_async, daemon=True)
