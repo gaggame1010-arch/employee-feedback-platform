@@ -51,10 +51,29 @@ def submit(request: HttpRequest) -> HttpResponse:
     
     # Check if code matches any HR access code
     from .models import HrAccessCode
+    from django.db import OperationalError
+    
     hr_code = None
     try:
+        # Try to query HR access codes (only works if migrations have run)
         hr_code = HrAccessCode.objects.get(access_code=access_code, is_active=True)
     except HrAccessCode.DoesNotExist:
+        # Code doesn't match any HR access code
+        # Fallback to old COMPANY_ACCESS_CODE for backward compatibility
+        if hasattr(settings, 'COMPANY_ACCESS_CODE') and access_code == settings.COMPANY_ACCESS_CODE:
+            pass  # Allow old code to work
+        else:
+            return render(
+                request,
+                "submissions/submit.html",
+                {
+                    "error": "Invalid access code. Please check and try again.",
+                    "access_code": access_code,  # Preserve input
+                },
+                status=400,
+            )
+    except OperationalError:
+        # Table doesn't exist yet - migrations haven't run
         # Fallback to old COMPANY_ACCESS_CODE for backward compatibility
         if hasattr(settings, 'COMPANY_ACCESS_CODE') and access_code == settings.COMPANY_ACCESS_CODE:
             pass  # Allow old code to work
