@@ -84,19 +84,69 @@ class HrAccessCode(models.Model):
                 pass  # Fall through to create new
         
         # Create new access code
-        # Use minimal fields to avoid column issues
-        new_code = cls(
-            user=user,
-            access_code=cls.generate_unique_code(),
-            is_active=True
-        )
-        # Only set notification_email if we can (avoid AttributeError if column doesn't exist)
+        # Use raw SQL to avoid column issues when migration hasn't run
+        from django.db import connection
         try:
-            new_code.notification_email = user.email
-        except (AttributeError, Exception):
-            pass
-        new_code.save()
-        return new_code
+            new_access_code = cls.generate_unique_code()
+            with connection.cursor() as cursor:
+                # Try to insert with company fields first (if migration has run)
+                try:
+                    cursor.execute(
+                        """
+                        INSERT INTO submissions_hraccesscode (user_id, access_code, notification_email, is_active, created_at, updated_at)
+                        VALUES (%s, %s, %s, %s, NOW(), NOW())
+                        RETURNING id
+                        """,
+                        [user.id, new_access_code, user.email or "", True]
+                    )
+                    new_id = cursor.fetchone()[0]
+                except Exception as insert_error:
+                    # If that fails due to missing columns, try without notification_email
+                    error_str = str(insert_error)
+                    if "notification_email" in error_str or "does not exist" in error_str:
+                        cursor.execute(
+                            """
+                            INSERT INTO submissions_hraccesscode (user_id, access_code, is_active, created_at, updated_at)
+                            VALUES (%s, %s, %s, NOW(), NOW())
+                            RETURNING id
+                            """,
+                            [user.id, new_access_code, True]
+                        )
+                        new_id = cursor.fetchone()[0]
+                    else:
+                        raise
+            
+            # Reconstruct object from database
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT id, access_code, is_active FROM submissions_hraccesscode WHERE id = %s",
+                    [new_id]
+                )
+                row = cursor.fetchone()
+                if row:
+                    obj = cls(id=row[0], user=user, access_code=row[1], is_active=row[2])
+                    obj._state.adding = False
+                    obj._state.db = 'default'
+                    return obj
+            
+            # Fallback: try Django ORM save (might fail if columns don't exist)
+            new_code = cls(
+                user=user,
+                access_code=new_access_code,
+                is_active=True
+            )
+            new_code.save()
+            return new_code
+        except Exception:
+            # Last resort: try Django ORM without company fields
+            new_code = cls(
+                user=user,
+                access_code=cls.generate_unique_code(),
+                is_active=True
+            )
+            # Don't set notification_email or company fields
+            new_code.save()
+            return new_code
 
 
 class Submission(models.Model):
