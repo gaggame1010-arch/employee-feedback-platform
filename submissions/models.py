@@ -18,6 +18,9 @@ class HrAccessCode(models.Model):
         limit_choices_to={"is_staff": True},  # Only staff users can have access codes
     )
     access_code = models.CharField(max_length=20, unique=True, db_index=True)
+    # Stored for display/organization; enforced on registration form
+    company_name = models.CharField(max_length=150, blank=True, default="")
+    company_website = models.URLField(blank=True, default="")
     notification_email = models.EmailField(
         blank=True,
         help_text="Email address to receive notifications for submissions using this code. If empty, uses user's email."

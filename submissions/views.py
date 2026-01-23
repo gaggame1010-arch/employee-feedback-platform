@@ -7,6 +7,7 @@ from django.core.mail import send_mail
 from django.http import HttpRequest, HttpResponse
 from django.shortcuts import redirect, render
 from django.views.decorators.http import require_http_methods
+from django.core.cache import cache
 
 from .models import Submission
 
@@ -416,3 +417,137 @@ def contact(request: HttpRequest) -> HttpResponse:
     email_thread.start()
 
     return render(request, "submissions/contact.html", {"success": True})
+
+
+@require_http_methods(["GET", "POST"])
+def hr_register(request: HttpRequest) -> HttpResponse:
+    """
+    Public HR registration page.
+
+    Collects company name + HR email + website, creates a staff user + HrAccessCode,
+    generates a unique access code, and emails the code to the HR email.
+    """
+    if request.method == "GET":
+        return render(request, "submissions/hr_register.html")
+
+    company_name = sanitize_input(request.POST.get("company_name") or "", max_length=150)
+    email = sanitize_input(request.POST.get("email") or "", max_length=254)
+    website = sanitize_input(request.POST.get("website") or "", max_length=200)
+
+    # Basic rate limit (separate from employee submit)
+    ip_address = request.META.get("HTTP_X_FORWARDED_FOR", "").split(",")[0].strip() or request.META.get("REMOTE_ADDR", "unknown")
+    cache_key = f"rate_limit_hr_register_{ip_address}"
+    count = cache.get(cache_key, 0)
+    if count >= 5:
+        return render(
+            request,
+            "submissions/hr_register.html",
+            {
+                "error": "Too many registration attempts. Please try again later.",
+                "company_name": html.unescape(company_name),
+                "email": html.unescape(email),
+                "website": html.unescape(website),
+            },
+            status=429,
+        )
+    cache.set(cache_key, count + 1, 3600)
+
+    errors = []
+    if not company_name or len(company_name) < 2:
+        errors.append("Company name must be at least 2 characters.")
+    if not email or "@" not in email:
+        errors.append("Please enter a valid email address.")
+    if website and not (website.startswith("http://") or website.startswith("https://")):
+        errors.append("Website must start with http:// or https:// (or leave it empty).")
+
+    if errors:
+        return render(
+            request,
+            "submissions/hr_register.html",
+            {
+                "error": " ".join(errors),
+                "company_name": html.unescape(company_name),
+                "email": html.unescape(email),
+                "website": html.unescape(website),
+            },
+            status=400,
+        )
+
+    # Create staff user + HrAccessCode
+    from django.contrib.auth.models import User
+    from .models import HrAccessCode
+    import secrets
+
+    base_username = (email.split("@")[0] or "hr").lower()
+    base_username = re.sub(r"[^a-z0-9_]", "_", base_username)[:20] or "hr"
+
+    # Ensure unique username
+    username = base_username
+    for _ in range(10):
+        if not User.objects.filter(username=username).exists():
+            break
+        username = f"{base_username}_{secrets.randbelow(9999)}"
+    else:
+        username = f"hr_{secrets.token_hex(4)}"
+
+    # If user already exists, re-use it; otherwise create a new one
+    user, created = User.objects.get_or_create(
+        email=html.unescape(email),
+        defaults={"username": username},
+    )
+
+    # Make sure it's staff so it can have an access code
+    if not user.is_staff:
+        user.is_staff = True
+    if not user.username:
+        user.username = username
+    if created:
+        user.set_unusable_password()
+    user.save()
+
+    hr_access = HrAccessCode.get_or_create_for_user(user)
+    hr_access.notification_email = html.unescape(email)
+    hr_access.company_name = html.unescape(company_name)
+    hr_access.company_website = html.unescape(website)
+    hr_access.is_active = True
+    hr_access.save()
+
+    # Email the access code
+    try:
+        send_mail(
+            subject="Your KYREX HR access code",
+            message=(
+                f"Hi {hr_access.company_name},\n\n"
+                f"Your HR access code is: {hr_access.access_code}\n\n"
+                f"Employees can submit feedback using this code at:\n"
+                f"{request.build_absolute_uri('/submit/')}\n\n"
+                f"If you did not request this, you can ignore this email.\n"
+            ),
+            from_email=settings.DEFAULT_FROM_EMAIL,
+            recipient_list=[html.unescape(email)],
+            fail_silently=False,
+        )
+    except Exception as e:
+        # Don't lose the created code; show a helpful error
+        return render(
+            request,
+            "submissions/hr_register.html",
+            {
+                "error": f"Account created, but we could not send the email. Please contact support. ({type(e).__name__})",
+                "company_name": hr_access.company_name,
+                "email": hr_access.notification_email,
+                "website": hr_access.company_website,
+            },
+            status=500,
+        )
+
+    return render(
+        request,
+        "submissions/hr_register.html",
+        {
+            "success": True,
+            "company_name": hr_access.company_name,
+            "email": hr_access.notification_email,
+            "website": hr_access.company_website,
+        },
+    )

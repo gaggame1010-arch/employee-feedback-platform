@@ -17,20 +17,26 @@ class RateLimitMiddleware:
 
     def __call__(self, request):
         # Only rate limit POST requests to submit endpoint
-        if request.method == "POST" and request.path == "/submit/":
+        if request.method == "POST" and request.path in ("/submit/", "/hr/register/"):
             ip_address = self.get_client_ip(request)
-            cache_key = f"rate_limit_submit_{ip_address}"
+            # Separate buckets per endpoint
+            bucket = "submit" if request.path == "/submit/" else "hr_register"
+            cache_key = f"rate_limit_{bucket}_{ip_address}"
             
             # Get current count
             count = cache.get(cache_key, 0)
             
             # Rate limit: 10 submissions per hour (configurable via environment variable)
-            max_submissions = int(os.environ.get("RATE_LIMIT_MAX_SUBMISSIONS", "10"))
-            rate_limit_window = int(os.environ.get("RATE_LIMIT_WINDOW_SECONDS", "3600"))  # 1 hour default
+            if request.path == "/hr/register/":
+                max_submissions = int(os.environ.get("RATE_LIMIT_HR_REGISTER_MAX", "5"))
+                rate_limit_window = int(os.environ.get("RATE_LIMIT_HR_REGISTER_WINDOW_SECONDS", "3600"))
+            else:
+                max_submissions = int(os.environ.get("RATE_LIMIT_MAX_SUBMISSIONS", "10"))
+                rate_limit_window = int(os.environ.get("RATE_LIMIT_WINDOW_SECONDS", "3600"))  # 1 hour default
             
             if count >= max_submissions:
                 return HttpResponse(
-                    "Too many submissions. Please try again later.",
+                    "Too many requests. Please try again later.",
                     status=429,
                 )
             

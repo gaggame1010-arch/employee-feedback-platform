@@ -6,6 +6,7 @@ app_name = "submissions"
 
 urlpatterns = [
     path("", views.home, name="home"),
+    path("hr/register/", views.hr_register, name="hr_register"),
     path("how-it-works/", views.how_it_works, name="how_it_works"),
     path("pricing/", views.pricing, name="pricing"),
     path("contact/", views.contact, name="contact"),

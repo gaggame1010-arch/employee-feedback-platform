@@ -1,0 +1,54 @@
+{% extends "submissions/base.html" %}
+{% block title %}HR Registration{% endblock %}
+
+{% block content %}
+<div class="container" style="max-width: 720px; margin: 0 auto;">
+  <h1 style="margin-top: 1.5rem;">HR Registration</h1>
+  <p>Create your company access code. We’ll email it to you.</p>
+
+  {% if error %}
+    <div class="alert alert-danger" style="margin: 1rem 0;">{{ error }}</div>
+  {% endif %}
+
+  {% if success %}
+    <div class="alert alert-success" style="margin: 1rem 0;">
+      <strong>Success.</strong> We sent your access code to <strong>{{ email }}</strong>.
+    </div>
+    <p>
+      Next: share your access code with employees and send them to
+      <a href="{% url 'submissions:submit' %}">the submission page</a>.
+    </p>
+  {% endif %}
+
+  <form method="post" action="">
+    {% csrf_token %}
+
+    <div style="margin: 1rem 0;">
+      <label for="company_name"><strong>Company name</strong></label><br />
+      <input id="company_name" name="company_name" type="text" required minlength="2"
+             value="{{ company_name|default:'' }}"
+             style="width: 100%; padding: .6rem; border: 1px solid #ccc; border-radius: 6px;" />
+    </div>
+
+    <div style="margin: 1rem 0;">
+      <label for="email"><strong>Work email</strong></label><br />
+      <input id="email" name="email" type="email" required
+             value="{{ email|default:'' }}"
+             style="width: 100%; padding: .6rem; border: 1px solid #ccc; border-radius: 6px;" />
+    </div>
+
+    <div style="margin: 1rem 0;">
+      <label for="website"><strong>Company website</strong> (optional)</label><br />
+      <input id="website" name="website" type="url" placeholder="https://example.com"
+             value="{{ website|default:'' }}"
+             style="width: 100%; padding: .6rem; border: 1px solid #ccc; border-radius: 6px;" />
+      <small style="display:block; margin-top:.4rem; color:#666;">If provided, include http:// or https://</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary" style="padding: .7rem 1rem; border-radius: 8px;">
+      Get my access code
+    </button>
+  </form>
+</div>
+{% endblock %}
+
