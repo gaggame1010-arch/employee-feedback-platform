@@ -99,19 +99,21 @@ if DATABASE_URL and dj_database_url:
     try:
         db_config = dj_database_url.config(
             default=DATABASE_URL,
-            conn_max_age=600,
+            conn_max_age=0,  # Disable connection pooling to avoid hanging connections
             conn_health_checks=False,  # Disable health checks to avoid slow startup
         )
         # Add connection timeout settings to prevent hanging
-        db_config.setdefault('OPTIONS', {})
-        db_config['OPTIONS']['connect_timeout'] = 10  # 10 second connection timeout
-        db_config['CONN_MAX_AGE'] = 600  # Reuse connections for 10 minutes
+        if 'OPTIONS' not in db_config:
+            db_config['OPTIONS'] = {}
+        db_config['OPTIONS']['connect_timeout'] = 5  # 5 second connection timeout
+        db_config['CONN_MAX_AGE'] = 0  # Don't reuse connections (prevents hanging)
         DATABASES = {
             'default': db_config
         }
     except Exception as e:
         # Fallback to SQLite if database URL parsing fails
-        print(f"Warning: Failed to parse DATABASE_URL: {e}")
+        import sys
+        print(f"Warning: Failed to parse DATABASE_URL: {e}", file=sys.stderr)
         DATABASES = {
             'default': {
                 'ENGINE': 'django.db.backends.sqlite3',
