@@ -604,7 +604,7 @@ def hr_register(request: HttpRequest) -> HttpResponse:
                         ),
                         from_email=settings.DEFAULT_FROM_EMAIL,
                         recipient_list=[html.unescape(email)],
-                        fail_silently=False,
+                        fail_silently=True,  # Don't fail registration if email fails
                     )
                     
                     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
