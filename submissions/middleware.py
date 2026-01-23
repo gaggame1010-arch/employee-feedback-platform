@@ -28,13 +28,24 @@ class RateLimitMiddleware:
             
             # Rate limit: 10 submissions per hour (configurable via environment variable)
             if request.path == "/hr/register/":
-                max_submissions = int(os.environ.get("RATE_LIMIT_HR_REGISTER_MAX", "5"))
+                max_submissions = int(os.environ.get("RATE_LIMIT_HR_REGISTER_MAX", "10"))  # Increased to 10 per hour
                 rate_limit_window = int(os.environ.get("RATE_LIMIT_HR_REGISTER_WINDOW_SECONDS", "3600"))
             else:
                 max_submissions = int(os.environ.get("RATE_LIMIT_MAX_SUBMISSIONS", "10"))
                 rate_limit_window = int(os.environ.get("RATE_LIMIT_WINDOW_SECONDS", "3600"))  # 1 hour default
             
             if count >= max_submissions:
+                # Return a more helpful error page for HR registration
+                if request.path == "/hr/register/":
+                    from django.shortcuts import render
+                    return render(
+                        request,
+                        "submissions/hr_register.html",
+                        {
+                            "error": "Too many registration attempts. Please wait an hour and try again, or contact support if you need immediate assistance.",
+                        },
+                        status=429,
+                    )
                 return HttpResponse(
                     "Too many requests. Please try again later.",
                     status=429,

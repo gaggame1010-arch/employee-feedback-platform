@@ -434,23 +434,7 @@ def hr_register(request: HttpRequest) -> HttpResponse:
     email = sanitize_input(request.POST.get("email") or "", max_length=254)
     website = sanitize_input(request.POST.get("website") or "", max_length=200)
 
-    # Basic rate limit (separate from employee submit)
-    ip_address = request.META.get("HTTP_X_FORWARDED_FOR", "").split(",")[0].strip() or request.META.get("REMOTE_ADDR", "unknown")
-    cache_key = f"rate_limit_hr_register_{ip_address}"
-    count = cache.get(cache_key, 0)
-    if count >= 5:
-        return render(
-            request,
-            "submissions/hr_register.html",
-            {
-                "error": "Too many registration attempts. Please try again later.",
-                "company_name": html.unescape(company_name),
-                "email": html.unescape(email),
-                "website": html.unescape(website),
-            },
-            status=429,
-        )
-    cache.set(cache_key, count + 1, 3600)
+    # Rate limiting is handled by middleware, so we don't need to check here again
 
     errors = []
     if not company_name or len(company_name) < 2:
