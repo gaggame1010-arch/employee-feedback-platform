@@ -493,8 +493,13 @@ def hr_register(request: HttpRequest) -> HttpResponse:
     try:
         hr_access = HrAccessCode.get_or_create_for_user(user)
     except Exception as db_error:
-        # Check if it's a missing column error (migration hasn't run)
+        # Log the error for debugging
+        import traceback
+        import sys
         error_str = str(db_error)
+        print(f"\n[HR REGISTRATION ERROR] {type(db_error).__name__}: {error_str}\n{traceback.format_exc()}\n", file=sys.stderr, flush=True)
+        
+        # Check if it's a missing column error (migration hasn't run)
         if "company_name" in error_str or "does not exist" in error_str:
             return render(
                 request,
@@ -556,7 +561,20 @@ def hr_register(request: HttpRequest) -> HttpResponse:
     company_display = getattr(hr_access, 'company_name', None) or company_name or "there"
     
     # Store access code for display on success page (backup if email fails)
-    access_code_to_display = hr_access.access_code
+    # Ensure we can access the access_code attribute
+    try:
+        access_code_to_display = hr_access.access_code
+    except AttributeError:
+        # If access_code doesn't exist, try to get it from the database directly
+        from django.db import connection
+        with connection.cursor() as cursor:
+            cursor.execute(
+                "SELECT access_code FROM submissions_hraccesscode WHERE id = %s",
+                [hr_access.id]
+            )
+            row = cursor.fetchone()
+            access_code_to_display = row[0] if row else "ERROR_NO_CODE"
+        print(f"[HR REGISTRATION] Had to fetch access_code from DB: {access_code_to_display}", file=sys.stdout, flush=True)
     
     def send_email_async():
         """Send email in background thread to prevent blocking."""
@@ -614,21 +632,56 @@ def hr_register(request: HttpRequest) -> HttpResponse:
     email_thread.start()
 
     # Ensure we have the access code (should always be set, but double-check)
-    if not access_code_to_display:
-        access_code_to_display = hr_access.access_code if hasattr(hr_access, 'access_code') else "ERROR"
+    if not access_code_to_display or access_code_to_display == "ERROR_NO_CODE":
+        # Try multiple ways to get the access code
+        try:
+            access_code_to_display = hr_access.access_code
+        except (AttributeError, Exception):
+            try:
+                # Try to refresh from database
+                from django.db import connection
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        "SELECT access_code FROM submissions_hraccesscode WHERE id = %s",
+                        [hr_access.id]
+                    )
+                    row = cursor.fetchone()
+                    access_code_to_display = row[0] if row else "ERROR"
+            except Exception:
+                access_code_to_display = "ERROR"
 
     # Log success for debugging
     logger.info(f"HR registration successful for {html.unescape(email)}, access code: {access_code_to_display}")
-    print(f"\n[HR REGISTRATION] Success! Rendering success page with access code: {access_code_to_display}\n", file=sys.stdout, flush=True)
+    print(f"\n{'='*80}", file=sys.stdout, flush=True)
+    print(f"[HR REGISTRATION] SUCCESS! Rendering success page", file=sys.stdout, flush=True)
+    print(f"[HR REGISTRATION] Access code: {access_code_to_display}", file=sys.stdout, flush=True)
+    print(f"[HR REGISTRATION] Email: {html.unescape(email)}", file=sys.stdout, flush=True)
+    print(f"{'='*80}\n", file=sys.stdout, flush=True)
 
-    return render(
-        request,
-        "submissions/hr_register.html",
-        {
-            "success": True,
-            "access_code": access_code_to_display,  # Show code on page as backup
-            "company_name": getattr(hr_access, 'company_name', None) or company_name,
-            "email": hr_access.notification_email or html.unescape(email),
-            "website": getattr(hr_access, 'company_website', None) or website,
-        },
-    )
+    # Always render success page - this should never fail
+    try:
+        return render(
+            request,
+            "submissions/hr_register.html",
+            {
+                "success": True,
+                "access_code": access_code_to_display,  # Show code on page as backup
+                "company_name": getattr(hr_access, 'company_name', None) or company_name,
+                "email": hr_access.notification_email or html.unescape(email),
+                "website": getattr(hr_access, 'company_website', None) or website,
+            },
+        )
+    except Exception as render_error:
+        # If rendering fails, return a simple success message
+        print(f"[HR REGISTRATION] Render error: {render_error}", file=sys.stderr, flush=True)
+        return HttpResponse(
+            f"""
+            <html><body style="font-family: sans-serif; padding: 2rem;">
+            <h1>Success! Your access code has been created.</h1>
+            <p><strong>Access Code:</strong> <code style="font-size: 24px; padding: 1rem; background: #f0f0f0; display: block; margin: 1rem 0;">{access_code_to_display}</code></p>
+            <p>We also sent this code to {html.unescape(email)}. Check your inbox.</p>
+            <p><a href="/hr/register/">Register another company</a></p>
+            </body></html>
+            """,
+            content_type="text/html"
+        )
