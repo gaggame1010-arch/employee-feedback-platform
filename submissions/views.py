@@ -354,26 +354,42 @@ def contact(request: HttpRequest) -> HttpResponse:
             logger.info(f"Email host: {getattr(settings, 'EMAIL_HOST', 'Not set')}")
             logger.info(f"From email: {settings.DEFAULT_FROM_EMAIL}")
             
-            send_mail(
-                subject=f"Contact Form Submission from {html.unescape(company_name)}",
-                message=(
-                    f"New contact form submission:\n\n"
-                    f"Company name: {html.unescape(company_name)}\n"
-                    f"Email: {html.unescape(email)}\n\n"
-                    f"Message:\n{html.unescape(message)}\n\n"
-                    f"---\n"
-                    f"This message was sent from the contact form on {request.build_absolute_uri('/contact/')}"
-                ),
-                from_email=settings.DEFAULT_FROM_EMAIL,
-                recipient_list=[contact_email],
-                fail_silently=True,  # Set to True to prevent hanging on email errors
-            )
-            
-            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            print("\n" + "=" * 80, file=sys.stdout, flush=True)
-            print(f"[{timestamp}] *** CONTACT FORM: Email sent successfully to {contact_email} ***", file=sys.stdout, flush=True)
-            print("=" * 80 + "\n", file=sys.stdout, flush=True)
-            logger.info(f"Contact form email sent successfully to {contact_email}")
+            # Try to send email and catch any exceptions
+            try:
+                result = send_mail(
+                    subject=f"Contact Form Submission from {html.unescape(company_name)}",
+                    message=(
+                        f"New contact form submission:\n\n"
+                        f"Company name: {html.unescape(company_name)}\n"
+                        f"Email: {html.unescape(email)}\n\n"
+                        f"Message:\n{html.unescape(message)}\n\n"
+                        f"---\n"
+                        f"This message was sent from the contact form on {request.build_absolute_uri('/contact/')}"
+                    ),
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[contact_email],
+                    fail_silently=False,  # Set to False to catch errors
+                )
+                
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                print("\n" + "=" * 80, file=sys.stdout, flush=True)
+                print(f"[{timestamp}] *** CONTACT FORM: Email send result: {result} ***", file=sys.stdout, flush=True)
+                print(f"CONTACT FORM: From: {settings.DEFAULT_FROM_EMAIL}", file=sys.stdout, flush=True)
+                print(f"CONTACT FORM: To: {contact_email}", file=sys.stdout, flush=True)
+                print("=" * 80 + "\n", file=sys.stdout, flush=True)
+                logger.info(f"Contact form email sent successfully to {contact_email}, result: {result}")
+            except Exception as send_error:
+                # Catch SMTP errors that fail_silently=False would raise
+                error_msg = f"SMTP Error sending email: {type(send_error).__name__}: {send_error}"
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                print("\n" + "=" * 80, file=sys.stderr, flush=True)
+                print(f"[{timestamp}] *** CONTACT FORM: SMTP ERROR ***", file=sys.stderr, flush=True)
+                print(error_msg, file=sys.stderr, flush=True)
+                print(traceback.format_exc(), file=sys.stderr, flush=True)
+                print("=" * 80 + "\n", file=sys.stderr, flush=True)
+                logger.error(error_msg)
+                logger.error(traceback.format_exc())
+                raise  # Re-raise to be caught by outer exception handler
         except Exception as e:
             # Log email sending errors but don't fail the form submission
             error_msg = f"Error sending contact form email to {contact_email}: {type(e).__name__}: {e}"
