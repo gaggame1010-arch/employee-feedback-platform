@@ -521,45 +521,84 @@ def hr_register(request: HttpRequest) -> HttpResponse:
     hr_access.is_active = True
     hr_access.save()
 
-    # Email the access code
-    try:
-        # Get company name for email (handle case where field doesn't exist yet)
-        company_display = getattr(hr_access, 'company_name', None) or company_name or "there"
-        
-        send_mail(
-            subject="Your KYREX HR access code",
-            message=(
-                f"Hi {company_display},\n\n"
-                f"Your HR access code is: {hr_access.access_code}\n\n"
-                f"Employees can submit feedback using this code at:\n"
-                f"{request.build_absolute_uri('/submit/')}\n\n"
-                f"If you did not request this, you can ignore this email.\n"
-            ),
-            from_email=settings.DEFAULT_FROM_EMAIL,
-            recipient_list=[html.unescape(email)],
-            fail_silently=False,
-        )
-    except Exception as e:
-        # Don't lose the created code; show a helpful error
-        return render(
-            request,
-            "submissions/hr_register.html",
-            {
-                "error": f"Account created, but we could not send the email. Please contact support. ({type(e).__name__})",
-                "company_name": hr_access.company_name,
-                "email": hr_access.notification_email,
-                "website": hr_access.company_website,
-            },
-            status=500,
-        )
+    # Email the access code (async to prevent timeout)
+    import logging
+    import traceback
+    import sys
+    import threading
+    from datetime import datetime
+    
+    logger = logging.getLogger(__name__)
+    
+    # Get company name for email (handle case where field doesn't exist yet)
+    company_display = getattr(hr_access, 'company_name', None) or company_name or "there"
+    
+    # Store access code for display on success page (backup if email fails)
+    access_code_to_display = hr_access.access_code
+    
+    def send_email_async():
+        """Send email in background thread to prevent blocking."""
+        try:
+            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print("\n" + "=" * 80, file=sys.stdout, flush=True)
+            print(f"[{timestamp}] *** HR REGISTRATION: Starting email send ***", file=sys.stdout, flush=True)
+            print(f"HR REGISTRATION: Recipient: {html.unescape(email)}", file=sys.stdout, flush=True)
+            print(f"HR REGISTRATION: Access code: {access_code_to_display}", file=sys.stdout, flush=True)
+            print(f"HR REGISTRATION: Email backend: {settings.EMAIL_BACKEND}", file=sys.stdout, flush=True)
+            print(f"HR REGISTRATION: From email: {settings.DEFAULT_FROM_EMAIL}", file=sys.stdout, flush=True)
+            print("=" * 80 + "\n", file=sys.stdout, flush=True)
+            
+            logger.info(f"Attempting to send HR registration email to {html.unescape(email)}")
+            logger.info(f"Access code: {access_code_to_display}")
+            
+            try:
+                result = send_mail(
+                    subject="Your KYREX HR access code",
+                    message=(
+                        f"Hi {company_display},\n\n"
+                        f"Your HR access code is: {access_code_to_display}\n\n"
+                        f"Employees can submit feedback using this code at:\n"
+                        f"{request.build_absolute_uri('/submit/')}\n\n"
+                        f"If you did not request this, you can ignore this email.\n"
+                    ),
+                    from_email=settings.DEFAULT_FROM_EMAIL,
+                    recipient_list=[html.unescape(email)],
+                    fail_silently=False,
+                )
+                
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                print("\n" + "=" * 80, file=sys.stdout, flush=True)
+                print(f"[{timestamp}] *** HR REGISTRATION: Email sent successfully ***", file=sys.stdout, flush=True)
+                print(f"HR REGISTRATION: Result: {result}", file=sys.stdout, flush=True)
+                print("=" * 80 + "\n", file=sys.stdout, flush=True)
+                logger.info(f"HR registration email sent successfully to {html.unescape(email)}, result: {result}")
+            except Exception as send_error:
+                error_msg = f"Error sending HR registration email: {type(send_error).__name__}: {send_error}"
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                print("\n" + "=" * 80, file=sys.stderr, flush=True)
+                print(f"[{timestamp}] *** HR REGISTRATION: EMAIL ERROR ***", file=sys.stderr, flush=True)
+                print(error_msg, file=sys.stderr, flush=True)
+                print(traceback.format_exc(), file=sys.stderr, flush=True)
+                print("=" * 80 + "\n", file=sys.stderr, flush=True)
+                logger.error(error_msg)
+                logger.error(traceback.format_exc())
+        except Exception as e:
+            error_msg = f"Error in HR registration email thread: {type(e).__name__}: {e}"
+            logger.error(error_msg, exc_info=True)
+            print(f"HR REGISTRATION EMAIL THREAD ERROR: {error_msg}", file=sys.stderr, flush=True)
+    
+    # Send email in background thread
+    email_thread = threading.Thread(target=send_email_async, daemon=True)
+    email_thread.start()
 
     return render(
         request,
         "submissions/hr_register.html",
         {
             "success": True,
-            "company_name": hr_access.company_name,
+            "access_code": access_code_to_display,  # Show code on page as backup
+            "company_name": getattr(hr_access, 'company_name', None) or company_name,
             "email": hr_access.notification_email,
-            "website": hr_access.company_website,
+            "website": getattr(hr_access, 'company_website', None) or website,
         },
     )
