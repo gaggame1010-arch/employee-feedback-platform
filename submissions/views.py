@@ -345,6 +345,10 @@ def contact(request: HttpRequest) -> HttpResponse:
             print(f"CONTACT FORM: Recipient: {contact_email}", file=sys.stdout, flush=True)
             print(f"CONTACT FORM: Email backend: {settings.EMAIL_BACKEND}", file=sys.stdout, flush=True)
             print(f"CONTACT FORM: Email host: {getattr(settings, 'EMAIL_HOST', 'Not set')}", file=sys.stdout, flush=True)
+            print(f"CONTACT FORM: Email port: {getattr(settings, 'EMAIL_PORT', 'Not set')}", file=sys.stdout, flush=True)
+            print(f"CONTACT FORM: Email use TLS: {getattr(settings, 'EMAIL_USE_TLS', 'Not set')}", file=sys.stdout, flush=True)
+            print(f"CONTACT FORM: Email user: {getattr(settings, 'EMAIL_HOST_USER', 'Not set')}", file=sys.stdout, flush=True)
+            print(f"CONTACT FORM: Email password set: {'Yes' if getattr(settings, 'EMAIL_HOST_PASSWORD', '') else 'No'}", file=sys.stdout, flush=True)
             print(f"CONTACT FORM: From email: {settings.DEFAULT_FROM_EMAIL}", file=sys.stdout, flush=True)
             print("=" * 80 + "\n", file=sys.stdout, flush=True)
             
