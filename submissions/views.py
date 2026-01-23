@@ -430,32 +430,37 @@ def hr_register(request: HttpRequest) -> HttpResponse:
     if request.method == "GET":
         return render(request, "submissions/hr_register.html")
 
-    company_name = sanitize_input(request.POST.get("company_name") or "", max_length=150)
-    email = sanitize_input(request.POST.get("email") or "", max_length=254)
-    website = sanitize_input(request.POST.get("website") or "", max_length=200)
+    # Wrap entire POST processing in try-except to catch any unhandled errors
+    import sys
+    import traceback
+    
+    try:
+        company_name = sanitize_input(request.POST.get("company_name") or "", max_length=150)
+        email = sanitize_input(request.POST.get("email") or "", max_length=254)
+        website = sanitize_input(request.POST.get("website") or "", max_length=200)
 
-    # Rate limiting is handled by middleware, so we don't need to check here again
+        # Rate limiting is handled by middleware, so we don't need to check here again
 
-    errors = []
-    if not company_name or len(company_name) < 2:
-        errors.append("Company name must be at least 2 characters.")
-    if not email or "@" not in email:
-        errors.append("Please enter a valid email address.")
-    if website and not (website.startswith("http://") or website.startswith("https://")):
-        errors.append("Website must start with http:// or https:// (or leave it empty).")
+        errors = []
+        if not company_name or len(company_name) < 2:
+            errors.append("Company name must be at least 2 characters.")
+        if not email or "@" not in email:
+            errors.append("Please enter a valid email address.")
+        if website and not (website.startswith("http://") or website.startswith("https://")):
+            errors.append("Website must start with http:// or https:// (or leave it empty).")
 
-    if errors:
-        return render(
-            request,
-            "submissions/hr_register.html",
-            {
-                "error": " ".join(errors),
-                "company_name": html.unescape(company_name),
-                "email": html.unescape(email),
-                "website": html.unescape(website),
-            },
-            status=400,
-        )
+        if errors:
+            return render(
+                request,
+                "submissions/hr_register.html",
+                {
+                    "error": " ".join(errors),
+                    "company_name": html.unescape(company_name),
+                    "email": html.unescape(email),
+                    "website": html.unescape(website),
+                },
+                status=400,
+            )
 
     # Create staff user + HrAccessCode
     from django.contrib.auth.models import User
@@ -658,30 +663,61 @@ def hr_register(request: HttpRequest) -> HttpResponse:
     print(f"[HR REGISTRATION] Email: {html.unescape(email)}", file=sys.stdout, flush=True)
     print(f"{'='*80}\n", file=sys.stdout, flush=True)
 
-    # Always render success page - this should never fail
-    try:
+        # Always render success page - this should never fail
+        try:
+            return render(
+                request,
+                "submissions/hr_register.html",
+                {
+                    "success": True,
+                    "access_code": access_code_to_display,  # Show code on page as backup
+                    "company_name": getattr(hr_access, 'company_name', None) or company_name,
+                    "email": hr_access.notification_email or html.unescape(email),
+                    "website": getattr(hr_access, 'company_website', None) or website,
+                },
+            )
+        except Exception as render_error:
+            # If rendering fails, return a simple success message
+            print(f"[HR REGISTRATION] Render error: {render_error}", file=sys.stderr, flush=True)
+            return HttpResponse(
+                f"""
+                <html><body style="font-family: sans-serif; padding: 2rem;">
+                <h1>Success! Your access code has been created.</h1>
+                <p><strong>Access Code:</strong> <code style="font-size: 24px; padding: 1rem; background: #f0f0f0; display: block; margin: 1rem 0;">{access_code_to_display}</code></p>
+                <p>We also sent this code to {html.unescape(email)}. Check your inbox.</p>
+                <p><a href="/hr/register/">Register another company</a></p>
+                </body></html>
+                """,
+                content_type="text/html"
+            )
+    
+    except Exception as e:
+        # Catch any unhandled exception and show error message
+        error_msg = f"An error occurred: {type(e).__name__}: {str(e)}"
+        error_traceback = traceback.format_exc()
+        
+        print(f"\n{'='*80}", file=sys.stderr, flush=True)
+        print(f"[HR REGISTRATION] UNHANDLED EXCEPTION", file=sys.stderr, flush=True)
+        print(error_msg, file=sys.stderr, flush=True)
+        print(error_traceback, file=sys.stderr, flush=True)
+        print(f"{'='*80}\n", file=sys.stderr, flush=True)
+        
+        # Try to get form values for error display
+        try:
+            company_name_val = request.POST.get("company_name", "")
+            email_val = request.POST.get("email", "")
+            website_val = request.POST.get("website", "")
+        except:
+            company_name_val = email_val = website_val = ""
+        
         return render(
             request,
             "submissions/hr_register.html",
             {
-                "success": True,
-                "access_code": access_code_to_display,  # Show code on page as backup
-                "company_name": getattr(hr_access, 'company_name', None) or company_name,
-                "email": hr_access.notification_email or html.unescape(email),
-                "website": getattr(hr_access, 'company_website', None) or website,
+                "error": f"An error occurred while processing your registration. Please try again. If the problem persists, contact support. Error: {error_msg}",
+                "company_name": company_name_val,
+                "email": email_val,
+                "website": website_val,
             },
-        )
-    except Exception as render_error:
-        # If rendering fails, return a simple success message
-        print(f"[HR REGISTRATION] Render error: {render_error}", file=sys.stderr, flush=True)
-        return HttpResponse(
-            f"""
-            <html><body style="font-family: sans-serif; padding: 2rem;">
-            <h1>Success! Your access code has been created.</h1>
-            <p><strong>Access Code:</strong> <code style="font-size: 24px; padding: 1rem; background: #f0f0f0; display: block; margin: 1rem 0;">{access_code_to_display}</code></p>
-            <p>We also sent this code to {html.unescape(email)}. Check your inbox.</p>
-            <p><a href="/hr/register/">Register another company</a></p>
-            </body></html>
-            """,
-            content_type="text/html"
+            status=500,
         )
