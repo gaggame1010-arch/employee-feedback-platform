@@ -613,6 +613,14 @@ def hr_register(request: HttpRequest) -> HttpResponse:
     email_thread = threading.Thread(target=send_email_async, daemon=True)
     email_thread.start()
 
+    # Ensure we have the access code (should always be set, but double-check)
+    if not access_code_to_display:
+        access_code_to_display = hr_access.access_code if hasattr(hr_access, 'access_code') else "ERROR"
+
+    # Log success for debugging
+    logger.info(f"HR registration successful for {html.unescape(email)}, access code: {access_code_to_display}")
+    print(f"\n[HR REGISTRATION] Success! Rendering success page with access code: {access_code_to_display}\n", file=sys.stdout, flush=True)
+
     return render(
         request,
         "submissions/hr_register.html",
@@ -620,7 +628,7 @@ def hr_register(request: HttpRequest) -> HttpResponse:
             "success": True,
             "access_code": access_code_to_display,  # Show code on page as backup
             "company_name": getattr(hr_access, 'company_name', None) or company_name,
-            "email": hr_access.notification_email,
+            "email": hr_access.notification_email or html.unescape(email),
             "website": getattr(hr_access, 'company_website', None) or website,
         },
     )

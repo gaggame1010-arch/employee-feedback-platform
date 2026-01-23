@@ -11,31 +11,36 @@
   {% endif %}
 
   {% if success %}
-    <div style="background: rgba(34,197,94,.14); border: 1px solid rgba(34,197,94,.32); padding: 1rem; border-radius: 12px; margin: 1.5rem 0;">
-      <strong>Success!</strong> Your access code has been created.
+    <div style="background: rgba(34,197,94,.14); border: 1px solid rgba(34,197,94,.32); padding: 1.5rem; border-radius: 12px; margin: 2rem 0;">
+      <h2 style="margin-top: 0; color: #22c55e; font-size: 24px;">✓ Success! Your access code has been created.</h2>
+      <p style="margin-bottom: 0; color: #16a34a;">Your HR access code is ready to use.</p>
     </div>
     
-    <div style="background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10); border-radius: 12px; padding: 1.5rem; margin: 1.5rem 0;">
-      <h2 style="margin-top: 0; font-size: 18px;">Your Access Code</h2>
-      <div style="font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 28px; font-weight: 800; letter-spacing: 3px; color: #2c66ff; margin: 1rem 0; padding: 1.5rem; background: rgba(0,0,0,.22); border-radius: 12px; text-align: center; border: 2px solid rgba(44,102,255,.30);">
+    <div style="background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.10); border-radius: 12px; padding: 2rem; margin: 2rem 0;">
+      <h2 style="margin-top: 0; font-size: 20px; margin-bottom: 1rem;">Your Access Code</h2>
+      <div style="font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 32px; font-weight: 800; letter-spacing: 4px; color: #2c66ff; margin: 1.5rem 0; padding: 2rem; background: rgba(0,0,0,.22); border-radius: 12px; text-align: center; border: 2px solid rgba(44,102,255,.30); word-break: break-all;">
         {{ access_code }}
       </div>
-      <p style="color: var(--muted); font-size: 13px; margin: 0.5rem 0 0; text-align: center;">
-        We also sent this code to <strong>{{ email }}</strong>. Check your inbox (and spam folder).
+      <p style="color: var(--muted); font-size: 14px; margin: 1rem 0 0; text-align: center;">
+        📧 We also sent this code to <strong>{{ email }}</strong><br>
+        <small style="color: #888;">Check your inbox (and spam folder if you don't see it)</small>
       </p>
     </div>
     
-    <div style="margin: 1.5rem 0;">
-      <h3 style="font-size: 16px; margin-bottom: 0.5rem;">Next Steps:</h3>
-      <ol style="margin: 0.5rem 0; padding-left: 1.5rem; color: var(--muted); line-height: 1.8;">
+    <div style="margin: 2rem 0; padding: 1.5rem; background: rgba(255,255,255,.03); border-radius: 12px;">
+      <h3 style="font-size: 18px; margin-bottom: 1rem;">Next Steps:</h3>
+      <ol style="margin: 0.5rem 0; padding-left: 1.5rem; color: var(--muted); line-height: 2;">
         <li>Share your access code with your employees</li>
-        <li>Direct them to <a href="{% url 'submissions:submit' %}" style="color: #b9d2ff;">the submission page</a></li>
+        <li>Direct them to <a href="{% url 'submissions:submit' %}" style="color: #b9d2ff; text-decoration: underline;">the submission page</a></li>
         <li>They'll use your code to submit anonymous feedback</li>
         <li>You'll receive email notifications when submissions are made</li>
       </ol>
     </div>
-  {% endif %}
-
+    
+    <div style="margin-top: 2rem; text-align: center;">
+      <a href="{% url 'submissions:hr_register' %}" style="color: #b9d2ff; text-decoration: underline;">Register another company</a>
+    </div>
+  {% else %}
   <form method="post" action="">
     {% csrf_token %}
 
@@ -65,6 +70,7 @@
       Get my access code
     </button>
   </form>
+  {% endif %}
 </div>
 {% endblock %}
 
