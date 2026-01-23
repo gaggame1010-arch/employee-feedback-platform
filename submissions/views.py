@@ -140,7 +140,7 @@ def submit(request: HttpRequest) -> HttpResponse:
         import sys
         
         logger = logging.getLogger(__name__)
-        error_msg = f"Error creating submission: {e}"
+        error_msg = f"Error creating submission: {type(e).__name__}: {e}"
         traceback_str = traceback.format_exc()
         
         # Log to logger
@@ -148,9 +148,20 @@ def submit(request: HttpRequest) -> HttpResponse:
         logger.error(traceback_str)
         
         # Also print to stdout/stderr so Railway captures it
-        print(f"ERROR: {error_msg}", file=sys.stderr)
-        print(traceback_str, file=sys.stderr)
-        sys.stderr.flush()
+        print(f"ERROR: {error_msg}", file=sys.stderr, flush=True)
+        print(traceback_str, file=sys.stderr, flush=True)
+        
+        # If DEBUG is on, show more details
+        if settings.DEBUG:
+            return render(
+                request,
+                "submissions/submit.html",
+                {
+                    "error": f"Error: {error_msg}. Check logs for details.",
+                    "access_code": access_code,
+                },
+                status=500,
+            )
         
         return render(
             request,
