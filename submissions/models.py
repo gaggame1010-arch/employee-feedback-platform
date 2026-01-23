@@ -56,10 +56,33 @@ class HrAccessCode(models.Model):
         if not user.is_staff:
             raise ValueError("Only staff users can have access codes")
         
-        access_code, created = cls.objects.get_or_create(
-            user=user,
-            defaults={"access_code": cls.generate_unique_code()}
-        )
+        # Try to get or create, handling case where company_name column doesn't exist yet
+        try:
+            access_code, created = cls.objects.get_or_create(
+                user=user,
+                defaults={"access_code": cls.generate_unique_code()}
+            )
+        except Exception as e:
+            # If it's a missing column error, try with only() to exclude new fields
+            error_str = str(e)
+            if "company_name" in error_str or "does not exist" in error_str:
+                # Migration hasn't run - use only() to select existing fields
+                try:
+                    existing = cls.objects.only('id', 'user_id', 'access_code', 'notification_email', 'created_at', 'updated_at', 'is_active').get(user=user)
+                    return existing
+                except cls.DoesNotExist:
+                    # Create new one - but we can't use get_or_create with only()
+                    # So we'll create it with minimal fields
+                    new_code = cls(
+                        user=user,
+                        access_code=cls.generate_unique_code(),
+                        is_active=True
+                    )
+                    new_code.save()
+                    return new_code
+            # Re-raise other errors
+            raise
+        
         return access_code
 
 
