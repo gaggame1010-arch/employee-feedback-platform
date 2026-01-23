@@ -51,7 +51,7 @@ def submit(request: HttpRequest) -> HttpResponse:
     
     # Check if code matches any HR access code
     from .models import HrAccessCode
-    from django.db import OperationalError
+    from django.db import OperationalError, ProgrammingError
     
     hr_code = None
     try:
@@ -72,8 +72,8 @@ def submit(request: HttpRequest) -> HttpResponse:
                 },
                 status=400,
             )
-    except OperationalError:
-        # Table doesn't exist yet - migrations haven't run
+    except (OperationalError, ProgrammingError):
+        # Table doesn't exist yet - migrations haven't run (SQLite or PostgreSQL)
         # Fallback to old COMPANY_ACCESS_CODE for backward compatibility
         if hasattr(settings, 'COMPANY_ACCESS_CODE') and access_code == settings.COMPANY_ACCESS_CODE:
             pass  # Allow old code to work
