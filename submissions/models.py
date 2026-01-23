@@ -5,51 +5,6 @@ import secrets
 
 from .utils import generate_receipt_code
 
-class Submission(models.Model):
-    class SubmissionType(models.TextChoices):
-        ISSUE = "ISSUE", "Issue"
-        CONCERN = "CONCERN", "Concern"
-        QUESTION = "QUESTION", "Question"
-        SUGGESTION = "SUGGESTION", "Suggestion"
-
-    class Status(models.TextChoices):
-        NEW = "NEW", "New"
-        IN_REVIEW = "IN_REVIEW", "In review"
-        RESPONDED = "RESPONDED", "Responded"
-        CLOSED = "CLOSED", "Closed"
-
-    type = models.CharField(max_length=20, choices=SubmissionType.choices)
-    title = models.CharField(max_length=255)
-    body = models.TextField()
-    status = models.CharField(max_length=20, choices=Status.choices, default=Status.NEW)
-    receipt_code = models.CharField(max_length=20, unique=True, db_index=True)
-    hr_access_code = models.ForeignKey(
-        HrAccessCode,
-        on_delete=models.SET_NULL,
-        null=True,
-        blank=True,
-        related_name="submissions",
-        help_text="The HR access code used to submit this feedback"
-    )
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self) -> str:
-        return f"{self.receipt_code} ({self.type})"
-
-    @classmethod
-    def create_with_unique_receipt(cls, **kwargs) -> "Submission":
-        """
-        Create a submission with a digits-only receipt code, retrying on collision.
-        """
-        max_attempts = 10
-        for _ in range(max_attempts):
-            try:
-                return cls.objects.create(receipt_code=generate_receipt_code(), **kwargs)
-            except IntegrityError:
-                continue
-        raise RuntimeError("Failed to generate unique receipt code after multiple attempts.")
-
 
 class HrAccessCode(models.Model):
     """
@@ -103,6 +58,52 @@ class HrAccessCode(models.Model):
             defaults={"access_code": cls.generate_unique_code()}
         )
         return access_code
+
+
+class Submission(models.Model):
+    class SubmissionType(models.TextChoices):
+        ISSUE = "ISSUE", "Issue"
+        CONCERN = "CONCERN", "Concern"
+        QUESTION = "QUESTION", "Question"
+        SUGGESTION = "SUGGESTION", "Suggestion"
+
+    class Status(models.TextChoices):
+        NEW = "NEW", "New"
+        IN_REVIEW = "IN_REVIEW", "In review"
+        RESPONDED = "RESPONDED", "Responded"
+        CLOSED = "CLOSED", "Closed"
+
+    type = models.CharField(max_length=20, choices=SubmissionType.choices)
+    title = models.CharField(max_length=255)
+    body = models.TextField()
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.NEW)
+    receipt_code = models.CharField(max_length=20, unique=True, db_index=True)
+    hr_access_code = models.ForeignKey(
+        HrAccessCode,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="submissions",
+        help_text="The HR access code used to submit this feedback"
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self) -> str:
+        return f"{self.receipt_code} ({self.type})"
+
+    @classmethod
+    def create_with_unique_receipt(cls, **kwargs) -> "Submission":
+        """
+        Create a submission with a digits-only receipt code, retrying on collision.
+        """
+        max_attempts = 10
+        for _ in range(max_attempts):
+            try:
+                return cls.objects.create(receipt_code=generate_receipt_code(), **kwargs)
+            except IntegrityError:
+                continue
+        raise RuntimeError("Failed to generate unique receipt code after multiple attempts.")
 
 
 class HrResponse(models.Model):
