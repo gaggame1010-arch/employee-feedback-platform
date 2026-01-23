@@ -306,7 +306,18 @@ def contact(request: HttpRequest) -> HttpResponse:
 
     # Send contact form email to sales@kyrex.co
     contact_email = os.environ.get("CONTACT_EMAIL", "sales@kyrex.co")
+    import logging
+    import traceback
+    import sys
+    logger = logging.getLogger(__name__)
+    
     try:
+        # Log email attempt
+        logger.info(f"Attempting to send contact form email to {contact_email}")
+        logger.info(f"Email backend: {settings.EMAIL_BACKEND}")
+        logger.info(f"Email host: {getattr(settings, 'EMAIL_HOST', 'Not set')}")
+        logger.info(f"From email: {settings.DEFAULT_FROM_EMAIL}")
+        
         send_mail(
             subject=f"Contact Form Submission from {html.unescape(name)}",
             message=(
@@ -321,14 +332,21 @@ def contact(request: HttpRequest) -> HttpResponse:
             recipient_list=[contact_email],
             fail_silently=False,  # Set to False to log email errors
         )
+        logger.info(f"Contact form email sent successfully to {contact_email}")
     except Exception as e:
         # Log email sending errors but don't fail the form submission
-        import logging
-        import traceback
-        logger = logging.getLogger(__name__)
-        logger.error(f"Error sending contact form email: {e}")
-        logger.error(traceback.format_exc())
-        # Still show success to user even if email fails
+        error_msg = f"Error sending contact form email to {contact_email}: {type(e).__name__}: {e}"
+        traceback_str = traceback.format_exc()
+        
+        # Log to logger
+        logger.error(error_msg)
+        logger.error(traceback_str)
+        
+        # Also print to stderr for immediate visibility in Railway logs
+        print(f"ERROR: {error_msg}", file=sys.stderr)
+        print(traceback_str, file=sys.stderr)
+        
+        # Still show success to user even if email fails (to prevent form abuse)
         pass
 
     return render(request, "submissions/contact.html", {"success": True})

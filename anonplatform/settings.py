@@ -169,6 +169,13 @@ EMAIL_BACKEND = os.environ.get(
 DEFAULT_FROM_EMAIL = os.environ.get("DJANGO_DEFAULT_FROM_EMAIL", "no-reply@example.com")
 HR_NOTIFY_EMAILS = [e for e in os.environ.get("HR_NOTIFY_EMAILS", "").split(",") if e]
 
+# SMTP Email Configuration (for Gmail/Google Workspace)
+EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
+EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
+EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True").lower() == "true"
+EMAIL_HOST_USER = os.environ.get("EMAIL_HOST_USER", "")
+EMAIL_HOST_PASSWORD = os.environ.get("EMAIL_HOST_PASSWORD", "")
+
 # Anonymous access gate
 COMPANY_ACCESS_CODE = os.environ.get("COMPANY_ACCESS_CODE", "123456")
 
