@@ -36,7 +36,10 @@ def custom_index(request, extra_context=None):
     suggestions = Submission.objects.filter(type=Submission.SubmissionType.SUGGESTION).count()
     
     # Recent submissions
-    recent_submissions = Submission.objects.select_related("hr_response").order_by("-created_at")[:5]
+    if request.user.is_superuser or request.user.is_staff:
+        recent_submissions = Submission.objects.select_related("hr_response").order_by("-created_at")[:5]
+    else:
+        recent_submissions = Submission.objects.none()
     
     extra_context.update({
         "total_submissions": total_submissions,
@@ -562,21 +565,7 @@ class SubmissionAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         if request.user.is_staff:
-            try:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        """
-                        SELECT s.id
-                        FROM submissions_submission s
-                        JOIN submissions_hraccesscode h ON h.id = s.hr_access_code_id
-                        WHERE h.user_id = %s
-                        """,
-                        [request.user.id]
-                    )
-                    ids = [row[0] for row in cursor.fetchall()]
-                return qs.filter(id__in=ids)
-            except Exception:
-                return qs.none()
+            return qs
         return qs.none()
 
 
@@ -606,21 +595,7 @@ class HrResponseAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         if request.user.is_staff:
-            try:
-                with connection.cursor() as cursor:
-                    cursor.execute(
-                        """
-                        SELECT s.id
-                        FROM submissions_submission s
-                        JOIN submissions_hraccesscode h ON h.id = s.hr_access_code_id
-                        WHERE h.user_id = %s
-                        """,
-                        [request.user.id]
-                    )
-                    submission_ids = [row[0] for row in cursor.fetchall()]
-                return qs.filter(submission_id__in=submission_ids)
-            except Exception:
-                return qs.none()
+            return qs
         return qs.none()
     
     fieldsets = (
