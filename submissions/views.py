@@ -83,20 +83,17 @@ def submit(request: HttpRequest) -> HttpResponse:
         except (HrAccessCode.DoesNotExist, Exception):
             hr_code = None
     
-    # If no HR code found, check old COMPANY_ACCESS_CODE for backward compatibility
+    # Require a valid HR access code (no global fallback)
     if not hr_code:
-        if hasattr(settings, 'COMPANY_ACCESS_CODE') and access_code == settings.COMPANY_ACCESS_CODE:
-            pass  # Allow old code to work
-        else:
-            return render(
-                request,
-                "submissions/submit.html",
-                {
-                    "error": "Invalid access code. Please check and try again.",
-                    "access_code": access_code,  # Preserve input
-                },
-                status=400,
-            )
+        return render(
+            request,
+            "submissions/submit.html",
+            {
+                "error": "Invalid access code. Please check and try again.",
+                "access_code": access_code,  # Preserve input
+            },
+            status=400,
+        )
 
     # Validate and sanitize inputs
     submission_type = (request.POST.get("type") or "").strip()
@@ -191,9 +188,7 @@ def submit(request: HttpRequest) -> HttpResponse:
         hr_email = hr_code.get_notification_email()
         if hr_email:
             recipient_emails = [hr_email]
-    elif settings.HR_NOTIFY_EMAILS:
-        # Fallback to default HR emails for old access codes
-        recipient_emails = settings.HR_NOTIFY_EMAILS
+    # No global fallback notifications; only notify the HR tied to the code
     
     if recipient_emails:
         try:
