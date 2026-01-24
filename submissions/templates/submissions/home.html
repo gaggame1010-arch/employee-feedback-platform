@@ -1,17 +1,18 @@
 {% extends "submissions/base.html" %}
 {% block content %}
-  <div class="grid2 reveal" data-reveal>
-    <div>
-      <h1>Speak up safely.</h1>
-      <p class="muted">
-        Submit an issue, concern, or question anonymously. After you submit, you’ll receive a <strong>numeric receipt code</strong> to check updates later.
-      </p>
-      <div class="actions">
-        <a class="btn btn-primary" href="/submit/">Submit anonymously</a>
-        <a class="btn" href="/status/">Check status</a>
-      </div>
-      <p class="hint">Tip: Keep your receipt code somewhere safe (it’s the only way to view updates).</p>
+  <div class="hero-screen reveal" data-reveal>
+    <img class="hero-logo" src="{% static 'img/kyrex-logo.png' %}" alt="Kyrex logo" />
+  </div>
+  <div class="panel mt-4 reveal" data-reveal>
+    <h2>Speak up safely.</h2>
+    <p class="muted">
+      Submit an issue, concern, or question anonymously. After you submit, you’ll receive a <strong>numeric receipt code</strong> to check updates later.
+    </p>
+    <div class="actions">
+      <a class="btn btn-primary" href="/submit/">Submit anonymously</a>
+      <a class="btn" href="/status/">Check status</a>
     </div>
+    <p class="hint">Tip: Keep your receipt code somewhere safe (it’s the only way to view updates).</p>
   </div>
   <div class="panel mt-4 reveal" data-reveal>
     <h2>For HR</h2>
