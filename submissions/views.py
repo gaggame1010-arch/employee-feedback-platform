@@ -667,28 +667,26 @@ def hr_register(request: HttpRequest) -> HttpResponse:
         print(f"[HR REGISTRATION] Email: {html.unescape(email)}", file=sys.stdout, flush=True)
         print(f"{'='*80}\n", file=sys.stdout, flush=True)
 
-        # Always render success page - this should never fail
+        # Always render success page - access code is only sent via email, not shown on page
         try:
             return render(
                 request,
                 "submissions/hr_register.html",
                 {
                     "success": True,
-                    "access_code": access_code_to_display,  # Show code on page as backup
                     "company_name": getattr(hr_access, 'company_name', None) or company_name,
                     "email": hr_access.notification_email or html.unescape(email),
                     "website": getattr(hr_access, 'company_website', None) or website,
                 },
             )
         except Exception as render_error:
-            # If rendering fails, return a simple success message
+            # If rendering fails, return a simple success message (no access code shown)
             print(f"[HR REGISTRATION] Render error: {render_error}", file=sys.stderr, flush=True)
             return HttpResponse(
                 f"""
                 <html><body style="font-family: sans-serif; padding: 2rem;">
                 <h1>Success! Your access code has been created.</h1>
-                <p><strong>Access Code:</strong> <code style="font-size: 24px; padding: 1rem; background: #f0f0f0; display: block; margin: 1rem 0;">{access_code_to_display}</code></p>
-                <p>We also sent this code to {html.unescape(email)}. Check your inbox.</p>
+                <p>We've sent your access code to {html.unescape(email)}. Check your inbox and spam folder.</p>
                 <p><a href="/hr/register/">Register another company</a></p>
                 </body></html>
                 """,

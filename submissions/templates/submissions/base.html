@@ -79,6 +79,11 @@
         box-shadow: var(--shadow);
         backdrop-filter: blur(8px);
       }
+      .card:hover{
+        transform: translateY(-2px);
+        box-shadow: 0 16px 46px rgba(0,0,0,.38);
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
       .card--compact{ padding: 18px; }
       .card--accent{ border-color: rgba(44,102,255,.35); }
       .panel{
@@ -94,7 +99,10 @@
 
       h1{ font-size: 28px; margin: 0 0 10px; letter-spacing: -.35px; }
       h2{ font-size: 18px; margin: 16px 0 10px; letter-spacing: -.2px; }
+      h3{ font-size: 16px; margin: 14px 0 8px; letter-spacing: -.15px; }
       p{ margin: 10px 0; line-height: 1.55; }
+      ul, ol{ margin: 10px 0 14px; padding-left: 18px; line-height: 1.7; }
+      li{ margin: 6px 0; }
 
       .muted{ color: var(--muted); }
 
@@ -175,7 +183,9 @@
         color: var(--text);
         font-weight: 700;
         cursor: pointer;
-        transition: transform 0.15s ease, filter 0.15s ease, border-color 0.15s ease;
+        transition: transform 0.18s ease, filter 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
+        box-shadow: 0 6px 16px rgba(0,0,0,.22);
+        transform: translateY(0);
       }
       .btn--small{
         padding: 8px 12px;
@@ -220,7 +230,16 @@
         background: linear-gradient(135deg, var(--brand), #4b87ff);
         border-color: rgba(44,102,255,.55);
       }
-      .btn:hover{ filter: brightness(1.08); text-decoration:none; }
+      .btn:hover{
+        filter: brightness(1.08);
+        text-decoration:none;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 22px rgba(0,0,0,.28);
+      }
+      .btn:active{
+        transform: translateY(0);
+        box-shadow: 0 6px 14px rgba(0,0,0,.2);
+      }
       .btn:focus-visible{
         outline: none;
         box-shadow: 0 0 0 3px rgba(44,102,255,.22);
@@ -245,6 +264,9 @@
         font-size: 18px;
         letter-spacing: 1px;
       }
+
+      .lead{ font-size: 15px; color: var(--muted); }
+      .prewrap{ white-space: pre-wrap; }
 
       .list{
         margin: 0;

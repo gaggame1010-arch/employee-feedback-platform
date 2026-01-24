@@ -20,12 +20,12 @@
   </p>
   <p><strong>Title:</strong> {{ submission.title }}</p>
   <hr />
-  <p style="white-space: pre-wrap;">{{ submission.body }}</p>
+  <p class="prewrap">{{ submission.body }}</p>
 
   <hr />
   <h2>HR response</h2>
   {% if submission.hr_response %}
-    <p style="white-space: pre-wrap;">{{ submission.hr_response.body }}</p>
+    <p class="prewrap">{{ submission.hr_response.body }}</p>
   {% else %}
     <p class="muted">No response yet.</p>
   {% endif %}

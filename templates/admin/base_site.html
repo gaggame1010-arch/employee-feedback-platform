@@ -154,6 +154,10 @@
     .button:hover, input[type=submit]:hover, input[type=button]:hover, .submit-row input:hover, a.button:hover{
       filter: brightness(1.06);
     }
+    .button:focus-visible, input[type=submit]:focus-visible, input[type=button]:focus-visible, .submit-row input:focus-visible, a.button:focus-visible{
+      outline: none;
+      box-shadow: 0 0 0 3px rgba(44,102,255,.24);
+    }
 
     /* Inputs */
     input[type=text], input[type=password], input[type=email], input[type=number],
@@ -162,6 +166,10 @@
       border: 1px solid rgba(255,255,255,.14);
       background: rgba(8,13,26,.6);
       color: var(--text);
+    }
+    input[type=text]:hover, input[type=password]:hover, input[type=email]:hover, input[type=number]:hover,
+    textarea:hover, select:hover{
+      border-color: rgba(185,210,255,.32);
     }
     
     /* Round Checkboxes and Radio Buttons */

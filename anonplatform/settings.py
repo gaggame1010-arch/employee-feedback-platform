@@ -167,15 +167,36 @@ STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# Email (dev default prints emails to console)
+# Email Configuration
+# Railway blocks outbound SMTP connections, so we use API-based email services instead
+# Set DJANGO_EMAIL_BACKEND to one of:
+# - "anonplatform.email_backends.ResendEmailBackend" (for Resend API - easiest setup)
+# - "anonplatform.email_backends.SendGridEmailBackend" (for SendGrid API)
+# - "anonplatform.email_backends.MailgunEmailBackend" (for Mailgun API)
+# - "django.core.mail.backends.smtp.EmailBackend" (for SMTP - works locally but not on Railway)
+# - "django.core.mail.backends.console.EmailBackend" (for development - prints to console)
+
 EMAIL_BACKEND = os.environ.get(
     "DJANGO_EMAIL_BACKEND",
-    "django.core.mail.backends.console.EmailBackend",
+    "django.core.mail.backends.console.EmailBackend",  # Default to console for local dev
 )
 DEFAULT_FROM_EMAIL = os.environ.get("DJANGO_DEFAULT_FROM_EMAIL", "no-reply@example.com")
 HR_NOTIFY_EMAILS = [e for e in os.environ.get("HR_NOTIFY_EMAILS", "").split(",") if e]
 
-# SMTP Email Configuration (for Gmail/Google Workspace)
+# Resend API Configuration (recommended - easiest setup)
+# Get your API key from: https://resend.com/api-keys
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "")
+
+# SendGrid API Configuration
+# Get your API key from: https://app.sendgrid.com/settings/api_keys
+SENDGRID_API_KEY = os.environ.get("SENDGRID_API_KEY", "")
+
+# Mailgun API Configuration
+# Get your API key and domain from: https://app.mailgun.com/app/dashboard
+MAILGUN_API_KEY = os.environ.get("MAILGUN_API_KEY", "")
+MAILGUN_DOMAIN = os.environ.get("MAILGUN_DOMAIN", "")
+
+# SMTP Email Configuration (for Gmail/Google Workspace - works locally but NOT on Railway)
 EMAIL_HOST = os.environ.get("EMAIL_HOST", "smtp.gmail.com")
 EMAIL_PORT = int(os.environ.get("EMAIL_PORT", "587"))
 EMAIL_USE_TLS = os.environ.get("EMAIL_USE_TLS", "True").lower() == "true"
