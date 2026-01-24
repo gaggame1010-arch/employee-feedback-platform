@@ -10,31 +10,41 @@
   </div>
 
   <div class="home-panels" id="home-panels">
-    <div class="home-panel home-panel-hr home-col" id="home-panel-hr">
+    <div class="home-panel home-panel-hr" id="home-panel-hr">
       <a href="#" class="home-back" data-home-back>← Back</a>
-      <h2>For HR</h2>
-      <p>Register your company to get an access code. Share it with employees so they can submit feedback anonymously.</p>
-      <hr>
-      <div class="home-section">
-        <p>Sign in to the HR dashboard to manage submissions, reply to concerns, and track issues. View pricing, book a demo, or contact us—all linked above.</p>
+      <header class="panel-header">
+        <h2 class="panel-title">For HR</h2>
+        <p class="panel-lead">Register your company to get an access code. Share it with employees so they can submit feedback anonymously.</p>
+      </header>
+      <div class="panel-block">
+        <h3>Dashboard & management</h3>
+        <p>Sign in to the HR dashboard to manage submissions, reply to concerns, and track issues. View pricing, book a demo, or contact us—all linked in the top bar.</p>
       </div>
-      <hr>
-      <p><a href="{% url 'submissions:terms' %}">Terms</a>, <a href="{% url 'submissions:privacy' %}">Privacy</a>, and <a href="{% url 'submissions:security' %}">Security</a> apply.</p>
+      <div class="panel-block">
+        <h3>Getting started</h3>
+        <p>Register your company to receive a unique access code. Distribute it to your team so employees can submit feedback securely and anonymously.</p>
+      </div>
+      <footer class="panel-footer">
+        <a href="{% url 'submissions:terms' %}">Terms</a>
+        <a href="{% url 'submissions:privacy' %}">Privacy</a>
+        <a href="{% url 'submissions:security' %}">Security</a>
+      </footer>
     </div>
-    <div class="home-panel home-panel-emp home-col" id="home-panel-emp">
+    <div class="home-panel home-panel-emp" id="home-panel-emp">
       <a href="#" class="home-back" data-home-back>← Back</a>
-      <h2>For employees</h2>
-      <p>Submit an issue, concern, or question anonymously. Use your company access code when submitting.</p>
-      <hr>
-      <div class="home-section">
-        <p class="home-list-label">How it works:</p>
-        <ul class="home-list">
+      <header class="panel-header">
+        <h2 class="panel-title">For Employees</h2>
+        <p class="panel-lead">Submit an issue, concern, or question anonymously. Use your company access code when submitting.</p>
+      </header>
+      <div class="panel-block">
+        <h3>How it works</h3>
+        <ul class="panel-steps">
           <li>Enter your company access code</li>
           <li>Share your concern, issue, or question</li>
           <li>Save the receipt code to track updates later</li>
         </ul>
       </div>
-      <p class="hint" style="margin-top:12px;">Keep your receipt code safe—it’s the only way to view updates.</p>
+      <div class="panel-hint">Keep your receipt code safe—it's the only way to view updates on your submission.</div>
     </div>
   </div>
 {% endblock %}
