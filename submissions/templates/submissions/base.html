@@ -81,7 +81,7 @@
         background: rgba(255,255,255,.06);
       }
       .topbar .topbar-logo{
-        font-size: 22px;
+        font-size: 28px;
         font-weight: 800;
         letter-spacing: -.02em;
         color: var(--text);
@@ -364,12 +364,14 @@
         flex-wrap: wrap;
         gap: 28px;
         justify-content: center;
+        align-items: center;
+        min-height: calc(100vh - 200px);
         padding: 32px 0 40px;
       }
       .home-btn-big{
-        --purple-dark: #1e1b4b;
-        --purple-mid: #312e81;
-        --purple-top: #3730a3;
+        --purple-dark: rgba(30,27,75,.5);
+        --purple-mid: rgba(49,46,129,.45);
+        --purple-top: rgba(55,48,163,.4);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -383,51 +385,51 @@
         text-transform: uppercase;
         border-radius: 20px;
         border: none;
-        border-top: 3px solid rgba(255,255,255,.18);
-        border-left: 2px solid rgba(255,255,255,.1);
-        border-right: 2px solid rgba(0,0,0,.2);
-        border-bottom: 4px solid rgba(0,0,0,.4);
+        border-top: 2px solid rgba(255,255,255,.22);
+        border-left: 1px solid rgba(255,255,255,.14);
+        border-right: 1px solid rgba(0,0,0,.12);
+        border-bottom: 2px solid rgba(0,0,0,.2);
         background: linear-gradient(165deg, var(--purple-top) 0%, var(--purple-mid) 40%, var(--purple-dark) 100%);
-        backdrop-filter: blur(10px);
-        -webkit-backdrop-filter: blur(10px);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
         color: #e8e7ff;
         text-decoration: none;
         cursor: pointer;
         box-shadow:
-          inset 0 1px 0 rgba(255,255,255,.2),
-          inset 0 -1px 0 rgba(0,0,0,.15),
-          0 10px 0 rgba(15,10,35,.9),
-          0 12px 36px rgba(0,0,0,.4);
+          inset 0 1px 0 rgba(255,255,255,.18),
+          inset 0 -1px 0 rgba(0,0,0,.08),
+          0 10px 0 rgba(15,10,35,.5),
+          0 12px 36px rgba(0,0,0,.35);
         transition: transform .15s ease, box-shadow .15s ease, filter .15s;
       }
       .home-btn-big:hover{
-        filter: brightness(1.12);
+        filter: brightness(1.1);
         transform: translateY(-3px);
         box-shadow:
-          inset 0 1px 0 rgba(255,255,255,.22),
-          inset 0 -1px 0 rgba(0,0,0,.12),
-          0 10px 0 rgba(15,10,35,.9),
-          0 14px 40px rgba(0,0,0,.45);
+          inset 0 1px 0 rgba(255,255,255,.2),
+          inset 0 -1px 0 rgba(0,0,0,.06),
+          0 10px 0 rgba(15,10,35,.5),
+          0 14px 40px rgba(0,0,0,.4);
         text-decoration: none;
         color: #eeeaff;
       }
       .home-btn-big:active{
         transform: translateY(6px);
-        filter: brightness(0.95);
-        border-top-color: rgba(255,255,255,.08);
-        border-bottom-color: rgba(0,0,0,.5);
+        filter: brightness(0.96);
+        border-top-color: rgba(255,255,255,.1);
+        border-bottom-color: rgba(0,0,0,.25);
         box-shadow:
-          inset 0 2px 8px rgba(0,0,0,.4),
-          0 4px 0 rgba(10,8,25,.9),
-          0 6px 20px rgba(0,0,0,.35);
+          inset 0 2px 8px rgba(0,0,0,.3),
+          0 4px 0 rgba(10,8,25,.5),
+          0 6px 20px rgba(0,0,0,.3);
       }
       .home-btn-big:focus-visible{
         outline: none;
         box-shadow:
-          inset 0 1px 0 rgba(255,255,255,.2),
-          inset 0 -1px 0 rgba(0,0,0,.15),
-          0 10px 0 rgba(15,10,35,.9),
-          0 12px 36px rgba(0,0,0,.4),
+          inset 0 1px 0 rgba(255,255,255,.18),
+          inset 0 -1px 0 rgba(0,0,0,.08),
+          0 10px 0 rgba(15,10,35,.5),
+          0 12px 36px rgba(0,0,0,.35),
           0 0 0 3px rgba(124,58,237,.5);
       }
       @media (max-width: 500px){
