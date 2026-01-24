@@ -6,7 +6,7 @@
   <style>
     /* Changelist page shell */
     body{
-      background: linear-gradient(180deg, #080d1c 0%, #0a1224 100%);
+      background: #0b1220;
     }
     #content{
       padding-top: 8px;
@@ -14,20 +14,20 @@
 
     /* Title + subtitle area */
     .content > h1{
-      font-size: 20px;
-      font-weight: 900;
-      margin-bottom: 14px;
+      font-size: 18px;
+      font-weight: 700;
+      margin-bottom: 12px;
       color: #e8eefc;
-      letter-spacing: -0.4px;
+      letter-spacing: -0.2px;
     }
 
     /* Toolbar */
     #changelist #toolbar{
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 16px;
-      padding: 14px 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      padding: 12px 14px;
+      box-shadow: none;
     }
     #changelist #toolbar input[type="text"],
     #changelist #toolbar input[type="search"]{
@@ -38,8 +38,8 @@
       color: #e8eefc;
     }
     #changelist #toolbar input[type="submit"]{
-      border-radius: 14px;
-      padding: 10px 18px;
+      border-radius: 10px;
+      padding: 9px 14px;
       border: 1px solid rgba(44,102,255,.55);
       background: linear-gradient(135deg, #2c66ff, #4b87ff);
       color: #fff;
@@ -48,26 +48,25 @@
 
     /* Results table */
     #result_list{
-      border-radius: 18px;
+      border-radius: 12px;
       overflow: hidden;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      box-shadow: 0 10px 28px rgba(0,0,0,.25);
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: none;
     }
     #result_list thead th{
-      background: rgba(255,255,255,.08);
-      color: rgba(232,238,252,.85);
+      background: rgba(255,255,255,.05);
+      color: rgba(232,238,252,.8);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: .4px;
-      border-bottom: 1px solid rgba(44,102,255,.3);
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
     #result_list tbody tr{
-      transition: background .18s ease, transform .18s ease;
+      transition: background .15s ease;
     }
     #result_list tbody tr:hover{
-      background: rgba(185,210,255,.08);
-      transform: translateY(-1px);
+      background: rgba(255,255,255,.05);
     }
     #result_list tbody td{
       border-bottom: 1px solid rgba(255,255,255,.05);
@@ -75,10 +74,10 @@
 
     /* Filters */
     #changelist-filter{
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      box-shadow: none;
     }
     #changelist-filter h2{
       color: #e8eefc;
@@ -89,18 +88,18 @@
 
     /* Actions */
     .actions{
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      box-shadow: none;
     }
 
     /* Pagination */
     .paginator{
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 16px;
-      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      box-shadow: none;
     }
   </style>
 {% endblock %}
