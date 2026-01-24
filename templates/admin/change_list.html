@@ -6,7 +6,7 @@
   <style>
     /* Changelist page shell */
     body{
-      background: #f5f7fb;
+      background: #0b1220;
     }
     #content{
       padding-top: 8px;
@@ -16,23 +16,18 @@
     .content > h1{
       font-size: 18px;
       font-weight: 700;
-      margin-bottom: 6px;
-      color: #0f172a;
+      margin-bottom: 12px;
+      color: #e8eefc;
       letter-spacing: -0.2px;
-    }
-    #content h1 + p{
-      color: #64748b;
-      margin: 0 0 14px;
-      font-size: 13px;
     }
 
     /* Toolbar */
     #changelist #toolbar{
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
       border-radius: 12px;
       padding: 12px 14px;
-      box-shadow: 0 8px 20px rgba(15,23,42,.06);
+      box-shadow: none;
     }
     #changelist #toolbar form{
       display: none;
@@ -58,23 +53,23 @@
     #result_list{
       border-radius: 12px;
       overflow: hidden;
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
-      box-shadow: 0 8px 20px rgba(15,23,42,.06);
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
+      box-shadow: none;
     }
     #result_list thead th{
-      background: #f8fafc;
-      color: #475569;
+      background: rgba(255,255,255,.05);
+      color: rgba(232,238,252,.8);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: .4px;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
     #result_list tbody tr{
       transition: background .15s ease;
     }
     #result_list tbody tr:hover{
-      background: #f8fafc;
+      background: rgba(255,255,255,.05);
     }
     #result_list tbody td{
       border-bottom: 1px solid rgba(255,255,255,.05);
@@ -87,18 +82,18 @@
 
     /* Actions */
     .actions{
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
       border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(15,23,42,.06);
+      box-shadow: none;
     }
 
     /* Pagination */
     .paginator{
-      background: #ffffff;
-      border: 1px solid #e2e8f0;
+      background: rgba(255,255,255,.03);
+      border: 1px solid rgba(255,255,255,.08);
       border-radius: 12px;
-      box-shadow: 0 8px 20px rgba(15,23,42,.06);
+      box-shadow: none;
     }
   </style>
 {% endblock %}
