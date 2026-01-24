@@ -177,10 +177,17 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 # - "django.core.mail.backends.smtp.EmailBackend" (for SMTP - works locally but not on Railway)
 # - "django.core.mail.backends.console.EmailBackend" (for development - prints to console)
 
-EMAIL_BACKEND = os.environ.get(
-    "DJANGO_EMAIL_BACKEND",
-    "django.core.mail.backends.console.EmailBackend",  # Default to console for local dev
-)
+# Prefer API-based email services in production (Railway blocks SMTP)
+EMAIL_BACKEND = os.environ.get("DJANGO_EMAIL_BACKEND")
+if not EMAIL_BACKEND:
+    if os.environ.get("RESEND_API_KEY"):
+        EMAIL_BACKEND = "anonplatform.email_backends.ResendEmailBackend"
+    elif os.environ.get("SENDGRID_API_KEY"):
+        EMAIL_BACKEND = "anonplatform.email_backends.SendGridEmailBackend"
+    elif os.environ.get("MAILGUN_API_KEY") and os.environ.get("MAILGUN_DOMAIN"):
+        EMAIL_BACKEND = "anonplatform.email_backends.MailgunEmailBackend"
+    else:
+        EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 DEFAULT_FROM_EMAIL = os.environ.get("DJANGO_DEFAULT_FROM_EMAIL", "no-reply@example.com")
 HR_NOTIFY_EMAILS = [e for e in os.environ.get("HR_NOTIFY_EMAILS", "").split(",") if e]
 
