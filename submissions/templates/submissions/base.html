@@ -97,12 +97,13 @@
         vertical-align:middle;
       }
       .topbar-group{ display:flex; flex-wrap:wrap; align-items:center; gap:4px; }
-      .topbar-login{
+      /* Log In: use a.topbar-login so we override .topbar a (which has higher specificity) */
+      .topbar a.topbar-login{
         margin-left: auto;
-        font-size: 30px;
+        font-size: 36px !important;
         font-weight: 800;
-        padding: 20px 48px;
-        border-radius: 18px;
+        padding: 24px 56px !important;
+        border-radius: 20px !important;
         background: linear-gradient(135deg, var(--brand), #4b87ff);
         border: 1px solid rgba(44,102,255,.55);
         color: #fff;
@@ -112,14 +113,14 @@
         box-shadow: 0 4px 14px rgba(44,102,255,.3);
         flex-shrink: 0;
       }
-      .topbar-login:hover{
+      .topbar a.topbar-login:hover{
         filter: brightness(1.1);
         transform: translateY(-1px);
         box-shadow: 0 6px 18px rgba(44,102,255,.4);
         color: #fff;
         text-decoration: none;
       }
-      .topbar-login:focus-visible{
+      .topbar a.topbar-login:focus-visible{
         outline: none;
         box-shadow: 0 4px 14px rgba(44,102,255,.3), 0 0 0 3px rgba(44,102,255,.4);
       }
