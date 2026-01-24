@@ -93,8 +93,9 @@
       --brand:#2c66ff;
       --brand2:#7c3aed;
       --shadow: 0 12px 40px rgba(0,0,0,.32);
-      --radius-md: 14px;
-      --radius-lg: 18px;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
     }
 
     /* Page background */
@@ -271,7 +272,7 @@
 
     /* Tables */
     #result_list{
-      border-radius: 24px;
+      border-radius: var(--radius-lg);
       overflow: hidden;
       border: 1px solid rgba(255,255,255,.10);
     }
@@ -348,10 +349,10 @@
       border: none;
     }
     .dashboard #content-main .module table tbody tr th{
-      border-radius: 16px 0 0 16px;
+      border-radius: var(--radius-md) 0 0 var(--radius-md);
     }
     .dashboard #content-main .module table tbody tr td:last-child{
-      border-radius: 0 16px 16px 0;
+      border-radius: 0 var(--radius-md) var(--radius-md) 0;
     }
     .dashboard #content-main .module table tbody tr td a,
     .dashboard #content-main .module table tbody tr th a{
@@ -365,7 +366,7 @@
 
     /* Changelist toolbars */
     #changelist .object-tools a{
-      border-radius: 20px;
+      border-radius: var(--radius-lg);
       border: 1px solid rgba(255,255,255,.12);
       background: rgba(255,255,255,.06);
       color: #e8eefc;
@@ -380,7 +381,7 @@
     #toolbar{
       background: rgba(255,255,255,.05);
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 24px;
+      border-radius: var(--radius-lg);
       padding: 12px 14px;
       box-shadow: var(--shadow);
       backdrop-filter: blur(8px);
@@ -400,7 +401,7 @@
     /* Form fieldsets */
     fieldset{
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 20px;
+      border-radius: var(--radius-lg);
       padding: 16px;
       margin-bottom: 16px;
       background: rgba(255,255,255,.02);
@@ -427,7 +428,7 @@
     .readonly{
       background: rgba(255,255,255,.04);
       padding: 10px 12px;
-      border-radius: 16px;
+      border-radius: var(--radius-md);
       color: var(--muted);
     }
 
@@ -435,13 +436,13 @@
     div.breadcrumbs{
       background: rgba(255,255,255,.05);
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 20px;
+      border-radius: var(--radius-lg);
       margin: 12px 0 0;
     }
 
     /* Messages */
     ul.messagelist li{
-      border-radius: 20px;
+      border-radius: var(--radius-lg);
       background: rgba(34,197,94,.14);
       border: 1px solid rgba(34,197,94,.32);
       color: var(--text);
@@ -456,7 +457,7 @@
     #changelist #toolbar {
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 24px;
+      border-radius: var(--radius-lg);
       padding: 16px 20px;
       margin-bottom: 20px;
       box-shadow: var(--shadow);
@@ -485,7 +486,7 @@
     
     #changelist #toolbar input[type="text"],
     #changelist #toolbar input[type="search"] {
-      border-radius: 20px;
+      border-radius: var(--radius-lg);
       border: 1px solid rgba(255,255,255,.18);
       background: rgba(0,0,0,.22);
       color: var(--text);
@@ -502,7 +503,7 @@
     }
     
     #changelist #toolbar input[type="submit"] {
-      border-radius: 20px;
+      border-radius: var(--radius-lg);
       border: 1px solid rgba(44,102,255,.55);
       background: linear-gradient(135deg, var(--brand), #4b87ff);
       color: white;
@@ -528,7 +529,7 @@
     }
     
     #changelist .object-tools a {
-      border-radius: 20px;
+      border-radius: var(--radius-lg);
       border: 1px solid rgba(44,102,255,.55);
       background: linear-gradient(135deg, var(--brand), #4b87ff);
       color: white;
@@ -556,7 +557,7 @@
     #changelist .xfull {
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 20px;
+      border-radius: var(--radius-lg);
       padding: 12px 16px;
       margin-bottom: 20px;
       backdrop-filter: blur(8px);
@@ -581,7 +582,7 @@
       color: #b9d2ff;
       text-decoration: none;
       padding: 6px 12px;
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       background: rgba(255,255,255,.03);
       border: 1px solid rgba(255,255,255,.08);
       transition: all 0.2s;
@@ -605,7 +606,7 @@
     .actions {
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 20px;
+      border-radius: var(--radius-lg);
       padding: 16px;
       margin-bottom: 20px;
       backdrop-filter: blur(8px);
@@ -613,7 +614,7 @@
     }
     
     .actions select {
-      border-radius: 16px;
+      border-radius: var(--radius-md);
       border: 1px solid rgba(255,255,255,.18);
       background: rgba(0,0,0,.22);
       color: var(--text);
@@ -623,7 +624,7 @@
     }
     
     .actions button {
-      border-radius: 16px;
+      border-radius: var(--radius-md);
       border: 1px solid rgba(44,102,255,.55);
       background: linear-gradient(135deg, var(--brand), #4b87ff);
       color: white;
@@ -639,7 +640,7 @@
     
     /* Enhanced Table Styling */
     #result_list {
-      border-radius: 24px;
+      border-radius: var(--radius-lg);
       overflow: hidden;
       border: 1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.06);
@@ -710,7 +711,7 @@
     #changelist-filter {
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 24px;
+      border-radius: var(--radius-lg);
       padding: 20px;
       margin-left: 20px;
       backdrop-filter: blur(8px);
@@ -756,7 +757,7 @@
       text-decoration: none;
       padding: 8px 12px;
       display: block;
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       transition: all 0.2s;
       font-weight: 500;
       border: 1px solid transparent;
@@ -780,7 +781,7 @@
     .paginator {
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 20px;
+      border-radius: var(--radius-lg);
       padding: 16px;
       margin-top: 20px;
       backdrop-filter: blur(8px);
@@ -796,7 +797,7 @@
       color: #b9d2ff;
       text-decoration: none;
       padding: 8px 14px;
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       margin: 0 2px;
       transition: all 0.2s;
       font-weight: 600;
@@ -826,7 +827,7 @@
     #changelist .results {
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 20px;
+      border-radius: var(--radius-lg);
       padding: 12px 16px;
       margin-bottom: 16px;
       backdrop-filter: blur(8px);
@@ -839,7 +840,7 @@
     #changelist .empty {
       background: rgba(255,255,255,.06);
       border: 1px solid rgba(255,255,255,.10);
-      border-radius: 24px;
+      border-radius: var(--radius-lg);
       padding: 60px 40px;
       text-align: center;
       backdrop-filter: blur(8px);

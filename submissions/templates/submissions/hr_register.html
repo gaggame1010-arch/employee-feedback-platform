@@ -18,7 +18,7 @@
     
     <div class="panel mt-5">
       <h3 class="mt-0">Next Steps:</h3>
-      <ol class="text-muted" style="margin: 0.5rem 0; padding-left: 1.5rem; line-height: 2;">
+      <ol class="text-muted list list--tight">
         <li>Check your inbox and spam folder for the email we sent to <strong>{{ email }}</strong></li>
         <li>Share the code from that email with your employees</li>
         <li>Direct them to <a href="{% url 'submissions:submit' %}">the submission page</a></li>
@@ -34,19 +34,19 @@
     {% csrf_token %}
 
     <div class="field">
-      <label for="company_name"><strong>Company name</strong></label><br />
+      <label for="company_name">Company name</label>
       <input id="company_name" name="company_name" type="text" required minlength="2"
              value="{{ company_name|default:'' }}" />
     </div>
 
     <div class="field">
-      <label for="email"><strong>Work email</strong></label><br />
+      <label for="email">Work email</label>
       <input id="email" name="email" type="email" required
              value="{{ email|default:'' }}" />
     </div>
 
     <div class="field">
-      <label for="website"><strong>Company website</strong> (optional)</label><br />
+      <label for="website">Company website (optional)</label>
       <input id="website" name="website" type="url" placeholder="https://example.com"
              value="{{ website|default:'' }}" />
       <small class="hint">If provided, include http:// or https://</small>
