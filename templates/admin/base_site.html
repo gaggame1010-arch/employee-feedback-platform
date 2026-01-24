@@ -98,12 +98,10 @@
       --radius-lg: 16px;
     }
 
-    /* Page background */
+    /* Page background (lighter, less GPU intensive) */
     body{
       background:
-        radial-gradient(900px 500px at 10% 0%, rgba(44,102,255,.20), transparent 60%),
-        radial-gradient(800px 520px at 90% 10%, rgba(124,58,237,.14), transparent 60%),
-        linear-gradient(180deg, var(--bg0), var(--bg1));
+        linear-gradient(180deg, #080d1c 0%, #0a1224 100%);
       color: var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
@@ -119,15 +117,15 @@
       background: rgba(255,255,255,.05);
       border: 1px solid rgba(255,255,255,.12);
       border-radius: var(--radius-lg);
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      backdrop-filter: none;
     }
 
     /* Header */
     #header{
       background: rgba(255,255,255,.06);
       border-bottom: 1px solid rgba(255,255,255,.10);
-      backdrop-filter: blur(8px);
+      backdrop-filter: none;
     }
     #branding{
       display: none;
@@ -394,8 +392,8 @@
       border: 1px solid rgba(255,255,255,.10);
       border-radius: var(--radius-lg);
       padding: 12px 14px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      backdrop-filter: none;
     }
     #toolbar form{
       display: flex;
@@ -449,6 +447,7 @@
       border: 1px solid rgba(255,255,255,.10);
       border-radius: var(--radius-lg);
       margin: 12px 0 0;
+      backdrop-filter: none;
     }
 
     /* Messages */
@@ -471,8 +470,8 @@
       border-radius: var(--radius-lg);
       padding: 16px 20px;
       margin-bottom: 20px;
-      box-shadow: var(--shadow);
-      backdrop-filter: blur(8px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
+      backdrop-filter: none;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -571,7 +570,7 @@
       border-radius: var(--radius-lg);
       padding: 12px 16px;
       margin-bottom: 20px;
-      backdrop-filter: blur(8px);
+      backdrop-filter: none;
     }
     
     #changelist .xfull ul {
@@ -620,8 +619,8 @@
       border-radius: var(--radius-lg);
       padding: 16px;
       margin-bottom: 20px;
-      backdrop-filter: blur(8px);
-      box-shadow: var(--shadow);
+      backdrop-filter: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
     }
     
     .actions select {
@@ -655,8 +654,8 @@
       overflow: hidden;
       border: 1px solid rgba(255,255,255,.10);
       background: rgba(255,255,255,.06);
-      backdrop-filter: blur(8px);
-      box-shadow: var(--shadow);
+      backdrop-filter: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
       margin-bottom: 20px;
     }
     
@@ -725,8 +724,8 @@
       border-radius: var(--radius-lg);
       padding: 20px;
       margin-left: 20px;
-      backdrop-filter: blur(8px);
-      box-shadow: var(--shadow);
+      backdrop-filter: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
       min-width: 200px;
     }
     
@@ -795,8 +794,8 @@
       border-radius: var(--radius-lg);
       padding: 16px;
       margin-top: 20px;
-      backdrop-filter: blur(8px);
-      box-shadow: var(--shadow);
+      backdrop-filter: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -841,7 +840,7 @@
       border-radius: var(--radius-lg);
       padding: 12px 16px;
       margin-bottom: 16px;
-      backdrop-filter: blur(8px);
+      backdrop-filter: none;
       color: var(--muted);
       font-size: 13px;
       font-weight: 600;
@@ -854,8 +853,8 @@
       border-radius: var(--radius-lg);
       padding: 60px 40px;
       text-align: center;
-      backdrop-filter: blur(8px);
-      box-shadow: var(--shadow);
+      backdrop-filter: none;
+      box-shadow: 0 8px 24px rgba(0,0,0,.25);
     }
     
     #changelist .empty p {
