@@ -4,8 +4,14 @@
 {% block hint %}{% endblock %}
 
 {% block content %}
-  <div class="home-split reveal" data-reveal>
-    <div class="home-col home-col-hr">
+  <div class="home-buttons reveal" data-reveal id="home-buttons">
+    <button type="button" class="home-btn-big" data-home-toggle="hr">For HR</button>
+    <button type="button" class="home-btn-big" data-home-toggle="emp">For Employees</button>
+  </div>
+
+  <div class="home-panels" id="home-panels">
+    <div class="home-panel home-panel-hr home-col" id="home-panel-hr">
+      <a href="#" class="home-back" data-home-back>← Back</a>
       <h2>For HR</h2>
       <p>Register your company to get an access code. Share it with employees so they can submit feedback anonymously.</p>
       <hr>
@@ -15,7 +21,8 @@
       <hr>
       <p><a href="{% url 'submissions:terms' %}">Terms</a>, <a href="{% url 'submissions:privacy' %}">Privacy</a>, and <a href="{% url 'submissions:security' %}">Security</a> apply.</p>
     </div>
-    <div class="home-col home-col-emp">
+    <div class="home-panel home-panel-emp home-col" id="home-panel-emp">
+      <a href="#" class="home-back" data-home-back>← Back</a>
       <h2>For employees</h2>
       <p>Submit an issue, concern, or question anonymously. Use your company access code when submitting.</p>
       <hr>
