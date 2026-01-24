@@ -296,7 +296,7 @@ class HrResponseInline(admin.StackedInline):
 
 @admin.register(Submission)
 class SubmissionAdmin(admin.ModelAdmin):
-    list_display = ("receipt_code_display", "type_badge", "status_badge", "hr_code_display", "title_truncated", "submitted_time", "has_response", "updated_at")
+    list_display = ("receipt_code_display", "type_badge", "status_badge", "title_truncated", "submitted_time", "has_response")
     list_filter = ("type", "status", "created_at", "updated_at")
     search_fields = ("receipt_code", "title", "body")
     readonly_fields = ("receipt_code", "hr_code_display", "created_at", "updated_at", "submission_preview")
