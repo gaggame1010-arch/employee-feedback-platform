@@ -97,10 +97,11 @@
       }
       .topbar-group{ display:flex; flex-wrap:wrap; align-items:center; gap:4px; }
       .topbar-login{
-        font-size: 17px;
-        font-weight: 700;
-        padding: 12px 24px;
-        border-radius: 12px;
+        margin-left: auto;
+        font-size: 22px;
+        font-weight: 800;
+        padding: 14px 32px;
+        border-radius: 14px;
         background: linear-gradient(135deg, var(--brand), #4b87ff);
         border: 1px solid rgba(44,102,255,.55);
         color: #fff;
@@ -549,8 +550,8 @@
           <a href="{% url 'submissions:terms' %}">Terms</a>
           <a href="{% url 'submissions:privacy' %}">Privacy</a>
           <a href="{% url 'submissions:security' %}">Security</a>
-          <a class="topbar-login" href="/admin/">Log In</a>
         </div>
+        <a class="topbar-login" href="/admin/">Log In</a>
       </div>
     </header>
     <div class="wrap">
