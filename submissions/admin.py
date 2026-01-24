@@ -35,9 +35,27 @@ def custom_index(request, extra_context=None):
     questions = Submission.objects.filter(type=Submission.SubmissionType.QUESTION).count()
     suggestions = Submission.objects.filter(type=Submission.SubmissionType.SUGGESTION).count()
     
-    # Recent submissions
-    if request.user.is_superuser or request.user.is_staff:
+    # Recent submissions (scoped to HR access code)
+    if request.user.is_superuser:
         recent_submissions = Submission.objects.select_related("hr_response").order_by("-created_at")[:5]
+    elif request.user.is_staff:
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    """
+                    SELECT s.id
+                    FROM submissions_submission s
+                    JOIN submissions_hraccesscode h ON h.id = s.hr_access_code_id
+                    WHERE h.user_id = %s
+                    ORDER BY s.created_at DESC
+                    LIMIT 5
+                    """,
+                    [request.user.id]
+                )
+                ids = [row[0] for row in cursor.fetchall()]
+            recent_submissions = Submission.objects.select_related("hr_response").filter(id__in=ids)
+        except Exception:
+            recent_submissions = Submission.objects.none()
     else:
         recent_submissions = Submission.objects.none()
     
@@ -565,7 +583,21 @@ class SubmissionAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         if request.user.is_staff:
-            return qs
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        SELECT s.id
+                        FROM submissions_submission s
+                        JOIN submissions_hraccesscode h ON h.id = s.hr_access_code_id
+                        WHERE h.user_id = %s
+                        """,
+                        [request.user.id]
+                    )
+                    ids = [row[0] for row in cursor.fetchall()]
+                return qs.filter(id__in=ids)
+            except Exception:
+                return qs.none()
         return qs.none()
 
 
@@ -595,7 +627,21 @@ class HrResponseAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         if request.user.is_staff:
-            return qs
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        SELECT s.id
+                        FROM submissions_submission s
+                        JOIN submissions_hraccesscode h ON h.id = s.hr_access_code_id
+                        WHERE h.user_id = %s
+                        """,
+                        [request.user.id]
+                    )
+                    submission_ids = [row[0] for row in cursor.fetchall()]
+                return qs.filter(submission_id__in=submission_ids)
+            except Exception:
+                return qs.none()
         return qs.none()
     
     fieldsets = (
