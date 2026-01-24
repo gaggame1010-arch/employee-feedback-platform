@@ -10,7 +10,7 @@ from .models import HrAccessCode, HrResponse, Submission
 
 admin.site.site_header = "HR Dashboard"
 admin.site.site_title = "HR Dashboard"
-admin.site.index_title = "Submissions"
+admin.site.index_title = ""
 
 # Note: Django admin already requires staff status by default
 
