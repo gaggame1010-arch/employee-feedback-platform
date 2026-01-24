@@ -391,6 +391,79 @@
 {% endblock %}
 
 {% block content %}
+  <div class="dashboard-welcome">
+    <h1>Welcome to HR Dashboard</h1>
+    <p>Manage submissions, respond to employee concerns, and track issues from this central dashboard.</p>
+  </div>
+
+  <div class="dashboard-stats">
+    <a href="/admin/submissions/submission/" class="stat-card">
+      <h3>Total Submissions</h3>
+      <p class="number">{{ total_submissions|default:0 }}</p>
+    </a>
+    
+    <a href="/admin/submissions/submission/?status=NEW" class="stat-card new">
+      <h3>New</h3>
+      <p class="number">{{ new_submissions|default:0 }}</p>
+    </a>
+    
+    <a href="/admin/submissions/submission/?status=IN_REVIEW" class="stat-card in-review">
+      <h3>In Review</h3>
+      <p class="number">{{ in_review|default:0 }}</p>
+    </a>
+    
+    <a href="/admin/submissions/submission/?status=RESPONDED" class="stat-card responded">
+      <h3>Responded</h3>
+      <p class="number">{{ responded|default:0 }}</p>
+    </a>
+    
+    <a href="/admin/submissions/submission/?status=CLOSED" class="stat-card closed">
+      <h3>Closed</h3>
+      <p class="number">{{ closed|default:0 }}</p>
+    </a>
+    
+    <a href="/admin/submissions/submission/?type=ISSUE" class="stat-card issue">
+      <h3>Issues</h3>
+      <p class="number">{{ issues|default:0 }}</p>
+    </a>
+    
+    <a href="/admin/submissions/submission/?type=CONCERN" class="stat-card concern">
+      <h3>Concerns</h3>
+      <p class="number">{{ concerns|default:0 }}</p>
+    </a>
+    
+    <a href="/admin/submissions/submission/?type=QUESTION" class="stat-card question">
+      <h3>Questions</h3>
+      <p class="number">{{ questions|default:0 }}</p>
+    </a>
+    
+    <a href="/admin/submissions/submission/?type=SUGGESTION" class="stat-card suggestion">
+      <h3>Suggestions</h3>
+      <p class="number">{{ suggestions|default:0 }}</p>
+    </a>
+  </div>
+
+  {% if recent_submissions %}
+    <div class="module recent-activity">
+      <h2>Recent Submissions</h2>
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        {% for submission in recent_submissions %}
+          <div class="activity-item {% if submission.status == 'NEW' %}new{% elif submission.status == 'RESPONDED' %}responded{% endif %}">
+            <div style="flex: 1;">
+              <strong style="color: #e8eefc;">{{ submission.receipt_code }}</strong>
+              <span style="color: rgba(232,238,252,.72); margin-left: 8px;">{{ submission.title|truncatewords:8 }}</span>
+            </div>
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <span style="padding: 4px 10px; border-radius: 16px; background: rgba(44,102,255,.2); color: #2c66ff; font-size: 11px; font-weight: 700;">{{ submission.get_type_display }}</span>
+              <span style="padding: 4px 10px; border-radius: 16px; background: rgba(245,158,11,.2); color: #f59e0b; font-size: 11px; font-weight: 700;">{{ submission.get_status_display }}</span>
+              <a href="/admin/submissions/submission/{{ submission.id }}/change/" style="color: #2c66ff; font-weight: 700; text-decoration: none;">View →</a>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endif %}
+
   {{ block.super }}
 {% endblock %}
 
