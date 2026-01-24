@@ -5,6 +5,7 @@ from django.utils.html import format_html
 from django.utils.safestring import mark_safe
 from django.template.response import TemplateResponse
 from django.urls import path
+from django.db import connection
 
 from .models import HrAccessCode, HrResponse, Submission
 
@@ -180,21 +181,27 @@ class CustomUserAdmin(BaseUserAdmin):
         if not obj.is_staff:
             return format_html('<span style="color: #6b7280;">—</span>')
         try:
-            hr_code = obj.hr_access_code
-            if hr_code.is_active:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT id, access_code, is_active FROM submissions_hraccesscode WHERE user_id = %s LIMIT 1",
+                    [obj.id]
+                )
+                row = cursor.fetchone()
+            if not row:
+                return format_html('<span style="color: #f59e0b; font-size: 11px;">No code</span>')
+            code_id, access_code, is_active = row
+            if is_active:
                 return format_html(
                     '<a href="/admin/submissions/hraccesscode/{}/change/" style="font-family: ui-monospace, monospace; font-size: 13px; letter-spacing: 1px; color: #2c66ff; font-weight: 700; text-decoration: none;">{}</a>',
-                    hr_code.id,
-                    hr_code.access_code
+                    code_id,
+                    access_code
                 )
             return format_html(
                 '<span style="font-family: ui-monospace, monospace; font-size: 13px; letter-spacing: 1px; color: #6b7280; text-decoration: line-through;">{}</span>',
-                hr_code.access_code
+                access_code
             )
-        except HrAccessCode.DoesNotExist:
-            return format_html(
-                '<span style="color: #f59e0b; font-size: 11px;">No code</span>'
-            )
+        except Exception:
+            return format_html('<span style="color: #f59e0b; font-size: 11px;">No code</span>')
     access_code_display.short_description = "Access Code"
     
     def create_access_codes(self, request, queryset):
@@ -292,7 +299,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     list_display = ("receipt_code_display", "type_badge", "status_badge", "hr_code_display", "title_truncated", "submitted_time", "has_response", "updated_at")
     list_filter = ("type", "status", "created_at", "updated_at")
     search_fields = ("receipt_code", "title", "body")
-    readonly_fields = ("receipt_code", "hr_access_code", "created_at", "updated_at", "submission_preview")
+    readonly_fields = ("receipt_code", "hr_code_display", "created_at", "updated_at", "submission_preview")
     inlines = [HrResponseInline]
     list_per_page = 25
     date_hierarchy = "created_at"
@@ -302,7 +309,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     
     fieldsets = (
         ("Submission Details", {
-            "fields": ("receipt_code", "hr_access_code", "type", "status", "title", "body", "submission_preview"),
+            "fields": ("receipt_code", "hr_code_display", "type", "status", "title", "body", "submission_preview"),
             "description": "View the employee's submission below. Scroll down to the 'HR Responses' section to add your reply."
         }),
         ("Timestamps", {
@@ -313,13 +320,26 @@ class SubmissionAdmin(admin.ModelAdmin):
     
     def hr_code_display(self, obj):
         """Display which HR access code was used."""
-        if not obj or not obj.hr_access_code:
+        if not obj or not obj.hr_access_code_id:
             return format_html('<span style="color: #6b7280;">—</span>')
-        return format_html(
-            '<span style="font-family: ui-monospace, monospace; font-size: 12px; color: #2c66ff; font-weight: 700;">{}</span><br><span style="font-size: 11px; color: #6b7280;">{}</span>',
-            obj.hr_access_code.access_code,
-            obj.hr_access_code.user.username
-        )
+        try:
+            with connection.cursor() as cursor:
+                cursor.execute(
+                    "SELECT access_code, user_id FROM submissions_hraccesscode WHERE id = %s LIMIT 1",
+                    [obj.hr_access_code_id]
+                )
+                row = cursor.fetchone()
+            if not row:
+                return format_html('<span style="color: #6b7280;">—</span>')
+            access_code, user_id = row
+            username = User.objects.filter(id=user_id).values_list("username", flat=True).first() or "HR"
+            return format_html(
+                '<span style="font-family: ui-monospace, monospace; font-size: 12px; color: #2c66ff; font-weight: 700;">{}</span><br><span style="font-size: 11px; color: #6b7280;">{}</span>',
+                access_code,
+                username
+            )
+        except Exception:
+            return format_html('<span style="color: #6b7280;">—</span>')
     hr_code_display.short_description = "HR Code"
     
     def mark_as_in_review(self, request, queryset):
@@ -542,7 +562,21 @@ class SubmissionAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         if request.user.is_staff:
-            return qs.filter(hr_access_code__user=request.user)
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        SELECT s.id
+                        FROM submissions_submission s
+                        JOIN submissions_hraccesscode h ON h.id = s.hr_access_code_id
+                        WHERE h.user_id = %s
+                        """,
+                        [request.user.id]
+                    )
+                    ids = [row[0] for row in cursor.fetchall()]
+                return qs.filter(id__in=ids)
+            except Exception:
+                return qs.none()
         return qs.none()
 
 
@@ -568,11 +602,25 @@ class HrResponseAdmin(admin.ModelAdmin):
 
     def get_queryset(self, request):
         """Limit responses to the HR user's submissions."""
-        qs = super().get_queryset(request).select_related("submission", "submission__hr_access_code")
+        qs = super().get_queryset(request).select_related("submission")
         if request.user.is_superuser:
             return qs
         if request.user.is_staff:
-            return qs.filter(submission__hr_access_code__user=request.user)
+            try:
+                with connection.cursor() as cursor:
+                    cursor.execute(
+                        """
+                        SELECT s.id
+                        FROM submissions_submission s
+                        JOIN submissions_hraccesscode h ON h.id = s.hr_access_code_id
+                        WHERE h.user_id = %s
+                        """,
+                        [request.user.id]
+                    )
+                    submission_ids = [row[0] for row in cursor.fetchall()]
+                return qs.filter(submission_id__in=submission_ids)
+            except Exception:
+                return qs.none()
         return qs.none()
     
     fieldsets = (
