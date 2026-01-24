@@ -62,11 +62,19 @@
         max-width:980px;
         margin:0 auto;
         padding:12px 20px;
+      }
+      .topbar-row{
         display:flex;
         flex-wrap:wrap;
         align-items:center;
         gap:10px 16px;
       }
+      .topbar-row-logo{
+        justify-content:space-between;
+        align-items:center;
+        margin-bottom:10px;
+      }
+      .topbar-row-nav{ margin-bottom: 0; }
       .topbar a{
         font-size:13px;
         font-weight:500;
@@ -76,10 +84,6 @@
         text-decoration:none;
         white-space:nowrap;
       }
-      .topbar a:hover{
-        color:var(--text);
-        background: rgba(255,255,255,.06);
-      }
       .topbar .topbar-logo{
         font-size: 28px;
         font-weight: 800;
@@ -87,6 +91,11 @@
         color: var(--text);
         margin-right: 8px;
       }
+      .topbar a:hover{
+        color:var(--text);
+        background: rgba(255,255,255,.06);
+      }
+      .topbar .topbar-logo:hover{ background: transparent; }
       .topbar-sep{
         display:inline-block;
         width:1px;
@@ -97,7 +106,6 @@
       }
       .topbar-group{ display:flex; flex-wrap:wrap; align-items:center; gap:4px; }
       .topbar-login{
-        margin-left: auto;
         font-size: 22px;
         font-weight: 800;
         padding: 14px 32px;
@@ -109,6 +117,7 @@
         white-space: nowrap;
         transition: filter .2s, transform .2s, box-shadow .2s;
         box-shadow: 0 4px 14px rgba(44,102,255,.3);
+        flex-shrink: 0;
       }
       .topbar-login:hover{
         filter: brightness(1.1);
@@ -532,26 +541,23 @@
   <body class="{% block body_class %}{% endblock %}">
     <header class="topbar">
       <div class="topbar-inner">
-        <a class="topbar-logo" href="/">Kyrex</a>
-        <span class="topbar-sep"></span>
-        <div class="topbar-group">
+        <div class="topbar-row topbar-row-logo">
+          <a class="topbar-logo" href="/">Kyrex</a>
+          <a class="topbar-login" href="/admin/">Log In</a>
+        </div>
+        <div class="topbar-row topbar-row-nav">
           <a href="/submit/">Submit</a>
           <a href="/status/">Check status</a>
           <a href="/how-it-works/">How it works</a>
-        </div>
-        <span class="topbar-sep"></span>
-        <div class="topbar-group">
+          <span class="topbar-sep"></span>
           <a href="{% url 'submissions:hr_register' %}">Register</a>
           <a href="/pricing/">Pricing</a>
           <a href="/contact/">Contact</a>
-        </div>
-        <span class="topbar-sep"></span>
-        <div class="topbar-group">
+          <span class="topbar-sep"></span>
           <a href="{% url 'submissions:terms' %}">Terms</a>
           <a href="{% url 'submissions:privacy' %}">Privacy</a>
           <a href="{% url 'submissions:security' %}">Security</a>
         </div>
-        <a class="topbar-login" href="/admin/">Log In</a>
       </div>
     </header>
     <div class="wrap">
