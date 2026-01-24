@@ -98,7 +98,6 @@
       }
       .topbar-group{ display:flex; flex-wrap:wrap; align-items:center; gap:4px; }
       .topbar-login{
-        margin-left: auto;
         font-size: 22px;
         font-weight: 800;
         padding: 14px 32px;
@@ -551,9 +550,8 @@
         <div class="topbar-group">
           <a href="{% url 'submissions:terms' %}">Terms</a>
           <a href="{% url 'submissions:privacy' %}">Privacy</a>
-          <a href="{% url 'submissions:security' %}">Security</a>
+          <a class="topbar-login" href="/admin/">Log In</a>
         </div>
-        <a class="topbar-login" href="/admin/">Log In</a>
       </div>
     </header>
     <div class="wrap">
