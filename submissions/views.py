@@ -496,6 +496,8 @@ def hr_register(request: HttpRequest) -> HttpResponse:
         # Make sure it's staff so it can have an access code
         if not user.is_staff:
             user.is_staff = True
+        if not user.is_active:
+            user.is_active = True
         if not user.username:
             user.username = username
         # Always generate a new password for HR and store it

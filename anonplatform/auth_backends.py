@@ -13,14 +13,17 @@ class EmailOrUsernameModelBackend(ModelBackend):
         user = None
 
         if "@" in username:
-            try:
-                user = UserModel.objects.get(email__iexact=username)
-            except UserModel.DoesNotExist:
+            qs = UserModel.objects.filter(email__iexact=username)
+            # Prefer staff users when duplicates exist
+            staff_qs = qs.filter(is_staff=True)
+            if staff_qs.exists():
+                qs = staff_qs
+            user = qs.order_by("-is_staff", "-is_superuser", "-last_login", "-id").first()
+            if not user:
                 return None
         else:
-            try:
-                user = UserModel.objects.get(username=username)
-            except UserModel.DoesNotExist:
+            user = UserModel.objects.filter(username=username).first()
+            if not user:
                 return None
 
         if user.check_password(password) and self.user_can_authenticate(user):
