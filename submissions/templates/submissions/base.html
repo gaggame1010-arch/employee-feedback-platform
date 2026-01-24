@@ -281,6 +281,19 @@
 
       hr{ border:none; border-top:1px solid rgba(255,255,255,.12); margin:16px 0; }
 
+      .page-section{
+        min-height: calc(100vh - 140px);
+        display: flex;
+        align-items: center;
+        padding: 10px 0;
+      }
+      .page-section + .page-section{
+        margin-top: 10px;
+      }
+      .page-section .panel{
+        width: 100%;
+      }
+
       .reveal{
         opacity: 0;
         transform: translateY(22px) scale(0.985);
