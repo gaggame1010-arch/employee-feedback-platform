@@ -13,5 +13,13 @@
       <p class="hint">Tip: Keep your receipt code somewhere safe (it’s the only way to view updates).</p>
     </div>
   </div>
+  <div class="panel mt-4 reveal" data-reveal>
+    <h2>For HR</h2>
+    <p class="muted">Register your company to get an access code for employees, or sign in to manage submissions.</p>
+    <div class="actions">
+      <a class="btn btn-primary" href="{% url 'submissions:hr_register' %}">Register your company</a>
+      <a class="btn" href="/admin/">HR login</a>
+    </div>
+  </div>
 {% endblock %}
 
