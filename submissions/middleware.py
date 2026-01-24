@@ -16,6 +16,11 @@ class RateLimitMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
+        # Block password change for HR staff (non-superuser)
+        if request.path.startswith("/admin/password_change/"):
+            user = getattr(request, "user", None)
+            if user and user.is_authenticated and user.is_staff and not user.is_superuser:
+                return HttpResponse("Password changes are disabled for this account.", status=403)
         # Only rate limit POST requests to submit endpoint
         if request.method == "POST" and request.path in ("/submit/", "/hr/register/"):
             ip_address = self.get_client_ip(request)

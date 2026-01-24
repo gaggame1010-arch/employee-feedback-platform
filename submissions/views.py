@@ -498,8 +498,9 @@ def hr_register(request: HttpRequest) -> HttpResponse:
             user.is_staff = True
         if not user.username:
             user.username = username
-        if created:
-            user.set_unusable_password()
+        # Always generate a new password for HR and store it
+        temp_password = secrets.token_urlsafe(10)
+        user.set_password(temp_password)
         user.save()
 
         # Try to get or create HR access code
@@ -605,6 +606,10 @@ def hr_register(request: HttpRequest) -> HttpResponse:
                         subject="Your KYREX HR access code",
                         message=(
                             f"Hi {company_display},\n\n"
+                            f"Company name: {company_display}\n"
+                            f"HR login username: {user.username}\n"
+                            f"Temporary password: {temp_password}\n\n"
+                            f"Password changes are disabled for this account.\n\n"
                             f"Your HR access code is: {access_code_to_display}\n\n"
                             f"Employees can submit feedback using this code at:\n"
                             f"{request.build_absolute_uri('/submit/')}\n\n"
