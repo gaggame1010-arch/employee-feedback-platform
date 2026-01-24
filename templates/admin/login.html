@@ -8,10 +8,12 @@
       --bg0:#070b16;
       --bg1:#0b1220;
       --text:#e8eefc;
-      --muted: rgba(232,238,252,.72);
+      --muted: rgba(232,238,252,.68);
       --brand:#2c66ff;
       --brand2:#7c3aed;
-      --shadow: 0 18px 60px rgba(0,0,0,.35);
+      --shadow: 0 12px 40px rgba(0,0,0,.32);
+      --radius-md: 14px;
+      --radius-lg: 18px;
     }
 
     html, body { height: 100%; margin: 0; }
@@ -63,7 +65,7 @@
     }
 
     .login-header h1{
-      font-size: 32px;
+      font-size: 30px;
       margin: 0 0 8px;
       letter-spacing: -.3px;
       color: var(--text);
@@ -79,9 +81,9 @@
     body.login .login #content-main > form{
       width: 100%;
       max-width: 420px;
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 24px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: var(--radius-lg);
       padding: 32px 28px;
       box-shadow: var(--shadow);
       backdrop-filter: blur(8px);
@@ -103,9 +105,9 @@
     body.login .login #content-main > form input[type="password"]{
       width: 100%;
       padding: 12px 14px;
-      border-radius: 12px;
-      border: 1px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.22);
+      border-radius: var(--radius-md);
+      border: 1px solid rgba(255,255,255,.14);
+      background: rgba(8,13,26,.6);
       color: var(--text);
       box-sizing: border-box;
       font-size: 14px;
@@ -129,7 +131,7 @@
     body.login .login #content-main > form .submit-row input[type="submit"]{
       width: 100%;
       padding: 12px 20px;
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       border: 1px solid rgba(44,102,255,.55);
       background: linear-gradient(135deg, var(--brand), #4b87ff);
       color: white;
@@ -146,7 +148,7 @@
       background: rgba(239,68,68, .16);
       border: 1px solid rgba(239,68,68, .35);
       color: var(--text);
-      border-radius: 12px;
+      border-radius: var(--radius-md);
       padding: 12px 14px;
       margin-bottom: 20px;
       font-size: 13px;
@@ -181,9 +183,9 @@
       align-items:center; 
       gap:8px;
       padding:8px 14px;
-      border-radius:12px;
-      background: rgba(255,255,255,.05);
-      border: 1px solid rgba(255,255,255,.10);
+      border-radius:var(--radius-md);
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.12);
       color:#b9d2ff;
       text-decoration:none;
       font-size: 13px;

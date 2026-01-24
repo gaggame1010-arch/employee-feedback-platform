@@ -8,16 +8,24 @@
       :root{
         --bg0:#070b16;
         --bg1:#0b1220;
-        --card: rgba(255,255,255,.06);
-        --cardBorder: rgba(255,255,255,.10);
+        --card: rgba(255,255,255,.05);
+        --cardBorder: rgba(255,255,255,.12);
         --text:#e8eefc;
-        --muted: rgba(232,238,252,.72);
+        --muted: rgba(232,238,252,.68);
         --brand:#2c66ff;
         --brand2:#7c3aed;
         --good:#22c55e;
         --warn:#f59e0b;
         --bad:#ef4444;
-        --shadow: 0 18px 60px rgba(0,0,0,.35);
+        --shadow: 0 12px 40px rgba(0,0,0,.32);
+        --radius-sm: 10px;
+        --radius-md: 14px;
+        --radius-lg: 18px;
+        --space-1: 6px;
+        --space-2: 10px;
+        --space-3: 14px;
+        --space-4: 18px;
+        --space-5: 24px;
       }
 
       *{ box-sizing:border-box; }
@@ -32,65 +40,91 @@
         min-height:100vh;
       }
 
-      a{ color:#b9d2ff; text-decoration:none; transition: color 0.2s; }
+      a{ color:#b9d2ff; text-decoration:none; transition: color 0.2s ease; }
       a:hover{ color:#d2e4ff; text-decoration:underline; }
       
       footer a:hover{ color:#d2e4ff; }
 
-      .wrap{ max-width:980px; margin:0 auto; padding:28px 18px 40px; }
+      .wrap{ max-width:980px; margin:0 auto; padding:30px 20px 44px; }
+      .container{ max-width:980px; margin:0 auto; }
+      .container--narrow{ max-width:720px; }
 
       .topbar{
         display:flex; align-items:center; justify-content:space-between; gap:12px;
-        margin-bottom:16px;
+        margin-bottom:20px;
       }
       .brand{
         display:flex; flex-direction:column; gap:2px;
       }
-      .brand strong{ letter-spacing:.2px; font-size:14px; opacity:.95; }
+      .brand strong{ letter-spacing:.3px; font-size:15px; opacity:.96; }
       .brand span{ font-size:12px; color:var(--muted); }
 
       .nav{
-        display:flex; flex-wrap:wrap; gap:10px;
+        display:flex; flex-wrap:wrap; gap:8px;
       }
       .nav a{
         display:inline-flex; align-items:center; gap:8px;
-        padding:8px 10px;
-        border-radius:12px;
-        background: rgba(255,255,255,.05);
-        border: 1px solid rgba(255,255,255,.10);
+        padding:8px 12px;
+        border-radius:var(--radius-sm);
+        background: rgba(255,255,255,.04);
+        border: 1px solid rgba(255,255,255,.12);
       }
       .nav a:hover{ text-decoration:none; border-color: rgba(185,210,255,.40); }
 
       .card{
         background: var(--card);
         border: 1px solid var(--cardBorder);
-        border-radius: 18px;
-        padding: 22px;
+        border-radius: var(--radius-lg);
+        padding: 24px;
         box-shadow: var(--shadow);
         backdrop-filter: blur(8px);
       }
+      .card--compact{ padding: 18px; }
+      .card--accent{ border-color: rgba(44,102,255,.35); }
+      .panel{
+        background: rgba(255,255,255,.06);
+        border: 1px solid rgba(255,255,255,.10);
+        border-radius: var(--radius-lg);
+        padding: 24px;
+      }
+      .panel--success{
+        background: rgba(34,197,94,.14);
+        border-color: rgba(34,197,94,.32);
+      }
 
-      h1{ font-size: 28px; margin: 0 0 8px; letter-spacing: -.3px; }
-      h2{ font-size: 18px; margin: 14px 0 8px; letter-spacing: -.2px; }
-      p{ margin: 10px 0; line-height: 1.55; }
+      h1{ font-size: 30px; margin: 0 0 10px; letter-spacing: -.4px; }
+      h2{ font-size: 19px; margin: 16px 0 10px; letter-spacing: -.25px; }
+      p{ margin: 10px 0; line-height: 1.6; }
 
       .muted{ color: var(--muted); }
 
       .hint{
-        margin-top:14px;
+        margin-top:16px;
         color: var(--muted);
         font-size: 12px;
       }
+      .text-muted{ color: var(--muted); }
+      .text-center{ text-align: center; }
+      .mt-0{ margin-top: 0; }
+      .mt-2{ margin-top: var(--space-2); }
+      .mt-3{ margin-top: var(--space-3); }
+      .mt-4{ margin-top: var(--space-4); }
+      .mt-5{ margin-top: var(--space-5); }
+      .mb-0{ margin-bottom: 0; }
+      .page-title{ margin-top: var(--space-5); }
+      .price{ font-size: 28px; font-weight: 900; margin: 10px 0 6px; }
+      .price-note{ margin-top: 0; }
 
       .error{
         background: rgba(239,68,68, .16);
         border: 1px solid rgba(239,68,68, .35);
-        padding: 10px 12px;
-        border-radius: 12px;
+        padding: 12px 14px;
+        border-radius: var(--radius-md);
         margin: 12px 0;
       }
+      .field{ margin: 14px 0; }
 
-      .grid2{ display:grid; grid-template-columns: 1fr; gap: 14px; }
+      .grid2{ display:grid; grid-template-columns: 1fr; gap: 16px; }
       @media (min-width: 860px){
         .grid2{ grid-template-columns: 1.1fr .9fr; }
       }
@@ -99,10 +133,10 @@
       label .required{ color: var(--bad); margin-left: 2px; }
       input, select, textarea{
         width:100%;
-        padding: 11px 12px;
-        border-radius: 12px;
-        border: 1px solid rgba(255,255,255,.18);
-        background: rgba(0,0,0,.22);
+        padding: 12px 14px;
+        border-radius: var(--radius-md);
+        border: 1px solid rgba(255,255,255,.14);
+        background: rgba(8,13,26,.6);
         color: var(--text);
         outline: none;
         font-family: inherit;
@@ -110,7 +144,7 @@
       }
       input:focus, select:focus, textarea:focus{
         border-color: rgba(185,210,255,.55);
-        box-shadow: 0 0 0 3px rgba(44,102,255,.18);
+        box-shadow: 0 0 0 3px rgba(44,102,255,.2);
       }
       input:invalid:not(:placeholder-shown), textarea:invalid:not(:placeholder-shown){
         border-color: rgba(239,68,68,.45);
@@ -124,19 +158,53 @@
       }
 
       .actions{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top: 14px; }
+      .actions--wrap{ flex-wrap: wrap; }
 
       .btn{
         display:inline-flex;
         align-items:center;
         justify-content:center;
         gap:8px;
-        padding: 11px 14px;
-        border-radius: 12px;
+        padding: 10px 14px;
+        border-radius: var(--radius-md);
         border: 1px solid rgba(255,255,255,.18);
         background: rgba(255,255,255,.06);
         color: var(--text);
-        font-weight: 800;
+        font-weight: 700;
         cursor: pointer;
+        transition: transform 0.15s ease, filter 0.15s ease, border-color 0.15s ease;
+      }
+      .btn--small{
+        padding: 8px 12px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .footer{
+        margin-top: 32px;
+        padding-top: 20px;
+        border-top: 1px solid rgba(255,255,255,.1);
+      }
+      .footer-links{
+        display: flex;
+        flex-wrap: wrap;
+        gap: 12px;
+        justify-content: center;
+        font-size: 12px;
+        color: var(--muted);
+      }
+      .footer-links a{
+        color: var(--muted);
+        text-decoration: none;
+        transition: color 0.2s;
+      }
+      .footer-sep{ opacity: 0.5; }
+      .footer-copy{
+        text-align: center;
+        margin-top: 12px;
+        font-size: 11px;
+        color: var(--muted);
+        opacity: 0.8;
       }
       .btn-primary{
         background: linear-gradient(135deg, var(--brand), #4b87ff);
@@ -187,21 +255,21 @@
         This tool is designed to protect anonymity. Do not include identifying details unless necessary.
       </p>
       
-      <footer style="margin-top: 32px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.1);">
-        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; font-size: 12px; color: var(--muted);">
-          <a href="/how-it-works/" style="color: var(--muted); text-decoration: none; transition: color 0.2s;">How it works</a>
-          <span style="opacity: 0.5;">•</span>
-          <a href="/pricing/" style="color: var(--muted); text-decoration: none; transition: color 0.2s;">Pricing</a>
-          <span style="opacity: 0.5;">•</span>
-          <a href="/contact/" style="color: var(--muted); text-decoration: none; transition: color 0.2s;">Contact / Book demo</a>
-          <span style="opacity: 0.5;">•</span>
-          <a href="{% url 'submissions:privacy' %}" style="color: var(--muted); text-decoration: none; transition: color 0.2s;">Privacy Policy</a>
-          <span style="opacity: 0.5;">•</span>
-          <a href="{% url 'submissions:terms' %}" style="color: var(--muted); text-decoration: none; transition: color 0.2s;">Terms of Service</a>
-          <span style="opacity: 0.5;">•</span>
-          <a href="{% url 'submissions:security' %}" style="color: var(--muted); text-decoration: none; transition: color 0.2s;">Security & Transparency</a>
+      <footer class="footer">
+        <div class="footer-links">
+          <a href="/how-it-works/">How it works</a>
+          <span class="footer-sep">•</span>
+          <a href="/pricing/">Pricing</a>
+          <span class="footer-sep">•</span>
+          <a href="/contact/">Contact / Book demo</a>
+          <span class="footer-sep">•</span>
+          <a href="{% url 'submissions:privacy' %}">Privacy Policy</a>
+          <span class="footer-sep">•</span>
+          <a href="{% url 'submissions:terms' %}">Terms of Service</a>
+          <span class="footer-sep">•</span>
+          <a href="{% url 'submissions:security' %}">Security & Transparency</a>
         </div>
-        <p style="text-align: center; margin-top: 12px; font-size: 11px; color: var(--muted); opacity: 0.8;">
+        <p class="footer-copy">
           © {{ "now"|date:"Y" }} Anonymous Employee Platform. All rights reserved.
         </p>
       </footer>
