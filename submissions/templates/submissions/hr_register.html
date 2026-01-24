@@ -27,7 +27,10 @@
     </div>
     
     <div class="mt-5 text-center">
-      <a href="{% url 'submissions:hr_register' %}">Register another company</a>
+      <a class="btn" href="/">Return to home</a>
+      <div class="mt-2">
+        <a href="{% url 'submissions:hr_register' %}">Register another company</a>
+      </div>
     </div>
   {% else %}
   <form method="post" action="">
