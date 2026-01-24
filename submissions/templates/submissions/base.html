@@ -62,19 +62,11 @@
         max-width:980px;
         margin:0 auto;
         padding:12px 20px;
-      }
-      .topbar-row{
         display:flex;
         flex-wrap:wrap;
         align-items:center;
         gap:10px 16px;
       }
-      .topbar-row-logo{
-        justify-content:space-between;
-        align-items:center;
-        margin-bottom:10px;
-      }
-      .topbar-row-nav{ margin-bottom: 0; }
       .topbar a{
         font-size:13px;
         font-weight:500;
@@ -106,6 +98,7 @@
       }
       .topbar-group{ display:flex; flex-wrap:wrap; align-items:center; gap:4px; }
       .topbar-login{
+        margin-left: auto;
         font-size: 22px;
         font-weight: 800;
         padding: 14px 32px;
@@ -541,23 +534,26 @@
   <body class="{% block body_class %}{% endblock %}">
     <header class="topbar">
       <div class="topbar-inner">
-        <div class="topbar-row topbar-row-logo">
-          <a class="topbar-logo" href="/">Kyrex</a>
-          <a class="topbar-login" href="/admin/">Log In</a>
-        </div>
-        <div class="topbar-row topbar-row-nav">
+        <a class="topbar-logo" href="/">Kyrex</a>
+        <span class="topbar-sep"></span>
+        <div class="topbar-group">
           <a href="/submit/">Submit</a>
           <a href="/status/">Check status</a>
           <a href="/how-it-works/">How it works</a>
-          <span class="topbar-sep"></span>
+        </div>
+        <span class="topbar-sep"></span>
+        <div class="topbar-group">
           <a href="{% url 'submissions:hr_register' %}">Register</a>
           <a href="/pricing/">Pricing</a>
           <a href="/contact/">Contact</a>
-          <span class="topbar-sep"></span>
+        </div>
+        <span class="topbar-sep"></span>
+        <div class="topbar-group">
           <a href="{% url 'submissions:terms' %}">Terms</a>
           <a href="{% url 'submissions:privacy' %}">Privacy</a>
           <a href="{% url 'submissions:security' %}">Security</a>
         </div>
+        <a class="topbar-login" href="/admin/">Log In</a>
       </div>
     </header>
     <div class="wrap">
