@@ -372,11 +372,11 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        min-width: 300px;
-        min-height: 200px;
-        padding: 32px 48px;
+        min-width: 420px;
+        min-height: 280px;
+        padding: 40px 56px;
         font-family: inherit;
-        font-size: 28px;
+        font-size: 30px;
         font-weight: 800;
         letter-spacing: -.03em;
         text-transform: uppercase;
@@ -422,8 +422,8 @@
           0 10px 24px rgba(0,0,0,.45),
           0 0 0 3px rgba(44,102,255,.5);
       }
-      @media (max-width: 420px){
-        .home-btn-big{ min-width: 260px; min-height: 160px; padding: 24px 32px; font-size: 22px; }
+      @media (max-width: 500px){
+        .home-btn-big{ min-width: 280px; min-height: 200px; padding: 28px 36px; font-size: 24px; }
         .home-buttons{ gap: 20px; padding: 24px 0 32px; }
       }
       .home-panels{ display: none; }
@@ -446,15 +446,11 @@
         transition: color .2s, background .2s, border-color .2s;
       }
       .home-back:hover{ color: var(--text); text-decoration: none; background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.18); }
-      .home-panel .panel-header{ margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,.1); }
+      .home-panel .panel-header{ margin-bottom: 28px; padding-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,.08); }
       .home-panel .panel-title{ font-size: 22px; font-weight: 700; letter-spacing: -.03em; margin: 0 0 8px; color: var(--text); }
       .home-panel .panel-lead{ font-size: 15px; line-height: 1.55; color: var(--muted); margin: 0; }
       .home-panel .panel-block{
-        background: rgba(255,255,255,.04);
-        border: 1px solid rgba(255,255,255,.08);
-        border-radius: 14px;
-        padding: 20px 24px;
-        margin-bottom: 16px;
+        margin-bottom: 28px;
       }
       .home-panel .panel-block:last-of-type{ margin-bottom: 0; }
       .home-panel .panel-block h3{ font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 12px; }
@@ -487,7 +483,7 @@
         border-radius: 10px;
       }
       .home-panel .panel-footer{
-        margin-top: 24px;
+        margin-top: 28px;
         padding-top: 20px;
         border-top: 1px solid rgba(255,255,255,.08);
         font-size: 13px;
@@ -495,8 +491,7 @@
       }
       .home-panel .panel-footer a{ margin-right: 12px; }
       .home-panel .panel-footer a:hover{ text-decoration: none; }
-      .home-panel .panel-hint{ margin-top: 16px; padding: 12px 16px; background: rgba(44,102,255,.08); border: 1px solid rgba(44,102,255,.2); border-radius: 10px; font-size: 13px; color: var(--muted); }
-    </style>
+      .home-panel .panel-hint{ margin-top: 20px; padding: 12px 16px; background: rgba(44,102,255,.08); border: 1px solid rgba(44,102,255,.2); border-radius: 10px; font-size: 13px; color: var(--muted); }
     </style>
   </head>
   <body class="{% block body_class %}{% endblock %}">
