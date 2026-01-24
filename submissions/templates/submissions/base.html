@@ -50,10 +50,6 @@
       .container{ max-width:980px; margin:0 auto; }
       .container--narrow{ max-width:720px; }
 
-      .topbar{
-        display:flex; align-items:center; justify-content:space-between; gap:12px;
-        margin-bottom:20px;
-      }
       .brand{
         display:flex; flex-direction:column; gap:4px;
       }
@@ -312,17 +308,6 @@
   </head>
   <body>
     <div class="wrap">
-      <div class="topbar">
-        <div class="brand">
-          <strong>Kyrex</strong>
-          <span>Anonymous Employee Platform - Safe channel for issues, concerns, and questions</span>
-        </div>
-        <div class="nav">
-          <a href="/">Home</a>
-          <a href="/pricing/">Pricing</a>
-          <a href="/contact/">Contact / Book demo</a>
-        </div>
-      </div>
       <div class="card reveal" data-reveal>
         {% block content %}{% endblock %}
       </div>
