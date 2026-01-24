@@ -100,8 +100,7 @@
 
     /* Page background (lighter, less GPU intensive) */
     body{
-      background:
-        linear-gradient(180deg, #080d1c 0%, #0a1224 100%);
+      background: #101827;
       color: var(--text);
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
     }
@@ -117,6 +116,9 @@
     }
     #content{
       padding-top: 18px;
+    }
+    #content, #content-main{
+      margin-left: 0;
     }
     .module, .dashboard #content-main .module, .grp-module{
       background: rgba(255,255,255,.05);
@@ -453,6 +455,15 @@
       border-radius: var(--radius-lg);
       margin: 12px 0 0;
       backdrop-filter: none;
+    }
+    div.breadcrumbs{
+      display: none;
+    }
+
+    /* Hide nav sidebar + toggle arrow */
+    #nav-sidebar,
+    .toggle-nav-sidebar{
+      display: none !important;
     }
 
     /* Messages */
