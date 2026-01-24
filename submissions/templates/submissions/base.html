@@ -96,6 +96,31 @@
         vertical-align:middle;
       }
       .topbar-group{ display:flex; flex-wrap:wrap; align-items:center; gap:4px; }
+      .topbar-login{
+        margin-left: auto;
+        font-size: 15px;
+        font-weight: 700;
+        padding: 10px 18px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, var(--brand), #4b87ff);
+        border: 1px solid rgba(44,102,255,.55);
+        color: #fff;
+        text-decoration: none;
+        white-space: nowrap;
+        transition: filter .2s, transform .2s, box-shadow .2s;
+        box-shadow: 0 4px 14px rgba(44,102,255,.3);
+      }
+      .topbar-login:hover{
+        filter: brightness(1.1);
+        transform: translateY(-1px);
+        box-shadow: 0 6px 18px rgba(44,102,255,.4);
+        color: #fff;
+        text-decoration: none;
+      }
+      .topbar-login:focus-visible{
+        outline: none;
+        box-shadow: 0 4px 14px rgba(44,102,255,.3), 0 0 0 3px rgba(44,102,255,.4);
+      }
 
       .brand{
         display:flex; flex-direction:column; gap:4px;
@@ -517,7 +542,6 @@
         <span class="topbar-sep"></span>
         <div class="topbar-group">
           <a href="{% url 'submissions:hr_register' %}">Register</a>
-          <a href="/admin/">HR login</a>
           <a href="/pricing/">Pricing</a>
           <a href="/contact/">Contact</a>
         </div>
@@ -527,6 +551,7 @@
           <a href="{% url 'submissions:privacy' %}">Privacy</a>
           <a href="{% url 'submissions:security' %}">Security</a>
         </div>
+        <a class="topbar-login" href="/admin/">Log In</a>
       </div>
     </header>
     <div class="wrap">
