@@ -50,6 +50,51 @@
       .container{ max-width:980px; margin:0 auto; }
       .container--narrow{ max-width:720px; }
 
+      .topbar{
+        position:sticky;
+        top:0;
+        z-index:100;
+        background: rgba(7,11,22,.92);
+        border-bottom: 1px solid rgba(255,255,255,.08);
+        backdrop-filter: blur(10px);
+      }
+      .topbar-inner{
+        max-width:980px;
+        margin:0 auto;
+        padding:12px 20px;
+        display:flex;
+        flex-wrap:wrap;
+        align-items:center;
+        gap:10px 16px;
+      }
+      .topbar a{
+        font-size:13px;
+        font-weight:500;
+        padding:6px 10px;
+        border-radius:6px;
+        color:var(--muted);
+        text-decoration:none;
+        white-space:nowrap;
+      }
+      .topbar a:hover{
+        color:var(--text);
+        background: rgba(255,255,255,.06);
+      }
+      .topbar .topbar-logo{
+        font-weight:700;
+        color:var(--text);
+        margin-right:8px;
+      }
+      .topbar-sep{
+        display:inline-block;
+        width:1px;
+        height:14px;
+        background: rgba(255,255,255,.15);
+        margin:0 4px;
+        vertical-align:middle;
+      }
+      .topbar-group{ display:flex; flex-wrap:wrap; align-items:center; gap:4px; }
+
       .brand{
         display:flex; flex-direction:column; gap:4px;
       }
@@ -311,31 +356,64 @@
       @media (prefers-reduced-motion: reduce){
         .reveal{ transition: none; transform: none; opacity: 1; }
       }
+
+      .home-split{
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 32px 40px;
+        align-items: start;
+      }
+      @media (max-width: 700px){
+        .home-split{ grid-template-columns: 1fr; }
+      }
+      .home-col{ }
+      .home-col h2{ font-size: 16px; margin: 0 0 8px; font-weight: 600; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); }
+      .home-col p{ margin: 0 0 12px; font-size: 14px; line-height: 1.5; }
+      .home-col .home-list{ margin: 0; padding-left: 18px; font-size: 14px; color: var(--muted); line-height: 1.65; }
+      .home-col .home-list li{ margin: 4px 0; }
+      .home-col hr{ border: none; border-top: 1px solid rgba(255,255,255,.08); margin: 20px 0; }
+      .home-col .home-section{ margin-bottom: 24px; }
+      .home-col .home-section:last-child{ margin-bottom: 0; }
+      .home-list-label{ margin: 0 0 6px; font-size: 13px; font-weight: 600; color: var(--text); }
     </style>
   </head>
   <body class="{% block body_class %}{% endblock %}">
+    <header class="topbar">
+      <div class="topbar-inner">
+        <a class="topbar-logo" href="/">Kyrex</a>
+        <span class="topbar-sep"></span>
+        <div class="topbar-group">
+          <a href="/submit/">Submit</a>
+          <a href="/status/">Check status</a>
+          <a href="/how-it-works/">How it works</a>
+        </div>
+        <span class="topbar-sep"></span>
+        <div class="topbar-group">
+          <a href="{% url 'submissions:hr_register' %}">Register</a>
+          <a href="/admin/">HR login</a>
+          <a href="/pricing/">Pricing</a>
+          <a href="/contact/">Contact</a>
+        </div>
+        <span class="topbar-sep"></span>
+        <div class="topbar-group">
+          <a href="{% url 'submissions:terms' %}">Terms</a>
+          <a href="{% url 'submissions:privacy' %}">Privacy</a>
+          <a href="{% url 'submissions:security' %}">Security</a>
+        </div>
+      </div>
+    </header>
     <div class="wrap">
+      {% block wrap_extra_before %}{% endblock %}
       <div class="card reveal" data-reveal>
         {% block content %}{% endblock %}
       </div>
+      {% block wrap_extra_after %}{% endblock %}
+      {% block hint %}
       <p class="hint">
         This tool is designed to protect anonymity. Do not include identifying details unless necessary.
       </p>
-      
+      {% endblock %}
       <footer class="footer reveal" data-reveal>
-        <div class="footer-links">
-          <a href="/how-it-works/">How it works</a>
-          <span class="footer-sep">•</span>
-          <a href="/pricing/">Pricing</a>
-          <span class="footer-sep">•</span>
-          <a href="/contact/">Contact / Book demo</a>
-          <span class="footer-sep">•</span>
-          <a href="{% url 'submissions:privacy' %}">Privacy Policy</a>
-          <span class="footer-sep">•</span>
-          <a href="{% url 'submissions:terms' %}">Terms of Service</a>
-          <span class="footer-sep">•</span>
-          <a href="{% url 'submissions:security' %}">Security & Transparency</a>
-        </div>
         <p class="footer-copy">
           © {{ "now"|date:"Y" }} Anonymous Employee Platform. All rights reserved.
         </p>

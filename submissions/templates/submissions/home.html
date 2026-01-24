@@ -1,60 +1,33 @@
 {% extends "submissions/base.html" %}
 {% load static %}
 {% block body_class %}page-home{% endblock %}
+{% block hint %}{% endblock %}
+
 {% block content %}
-  <div class="hero-screen reveal" data-reveal>
-    <h1 class="hero-title">Kyrex</h1>
-  </div>
-  <div class="panel mt-4 reveal" data-reveal>
-    <h2>Speak up safely.</h2>
-    <p class="muted">
-      Submit an issue, concern, or question anonymously. After you submit, you’ll receive a <strong>numeric receipt code</strong> to check updates later.
-    </p>
-    <div class="actions">
-      <a class="btn btn-primary" href="/submit/">Submit anonymously</a>
-      <a class="btn" href="/status/">Check status</a>
+  <div class="home-split reveal" data-reveal>
+    <div class="home-col home-col-hr">
+      <h2>For HR</h2>
+      <p>Register your company to get an access code. Share it with employees so they can submit feedback anonymously.</p>
+      <hr>
+      <div class="home-section">
+        <p>Sign in to the HR dashboard to manage submissions, reply to concerns, and track issues. View pricing, book a demo, or contact us—all linked above.</p>
+      </div>
+      <hr>
+      <p><a href="{% url 'submissions:terms' %}">Terms</a>, <a href="{% url 'submissions:privacy' %}">Privacy</a>, and <a href="{% url 'submissions:security' %}">Security</a> apply.</p>
     </div>
-    <p class="hint">Tip: Keep your receipt code somewhere safe (it’s the only way to view updates).</p>
-  </div>
-  <div class="panel mt-4 reveal" data-reveal>
-    <h2>For HR</h2>
-    <p class="muted">Register your company to get an access code for employees, or sign in to manage submissions.</p>
-    <div class="actions">
-      <a class="btn btn-primary" href="{% url 'submissions:hr_register' %}">Register your company</a>
-      <a class="btn" href="/admin/">HR login</a>
-    </div>
-  </div>
-  <div class="panel mt-4 reveal" data-reveal>
-    <h2>How it works</h2>
-    <p class="muted">A simple flow with no employee accounts.</p>
-    <ul class="muted list">
-      <li>Enter your company access code</li>
-      <li>Share your concern, issue, or question</li>
-      <li>Save the receipt code to track updates later</li>
-    </ul>
-  </div>
-  <div class="panel mt-4 reveal" data-reveal>
-    <h2>Pricing</h2>
-    <p class="muted">Simple pricing for teams that want a safe feedback channel.</p>
-    <div class="actions">
-      <a class="btn btn-primary" href="/pricing/">View pricing</a>
-      <a class="btn" href="/contact/">Talk to us</a>
-    </div>
-  </div>
-  <div class="panel mt-4 reveal" data-reveal>
-    <h2>Contact</h2>
-    <p class="muted">Book a demo or ask questions about onboarding your team.</p>
-    <div class="actions">
-      <a class="btn btn-primary" href="/contact/">Contact / Book demo</a>
-    </div>
-  </div>
-  <div class="panel mt-4 reveal" data-reveal>
-    <h2>Terms of Service</h2>
-    <p class="muted">Read the usage guidelines and platform terms.</p>
-    <div class="actions">
-      <a class="btn btn-primary" href="{% url 'submissions:terms' %}">View terms</a>
-      <a class="btn" href="{% url 'submissions:privacy' %}">Privacy Policy</a>
+    <div class="home-col home-col-emp">
+      <h2>For employees</h2>
+      <p>Submit an issue, concern, or question anonymously. Use your company access code when submitting.</p>
+      <hr>
+      <div class="home-section">
+        <p class="home-list-label">How it works:</p>
+        <ul class="home-list">
+          <li>Enter your company access code</li>
+          <li>Share your concern, issue, or question</li>
+          <li>Save the receipt code to track updates later</li>
+        </ul>
+      </div>
+      <p class="hint" style="margin-top:12px;">Keep your receipt code safe—it’s the only way to view updates.</p>
     </div>
   </div>
 {% endblock %}
-
