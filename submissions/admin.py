@@ -524,10 +524,26 @@ class SubmissionAdmin(admin.ModelAdmin):
         """Only superusers can delete submissions."""
         return request.user.is_superuser
 
+    def has_view_permission(self, request, obj=None):
+        """Allow staff to view submissions in admin."""
+        if request.user.is_superuser:
+            return True
+        return request.user.is_staff
+
+    def has_change_permission(self, request, obj=None):
+        """Allow staff to update submissions they can view."""
+        if request.user.is_superuser:
+            return True
+        return request.user.is_staff
+
     def get_queryset(self, request):
         """Optimize queryset with select_related."""
-        qs = super().get_queryset(request)
-        return qs.select_related("hr_response")
+        qs = super().get_queryset(request).select_related("hr_response")
+        if request.user.is_superuser:
+            return qs
+        if request.user.is_staff:
+            return qs.filter(hr_access_code__user=request.user)
+        return qs.none()
 
 
 @admin.register(HrResponse)
@@ -537,6 +553,27 @@ class HrResponseAdmin(admin.ModelAdmin):
     readonly_fields = ("created_at", "updated_at", "response_preview_field")
     list_per_page = 25
     ordering = ("-created_at",)
+
+    def has_view_permission(self, request, obj=None):
+        """Allow staff to view responses for their submissions."""
+        if request.user.is_superuser:
+            return True
+        return request.user.is_staff
+
+    def has_change_permission(self, request, obj=None):
+        """Allow staff to update responses for their submissions."""
+        if request.user.is_superuser:
+            return True
+        return request.user.is_staff
+
+    def get_queryset(self, request):
+        """Limit responses to the HR user's submissions."""
+        qs = super().get_queryset(request).select_related("submission", "submission__hr_access_code")
+        if request.user.is_superuser:
+            return qs
+        if request.user.is_staff:
+            return qs.filter(submission__hr_access_code__user=request.user)
+        return qs.none()
     
     fieldsets = (
         ("Response Details", {
