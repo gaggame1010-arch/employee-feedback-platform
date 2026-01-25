@@ -136,27 +136,67 @@
       border-left: 3px solid var(--sf-brand);
     }
 
-    /* Submission Details – dark blue, round panel */
+    /* Submission Details – upgraded dark blue panel */
     body.app-submissions.model-submission.change-form #content-main fieldset:first-of-type {
-      background: linear-gradient(165deg, rgba(15,35,75,.9) 0%, var(--sf-darkblue) 50%, rgba(10,20,48,.9) 100%);
-      border: 1px solid var(--sf-darkblue-border);
+      background: linear-gradient(165deg, rgba(18,38,78,.95) 0%, rgba(12,25,55,.95) 45%, rgba(8,18,42,.95) 100%);
+      border: 1px solid rgba(44,102,255,.28);
       border-radius: var(--sf-radius-panel);
-      box-shadow: 0 12px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+      padding: 0;
+      overflow: hidden;
+      box-shadow: 0 16px 48px rgba(0,0,0,.4), 0 0 0 1px rgba(255,255,255,.04) inset, 0 1px 0 rgba(255,255,255,.08) inset;
     }
 
     body.app-submissions.model-submission.change-form #content-main fieldset:first-of-type:hover {
-      border-color: rgba(44,102,255,.35);
+      border-color: rgba(44,102,255,.4);
+      box-shadow: 0 20px 56px rgba(0,0,0,.45), 0 0 0 1px rgba(255,255,255,.05) inset, 0 1px 0 rgba(255,255,255,.1) inset;
     }
 
+    /* Submission Details – header strip (full-width, rounded top) */
     body.app-submissions.model-submission.change-form #content-main fieldset:first-of-type legend {
-      background: linear-gradient(135deg, rgba(44,102,255,.3), rgba(30,60,120,.5));
-      border: 1px solid rgba(44,102,255,.4);
-      border-radius: 14px;
+      display: block;
+      width: 100%;
+      margin: 0;
+      padding: 18px 24px;
+      box-sizing: border-box;
+      font-size: 15px;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(232,238,252,.95);
+      background: linear-gradient(135deg, rgba(44,102,255,.22) 0%, rgba(30,60,120,.35) 50%, rgba(20,45,95,.4) 100%);
+      border: none;
+      border-bottom: 1px solid rgba(44,102,255,.2);
+      border-radius: var(--sf-radius-panel) var(--sf-radius-panel) 0 0;
+      box-shadow: 0 1px 0 rgba(255,255,255,.1) inset;
     }
 
+    /* Submission Details – description card */
     body.app-submissions.model-submission.change-form #content-main fieldset:first-of-type .description {
-      background: rgba(0,0,0,.2);
-      border-left-color: rgba(44,102,255,.6);
+      margin: 0;
+      padding: 18px 22px 18px 24px;
+      font-size: 14px;
+      line-height: 1.55;
+      color: rgba(232,238,252,.85);
+      background: linear-gradient(135deg, rgba(0,0,0,.2) 0%, rgba(0,0,0,.28) 100%);
+      border: none;
+      border-radius: 0;
+      border-left: 4px solid var(--sf-brand);
+      box-shadow: 0 2px 8px rgba(0,0,0,.15) inset, 0 1px 0 rgba(255,255,255,.03) inset;
+    }
+
+    /* Form rows inside Submission Details */
+    body.app-submissions.model-submission.change-form #content-main fieldset:first-of-type .form-row {
+      margin-left: 24px;
+      margin-right: 24px;
+      margin-bottom: 20px;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset:first-of-type .form-row:first-of-type {
+      margin-top: 24px;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset:first-of-type .form-row:last-child {
+      margin-bottom: 24px;
     }
 
     /* Form rows */
