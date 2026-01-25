@@ -1,0 +1,373 @@
+{% extends "admin/change_form.html" %}
+{% load i18n admin_urls %}
+
+{% block form_top %}
+  <p class="submission-change-back">
+    <a href="{% url 'admin:submissions_submission_changelist' %}">← Back to submissions</a>
+  </p>
+{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    /* Submission change form – upgraded design */
+    :root {
+      --sf-bg: #0b1220;
+      --sf-surface: rgba(255,255,255,.06);
+      --sf-surface-hover: rgba(255,255,255,.08);
+      --sf-border: rgba(255,255,255,.12);
+      --sf-border-focus: rgba(44,102,255,.4);
+      --sf-text: #e8eefc;
+      --sf-muted: rgba(232,238,252,.65);
+      --sf-brand: #2c66ff;
+      --sf-radius: 16px;
+      --sf-radius-sm: 12px;
+      --sf-shadow: 0 12px 40px rgba(0,0,0,.3);
+    }
+
+    /* Page shell */
+    body.app-submissions.model-submission.change-form #content {
+      padding-top: 24px;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    /* Page title → compact header with back link */
+    body.app-submissions.model-submission.change-form #content h1 {
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--sf-text);
+      letter-spacing: -0.3px;
+      margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    body.app-submissions.model-submission.change-form #content h1 a {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--sf-muted);
+      padding: 6px 12px;
+      border-radius: var(--sf-radius-sm);
+      border: 1px solid var(--sf-border);
+      background: var(--sf-surface);
+      transition: all .2s;
+    }
+
+    body.app-submissions.model-submission.change-form #content h1 a:hover {
+      color: var(--sf-text);
+      border-color: var(--sf-border-focus);
+      background: var(--sf-surface-hover);
+    }
+
+    /* Back to submissions link */
+    body.app-submissions.model-submission.change-form .submission-change-back {
+      margin: 0 0 20px;
+    }
+
+    body.app-submissions.model-submission.change-form .submission-change-back a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--sf-radius-sm);
+      border: 1px solid var(--sf-border);
+      background: var(--sf-surface);
+      color: var(--sf-muted);
+      font-size: 14px;
+      font-weight: 600;
+      transition: all .2s;
+    }
+
+    body.app-submissions.model-submission.change-form .submission-change-back a:hover {
+      color: var(--sf-text);
+      border-color: var(--sf-border-focus);
+      background: var(--sf-surface-hover);
+    }
+
+    /* Main form card */
+    body.app-submissions.model-submission.change-form #content-main form {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    /* Fieldsets = cards */
+    body.app-submissions.model-submission.change-form #content-main fieldset {
+      background: var(--sf-surface);
+      border: 1px solid var(--sf-border);
+      border-radius: var(--sf-radius);
+      padding: 24px;
+      margin-bottom: 0;
+      box-shadow: var(--sf-shadow);
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset:hover {
+      border-color: rgba(255,255,255,.16);
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset legend {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--sf-text);
+      padding: 0 12px;
+      margin-left: 0;
+      background: linear-gradient(135deg, rgba(44,102,255,.15), rgba(124,58,237,.1));
+      border: 1px solid rgba(44,102,255,.25);
+      border-radius: var(--sf-radius-sm);
+      margin-bottom: 20px;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset .description {
+      color: var(--sf-muted);
+      font-size: 13px;
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      background: rgba(0,0,0,.15);
+      border-radius: var(--sf-radius-sm);
+      border-left: 3px solid var(--sf-brand);
+    }
+
+    /* Submission Details – highlight */
+    body.app-submissions.model-submission.change-form #content-main fieldset:first-of-type {
+      background: linear-gradient(180deg, rgba(44,102,255,.08) 0%, var(--sf-surface) 100%);
+      border-color: rgba(44,102,255,.2);
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset:first-of-type legend {
+      background: linear-gradient(135deg, rgba(44,102,255,.25), rgba(124,58,237,.15));
+      border-color: rgba(44,102,255,.35);
+    }
+
+    /* Form rows */
+    body.app-submissions.model-submission.change-form #content-main .form-row {
+      margin-bottom: 20px;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .form-row:last-child {
+      margin-bottom: 0;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .form-row label {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--sf-text);
+      margin-bottom: 8px;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main input[type="text"],
+    body.app-submissions.model-submission.change-form #content-main input[type="number"],
+    body.app-submissions.model-submission.change-form #content-main select,
+    body.app-submissions.model-submission.change-form #content-main textarea {
+      width: 100%;
+      max-width: 100%;
+      padding: 12px 16px;
+      border-radius: var(--sf-radius-sm);
+      border: 1px solid var(--sf-border);
+      background: rgba(8,13,26,.5);
+      color: var(--sf-text);
+      font-size: 14px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main input:focus,
+    body.app-submissions.model-submission.change-form #content-main select:focus,
+    body.app-submissions.model-submission.change-form #content-main textarea:focus {
+      outline: none;
+      border-color: var(--sf-border-focus);
+      box-shadow: 0 0 0 3px rgba(44,102,255,.2);
+    }
+
+    body.app-submissions.model-submission.change-form #content-main textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    /* Readonly + preview */
+    body.app-submissions.model-submission.change-form #content-main .readonly {
+      background: rgba(0,0,0,.25) !important;
+      padding: 14px 18px !important;
+      border-radius: var(--sf-radius-sm);
+      border: 1px solid var(--sf-border);
+      color: var(--sf-muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .submission-preview-box {
+      background: rgba(0,0,0,.25) !important;
+      padding: 14px 18px !important;
+      border-radius: var(--sf-radius-sm);
+      border: 1px solid var(--sf-border);
+      color: var(--sf-muted);
+      font-size: 14px;
+      line-height: 1.6;
+      white-space: pre-wrap;
+    }
+
+    /* Timestamps collapsed */
+    body.app-submissions.model-submission.change-form #content-main fieldset.collapsed {
+      padding: 16px 24px;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset.collapsed legend {
+      margin-bottom: 0;
+    }
+
+    /* HR Response inline – distinct "Reply" card */
+    body.app-submissions.model-submission.change-form #content-main .inline-group {
+      background: var(--sf-surface);
+      border: 1px solid var(--sf-border);
+      border-radius: var(--sf-radius);
+      padding: 24px;
+      margin-top: 8px;
+      box-shadow: var(--sf-shadow);
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .inline-group fieldset.module {
+      background: transparent;
+      border: none;
+      padding: 0;
+      margin: 0;
+      box-shadow: none;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .inline-group h2.inline-heading {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: var(--sf-text);
+      margin: 0 0 20px;
+      padding: 12px 16px;
+      background: linear-gradient(135deg, rgba(34,197,94,.15), rgba(44,102,255,.1));
+      border: 1px solid rgba(34,197,94,.3);
+      border-radius: var(--sf-radius-sm);
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .inline-group .inline-related {
+      background: rgba(0,0,0,.12);
+      border: 1px solid var(--sf-border);
+      border-radius: var(--sf-radius-sm);
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .inline-group .inline-related:last-child {
+      margin-bottom: 0;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .inline-group .inline-related h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: var(--sf-muted);
+      margin: 0 0 14px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--sf-border);
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .inline-group .form-row {
+      margin-bottom: 16px;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .inline-group .form-row:last-child {
+      margin-bottom: 0;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .inline-group textarea {
+      min-height: 160px;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .inline-group .delete {
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .inline-group .delete label {
+      color: var(--sf-muted);
+      font-weight: 500;
+    }
+
+    /* Submit row */
+    body.app-submissions.model-submission.change-form #content-main .submit-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      padding: 20px 24px;
+      background: var(--sf-surface);
+      border: 1px solid var(--sf-border);
+      border-radius: var(--sf-radius);
+      margin-top: 8px;
+      box-shadow: var(--sf-shadow);
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .submit-row input[type="submit"],
+    body.app-submissions.model-submission.change-form #content-main .submit-row a.button {
+      padding: 12px 24px;
+      border-radius: var(--sf-radius-sm);
+      font-weight: 700;
+      font-size: 14px;
+      border: 1px solid rgba(44,102,255,.55);
+      background: linear-gradient(135deg, var(--sf-brand), #4b87ff);
+      color: #fff;
+      cursor: pointer;
+      transition: filter .2s, transform .2s;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .submit-row input[type="submit"]:hover,
+    body.app-submissions.model-submission.change-form #content-main .submit-row a.button:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .submit-row .deletelink-box {
+      margin-left: auto;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .submit-row .deletelink {
+      padding: 10px 20px;
+      border-radius: var(--sf-radius-sm);
+      border: 1px solid rgba(239,68,68,.5);
+      background: rgba(239,68,68,.15);
+      color: #f87171;
+      font-weight: 700;
+      transition: all .2s;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main .submit-row .deletelink:hover {
+      background: rgba(239,68,68,.25);
+      color: #fca5a5;
+    }
+
+    /* Delete confirmation */
+    body.app-submissions.model-submission.change-form .deletelink-box {
+      order: 99;
+    }
+
+    /* Messagelist */
+    body.app-submissions.model-submission.change-form ul.messagelist {
+      margin-bottom: 20px;
+    }
+
+    body.app-submissions.model-submission.change-form ul.messagelist li {
+      border-radius: var(--sf-radius-sm);
+      padding: 14px 18px;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      body.app-submissions.model-submission.change-form #content { padding-top: 16px; }
+      body.app-submissions.model-submission.change-form #content-main fieldset,
+      body.app-submissions.model-submission.change-form #content-main .inline-group,
+      body.app-submissions.model-submission.change-form #content-main .submit-row {
+        padding: 18px;
+      }
+    }
+  </style>
+{% endblock %}

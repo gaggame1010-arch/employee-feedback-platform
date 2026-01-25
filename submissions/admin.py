@@ -556,7 +556,7 @@ class SubmissionAdmin(admin.ModelAdmin):
             return "Save to see preview"
         preview = obj.body[:200] + "..." if len(obj.body) > 200 else obj.body
         return format_html(
-            '<div style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; white-space: pre-wrap; font-size: 13px; line-height: 1.6;">{}</div>',
+            '<div class="submission-preview-box" style="background: rgba(0,0,0,0.2); padding: 12px; border-radius: 8px; white-space: pre-wrap; font-size: 13px; line-height: 1.6;">{}</div>',
             preview
         )
     submission_preview.short_description = "Preview"
