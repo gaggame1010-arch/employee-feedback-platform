@@ -184,15 +184,24 @@
       font-weight: 700;
     }
     #user-tools a[href*="logout"]{
-      background: rgba(239,68,68,.08);
-      border-color: rgba(239,68,68,.2);
+      background: linear-gradient(135deg, rgba(239,68,68,.18) 0%, rgba(239,68,68,.12) 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(239,68,68,.3);
       color: #fca5a5;
+      box-shadow: 0 4px 12px rgba(239,68,68,.15), 0 0 0 1px rgba(255,255,255,.03) inset;
+      font-size: 12px;
+      padding: 9px 18px;
     }
     #user-tools a[href*="logout"]:hover{
-      background: rgba(239,68,68,.15);
-      border-color: rgba(239,68,68,.3);
+      background: linear-gradient(135deg, rgba(239,68,68,.25) 0%, rgba(239,68,68,.18) 100%);
+      border-color: rgba(239,68,68,.4);
       color: #fecaca;
-      box-shadow: 0 2px 12px rgba(239,68,68,.2);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(239,68,68,.3), 0 0 0 1px rgba(255,255,255,.05) inset;
+    }
+    #user-tools a[href*="logout"]:active{
+      transform: translateY(0);
     }
     #user-tools .separator{
       color: rgba(232,238,252,.2);
