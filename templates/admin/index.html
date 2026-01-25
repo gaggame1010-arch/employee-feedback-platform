@@ -11,24 +11,24 @@
 
     /* Dashboard page shell */
     .dashboard #content {
-      max-width: 1200px;
+      max-width: 1100px;
       margin: 0 auto;
-      padding-top: 32px;
+      padding: 28px 24px;
     }
 
-    /* Dashboard Statistics Cards */
+    /* Dashboard Statistics Cards - 3x3 Grid */
     .dashboard-stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
-      gap: 18px;
-      margin-bottom: 36px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
     }
     
     .stat-card {
       background: linear-gradient(165deg, rgba(18,38,78,.7) 0%, rgba(12,25,55,.8) 50%, rgba(8,18,42,.7) 100%);
       border: 1px solid rgba(44,102,255,.22);
       border-radius: var(--dash-radius);
-      padding: 24px;
+      padding: 20px;
       box-shadow: var(--dash-shadow), 0 0 0 1px rgba(255,255,255,.04) inset, 0 1px 0 rgba(255,255,255,.08) inset;
       transition: all 0.25s;
       cursor: pointer;
@@ -37,6 +37,10 @@
       display: block;
       color: inherit;
       overflow: hidden;
+      aspect-ratio: 1.6 / 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
     }
 
     .stat-card::before {
@@ -87,16 +91,16 @@
     }
     
     .stat-card h3 {
-      margin: 0 0 12px;
-      font-size: 11px;
+      margin: 0 0 10px;
+      font-size: 10px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.08em;
-      color: rgba(232,238,252,.8);
+      color: rgba(232,238,252,.7);
     }
     
     .stat-card .number {
-      font-size: 42px;
+      font-size: 38px;
       font-weight: 900;
       color: #2c66ff;
       line-height: 1;
@@ -427,24 +431,24 @@
       letter-spacing: 0.5px;
     }
     
-    /* Welcome Message – upgraded hero banner */
+    /* Welcome Message – compact banner */
     .dashboard-welcome {
       background: linear-gradient(165deg, rgba(18,38,78,.95) 0%, rgba(12,25,55,.95) 45%, rgba(8,18,42,.95) 100%);
       border: 1px solid rgba(44,102,255,.28);
       border-radius: var(--dash-radius);
       padding: 0;
-      margin-bottom: 32px;
+      margin-bottom: 28px;
       overflow: hidden;
       box-shadow: var(--dash-shadow), 0 0 0 1px rgba(255,255,255,.04) inset, 0 1px 0 rgba(255,255,255,.08) inset;
     }
     
     .dashboard-welcome h1 {
       margin: 0;
-      padding: 24px 28px;
-      font-size: 28px;
+      padding: 20px 24px;
+      font-size: 24px;
       font-weight: 900;
       color: rgba(232,238,252,.98);
-      letter-spacing: -0.6px;
+      letter-spacing: -0.5px;
       background: linear-gradient(135deg, rgba(44,102,255,.18), rgba(124,58,237,.12));
       border-bottom: 1px solid rgba(44,102,255,.2);
       box-shadow: 0 1px 0 rgba(255,255,255,.08) inset;
@@ -452,10 +456,22 @@
     
     .dashboard-welcome p {
       margin: 0;
-      padding: 20px 28px;
+      padding: 16px 24px;
       color: rgba(232,238,252,.8);
-      font-size: 15px;
-      line-height: 1.6;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 1100px) {
+      .dashboard-stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 600px) {
+      .dashboard-stats {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 {% endblock %}
