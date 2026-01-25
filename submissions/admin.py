@@ -320,7 +320,7 @@ class SubmissionAdmin(admin.ModelAdmin):
     list_display = ("receipt_code_display", "type_badge", "status_badge", "title_truncated", "submitted_time", "has_response")
     list_filter = ("type", "status", "created_at", "updated_at")
     search_fields = ("receipt_code", "title", "body")
-    readonly_fields = ("receipt_code", "hr_code_display", "created_at", "updated_at", "submission_preview")
+    readonly_fields = ("receipt_code", "hr_code_display", "submission_preview")
     inlines = [HrResponseInline]
     list_per_page = 25
     date_hierarchy = "created_at"
@@ -332,10 +332,6 @@ class SubmissionAdmin(admin.ModelAdmin):
         ("Submission Details", {
             "fields": ("receipt_code", "hr_code_display", "type", "status", "title", "body", "submission_preview"),
             "description": "View the employee's submission below. Scroll down to the 'HR Responses' section to add your reply."
-        }),
-        ("Timestamps", {
-            "fields": ("created_at", "updated_at"),
-            "classes": ("collapse",)
         }),
     )
     

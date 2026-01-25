@@ -265,59 +265,6 @@
       white-space: pre-wrap;
     }
 
-    /* Timestamps – upgraded design (collapse module) */
-    body.app-submissions.model-submission.change-form #content-main fieldset.collapse {
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.1);
-      border-radius: var(--sf-radius-panel);
-      padding: 0;
-      overflow: hidden;
-    }
-
-    body.app-submissions.model-submission.change-form #content-main fieldset.collapse legend {
-      margin-bottom: 0;
-      width: 100%;
-      padding: 14px 20px;
-      border-radius: 0;
-      background: linear-gradient(90deg, rgba(44,102,255,.12), rgba(80,60,140,.08));
-      border: none;
-      border-bottom: 1px solid rgba(255,255,255,.08);
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    body.app-submissions.model-submission.change-form #content-main fieldset.collapse legend::before {
-      content: "🕐";
-      font-size: 16px;
-    }
-
-    body.app-submissions.model-submission.change-form #content-main fieldset.collapse.collapsed {
-      padding: 0;
-    }
-
-    body.app-submissions.model-submission.change-form #content-main fieldset.collapse.collapsed legend {
-      border-bottom: none;
-    }
-
-    body.app-submissions.model-submission.change-form #content-main fieldset.collapse .form-row {
-      padding: 16px 24px;
-      margin-bottom: 0;
-      border-bottom: 1px solid rgba(255,255,255,.06);
-    }
-
-    body.app-submissions.model-submission.change-form #content-main fieldset.collapse .form-row:last-child {
-      border-bottom: none;
-    }
-
-    body.app-submissions.model-submission.change-form #content-main fieldset.collapse .readonly {
-      background: rgba(0,0,0,.15) !important;
-      font-family: ui-monospace, monospace;
-      font-size: 13px;
-      letter-spacing: 0.3px;
-    }
-
     /* HR Response inline – distinct "Reply" card */
     body.app-submissions.model-submission.change-form #content-main .inline-group {
       background: var(--sf-surface);
