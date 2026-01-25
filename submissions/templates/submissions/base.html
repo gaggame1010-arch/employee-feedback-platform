@@ -715,8 +715,8 @@
       .home-panel .panel-hint{ margin-top: 20px; padding: 12px 16px; background: rgba(44,102,255,.08); border: 1px solid rgba(44,102,255,.2); border-radius: 10px; font-size: 13px; color: var(--muted); }
       
       /* HOMEPAGE DESIGN - Dark Theme Matching Site */
-      .hero-full{ min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 120px 24px; background: radial-gradient(ellipse at top, rgba(124,58,237,.12) 0%, transparent 50%), linear-gradient(180deg, #070b16, #0a0f1a); }
-      .hero-logo{ font-size: 80px; font-weight: 900; letter-spacing: 0.05em; background: linear-gradient(135deg, #e8eefc 0%, #b9d2ff 50%, #8db3ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 48px; text-shadow: 0 0 60px rgba(44,102,255,.3); }
+      .hero-full{ min-height: auto; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 80px 24px 60px; background: radial-gradient(ellipse at top, rgba(124,58,237,.12) 0%, transparent 50%), linear-gradient(180deg, #070b16, #0a0f1a); }
+      .hero-logo{ font-size: 96px; font-weight: 900; letter-spacing: 0.05em; background: linear-gradient(135deg, #e8eefc 0%, #b9d2ff 50%, #8db3ff 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; margin-bottom: 56px; text-shadow: 0 0 80px rgba(44,102,255,.4); }
       .hero-full h1{ font-size: 56px; font-weight: 700; line-height: 1.1; color: #e8eefc; margin: 0 0 24px; letter-spacing: -0.02em; }
       .hero-sub{ font-size: 18px; line-height: 1.6; color: rgba(232,238,252,.7); max-width: 700px; margin: 0 0 40px; }
       .hero-ctas{ display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
@@ -750,7 +750,8 @@
       .check{ color: #34d399; font-size: 24px; font-weight: 700; }
       .anon-sub{ font-size: 14px; font-style: italic; color: rgba(255,255,255,0.6); margin: 0; }
       
-      .section-for{ padding: 120px 24px; background: radial-gradient(ellipse at center, rgba(44,102,255,.08) 0%, transparent 50%), linear-gradient(180deg, #070b16, #0a0f1a); }
+      .section-for{ padding: 80px 24px; background: linear-gradient(180deg, #0a0f1a, #070b16); }
+      .section-for-top{ padding-top: 40px; padding-bottom: 80px; background: linear-gradient(180deg, #0a0f1a, #070b16); }
       .for-grid{ max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; }
       .for-card{ padding: 40px; background: rgba(255,255,255,.06); backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.1); border-radius: 16px; box-shadow: 0 8px 24px rgba(0,0,0,.2); transition: all .3s; }
       .for-card:hover{ transform: translateY(-4px); border-color: rgba(255,255,255,.15); box-shadow: 0 12px 32px rgba(0,0,0,.3); }
@@ -764,6 +765,7 @@
       .section-final p{ font-size: 18px; line-height: 1.6; color: rgba(232,238,252,.7); margin: 0 0 32px; }
       
       @media (max-width: 768px){
+        .hero-logo{ font-size: 56px; margin-bottom: 32px; }
         .hero-full h1{ font-size: 36px; }
         .section-what h2, .section-how h2, .section-final h2{ font-size: 28px; }
         .how-col h3, .for-card h3, .anon-card h3{ font-size: 24px; }

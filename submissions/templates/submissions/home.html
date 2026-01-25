@@ -9,9 +9,29 @@
     <div class="hero-logo">Kyrex</div>
     <h1>Unlock Hidden Intelligence</h1>
     <p class="hero-sub">The intelligence system you didn't know you were missing. Private channel for observations, ideas, and questions that don't emerge in meetings.</p>
-    <div class="hero-ctas">
-      <a href="{% url 'submissions:hr_register' %}" class="btn-primary">For HR Teams</a>
-      <a href="{% url 'submissions:submit' %}" class="btn-secondary">For Employees</a>
+  </section>
+
+  <!-- For HR / For Team Members -->
+  <section class="section-for section-for-top">
+    <div class="for-grid">
+      <div class="for-card">
+        <h3>For HR</h3>
+        <ul class="for-list">
+          <li>Access insights you wouldn't otherwise hear</li>
+          <li>Drive performance and retention</li>
+          <li>Act on concerns before exit interviews</li>
+        </ul>
+        <a href="{% url 'submissions:hr_register' %}" class="btn-primary">Open Free Account</a>
+      </div>
+      <div class="for-card">
+        <h3>For Team Members</h3>
+        <ul class="for-list">
+          <li>Share observations that matter</li>
+          <li>Surface ideas directly to HR</li>
+          <li>Ask questions that don't fit in meetings</li>
+        </ul>
+        <a href="{% url 'submissions:submit' %}" class="btn-primary">Share Anonymously</a>
+      </div>
     </div>
   </section>
 
@@ -60,34 +80,4 @@
     </div>
   </section>
 
-  <!-- For HR / For Team Members -->
-  <section class="section-for">
-    <div class="for-grid">
-      <div class="for-card">
-        <h3>For HR</h3>
-        <ul class="for-list">
-          <li>Access insights you wouldn't otherwise hear</li>
-          <li>Drive performance and retention</li>
-          <li>Act on concerns before exit interviews</li>
-        </ul>
-        <a href="{% url 'submissions:hr_register' %}" class="btn-primary">Open Account</a>
-      </div>
-      <div class="for-card">
-        <h3>For Team Members</h3>
-        <ul class="for-list">
-          <li>Share observations that matter</li>
-          <li>Surface ideas directly to HR</li>
-          <li>Ask questions that don't fit in meetings</li>
-        </ul>
-        <a href="{% url 'submissions:submit' %}" class="btn-primary">Share Anonymously</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Final CTA -->
-  <section class="section-final">
-    <h2>Start Free</h2>
-    <p>No credit card required.</p>
-    <a href="{% url 'submissions:hr_register' %}" class="btn-primary">Get Started</a>
-  </section>
 {% endblock %}
