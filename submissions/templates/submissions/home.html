@@ -1,90 +1,92 @@
 {% extends "submissions/base.html" %}
 {% load static %}
-{% block body_class %}page-home{% endblock %}
+{% block body_class %}page-home-new{% endblock %}
 {% block hint %}{% endblock %}
 
 {% block content %}
-  <section class="home-hero reveal" data-reveal>
-    <h1 class="hero-headline">Anonymous feedback, heard.</h1>
-    <p class="hero-subtext">Kyrex lets your team share concerns anonymously—and gives you a simple way to listen, respond, and act.</p>
-    <div class="hero-cta">
-      <a class="hero-register" href="{% url 'submissions:hr_register' %}">Register</a>
+  <!-- Hero Section -->
+  <section class="hero-full">
+    <h1>Unlock Hidden Intelligence</h1>
+    <p class="hero-sub">The intelligence system you didn't know you were missing. Private channel for observations, ideas, and questions that don't emerge in meetings.</p>
+    <div class="hero-ctas">
+      <a href="{% url 'submissions:hr_register' %}" class="btn-primary">For HR Teams</a>
+      <a href="{% url 'submissions:submit' %}" class="btn-secondary">For Employees</a>
     </div>
   </section>
-  <div class="home-buttons reveal" data-reveal id="home-buttons">
-    <button type="button" class="home-btn-big" data-home-toggle="hr">For HR</button>
-    <button type="button" class="home-btn-big" data-home-toggle="emp">For Employees</button>
-  </div>
 
-  <section class="home-how reveal" data-reveal>
-    <h2 class="how-title">How It Works</h2>
-    <div class="how-cards">
-      <div class="how-card">
-        <div class="how-number">1</div>
-        <h3>Employee Submits</h3>
-        <p>Share concerns anonymously with company access code</p>
-        <div class="how-badge">Gets receipt code</div>
-        <div class="how-note">No personal data stored</div>
+  <!-- What It Does -->
+  <section class="section-what">
+    <h2>Activate Insight. Elevate Performance.</h2>
+    <div class="what-body">
+      <p>Your team sees things you don't. Ideas that could accelerate performance. Observations that could improve processes. Questions that reveal opportunities.</p>
+      <p>Kyrex creates a private channel where team members share directly with HR. You gain visibility into insights that otherwise stay unspoken.</p>
+    </div>
+  </section>
+
+  <!-- How It Works -->
+  <section class="section-how">
+    <h2>Three Steps</h2>
+    <div class="how-grid">
+      <div class="how-col">
+        <div class="how-num">1</div>
+        <h3>Team Members Share</h3>
+        <p>Private submissions of observations, ideas, and questions directly to HR</p>
       </div>
-
-      <div class="how-card">
-        <div class="how-number">2</div>
-        <h3>HR Receives</h3>
-        <p>View submission in dashboard, respond directly</p>
-        <div class="how-badge">Two-way dialogue</div>
-        <div class="how-note">Employee checks with receipt</div>
+      <div class="how-col">
+        <div class="how-num">2</div>
+        <h3>HR Gains Clarity</h3>
+        <p>All team insights in one place, organized and ready for action</p>
       </div>
-
-      <div class="how-card how-card-secure">
-        <div class="how-number">3</div>
-        <h3>Complete Anonymity</h3>
-        <div class="how-guarantees">
-          <span class="guarantee">✓ No email</span>
-          <span class="guarantee">✓ No IP tracking</span>
-          <span class="guarantee">✓ No logging</span>
-        </div>
-        <div class="how-note">Zero-knowledge architecture</div>
+      <div class="how-col">
+        <div class="how-num">3</div>
+        <h3>HR Responds</h3>
+        <p>Direct replies to submissions, faster resolution</p>
       </div>
     </div>
   </section>
 
-  <div class="home-panels" id="home-panels">
-    <div class="home-panel home-panel-hr" id="home-panel-hr">
-      <a href="#" class="home-back" data-home-back>← Back</a>
-      <header class="panel-header">
-        <h2 class="panel-title">For HR</h2>
-        <p class="panel-lead">Register your company to get an access code. Share it with employees so they can submit feedback anonymously.</p>
-      </header>
-      <div class="panel-block">
-        <h3>How it works</h3>
-        <ul class="panel-steps">
-          <li>Register your company to receive a unique access code.</li>
-          <li>Share the code with employees so they can submit feedback securely and anonymously.</li>
-          <li>Sign in to the HR dashboard to manage submissions, reply to concerns, and track issues.</li>
-          <li>View pricing, book a demo, or contact us—all linked in the top bar.</li>
-        </ul>
+  <!-- Complete Anonymity -->
+  <section class="section-anon">
+    <div class="anon-card">
+      <div class="anon-num">3</div>
+      <h3>Complete Anonymity</h3>
+      <div class="anon-checks">
+        <div class="check-item"><span class="check">✓</span> No email</div>
+        <div class="check-item"><span class="check">✓</span> No IP tracking</div>
+        <div class="check-item"><span class="check">✓</span> No logging</div>
       </div>
-      <footer class="panel-footer">
-        <a href="{% url 'submissions:terms' %}">Terms</a>
-        <a href="{% url 'submissions:privacy' %}">Privacy</a>
-        <a href="{% url 'submissions:security' %}">Security</a>
-      </footer>
+      <p class="anon-sub">Zero-knowledge architecture</p>
     </div>
-    <div class="home-panel home-panel-emp" id="home-panel-emp">
-      <a href="#" class="home-back" data-home-back>← Back</a>
-      <header class="panel-header">
-        <h2 class="panel-title">For Employees</h2>
-        <p class="panel-lead">Submit an issue, concern, or question anonymously. Use your company access code when submitting.</p>
-      </header>
-      <div class="panel-block">
-        <h3>How it works</h3>
-        <ul class="panel-steps">
-          <li>Enter your company access code</li>
-          <li>Share your concern, issue, or question</li>
-          <li>Save the receipt code to track updates later</li>
+  </section>
+
+  <!-- For HR / For Team Members -->
+  <section class="section-for">
+    <div class="for-grid">
+      <div class="for-card">
+        <h3>For HR</h3>
+        <ul class="for-list">
+          <li>Access insights you wouldn't otherwise hear</li>
+          <li>Drive performance and retention</li>
+          <li>Act on concerns before exit interviews</li>
         </ul>
+        <a href="{% url 'submissions:hr_register' %}" class="btn-primary">Open Account</a>
       </div>
-      <div class="panel-hint">Keep your receipt code safe—it's the only way to view updates on your submission.</div>
+      <div class="for-card">
+        <h3>For Team Members</h3>
+        <ul class="for-list">
+          <li>Share observations that matter</li>
+          <li>Surface ideas directly to HR</li>
+          <li>Ask questions that don't fit in meetings</li>
+        </ul>
+        <a href="{% url 'submissions:submit' %}" class="btn-primary">Share Anonymously</a>
+      </div>
     </div>
-  </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="section-final">
+    <h2>Start Free</h2>
+    <p>No credit card required.</p>
+    <a href="{% url 'submissions:hr_register' %}" class="btn-primary">Get Started</a>
+  </section>
 {% endblock %}
