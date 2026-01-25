@@ -8,64 +8,103 @@
 {% block extrastyle %}
   {{ block.super }}
   <style>
-    /* Submissions list – premium professional design */
+    /* Submissions list – 3D glass professional design */
     
-    /* Page container */
+    /* Page background */
     body.app-submissions.model-submission.change-list {
-      background: #0a0f1a;
+      background: radial-gradient(ellipse at top, rgba(44,102,255,.08) 0%, transparent 50%),
+                  linear-gradient(180deg, #0a0f1a, #070b16);
     }
 
     body.app-submissions.model-submission.change-list #content {
-      padding: 48px 32px;
-      max-width: 1400px;
+      padding: 48px 40px;
+      max-width: 1300px;
       margin: 0 auto;
     }
 
-    /* Header area with back link */
-    body.app-submissions.model-submission.change-list #content > a,
-    body.app-submissions.model-submission.change-list .submission-list-back a {
+    /* Back link */
+    body.app-submissions.model-submission.change-list #content > p:first-child {
+      margin: 0 0 32px;
+    }
+
+    body.app-submissions.model-submission.change-list #content > p a {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 0;
-      margin-bottom: 24px;
-      background: none;
-      border: none;
-      color: rgba(232,238,252,.5);
+      gap: 8px;
+      padding: 10px 20px;
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px;
+      color: rgba(232,238,252,.6);
       font-size: 14px;
       font-weight: 600;
       text-decoration: none;
-      transition: color .2s;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
     }
 
-    body.app-submissions.model-submission.change-list #content > a:hover,
-    body.app-submissions.model-submission.change-list .submission-list-back a:hover {
-      color: rgba(232,238,252,.8);
-    }
-
-    /* Page title */
-    body.app-submissions.model-submission.change-list #content h1 {
-      font-size: 36px;
-      font-weight: 900;
+    body.app-submissions.model-submission.change-list #content > p a:hover {
+      background: rgba(255,255,255,.08);
+      border-color: rgba(44,102,255,.2);
       color: #e8eefc;
-      letter-spacing: -0.8px;
-      margin-bottom: 40px;
+      transform: translateX(-2px);
     }
 
-    /* Hide default toolbar, build custom search */
+    /* Page title with 3D effect */
+    body.app-submissions.model-submission.change-list #content h1 {
+      font-size: 42px;
+      font-weight: 900;
+      background: linear-gradient(135deg, #e8eefc 0%, #b9d2ff 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: -1px;
+      margin-bottom: 48px;
+      text-shadow: 0 20px 40px rgba(0,0,0,.3);
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Toolbar – 3D glass panel */
     body.app-submissions.model-submission.change-list #changelist #toolbar {
-      background: none;
-      border: none;
-      padding: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.1) 0%, rgba(255,255,255,.05) 100%);
+      backdrop-filter: blur(24px) saturate(1.5);
+      -webkit-backdrop-filter: blur(24px) saturate(1.5);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 20px;
+      padding: 28px 32px;
       margin-bottom: 32px;
-      box-shadow: none;
+      box-shadow: 
+        0 20px 60px rgba(0,0,0,.35),
+        0 0 0 1px rgba(255,255,255,.05) inset,
+        0 2px 0 rgba(255,255,255,.15) inset;
+      position: relative;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.app-submissions.model-submission.change-list #changelist #toolbar:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 24px 72px rgba(0,0,0,.4),
+        0 0 0 1px rgba(255,255,255,.08) inset,
+        0 2px 0 rgba(255,255,255,.2) inset;
     }
 
     body.app-submissions.model-submission.change-list #changelist #toolbar form {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 16px;
       padding: 0;
+      position: relative;
     }
 
     body.app-submissions.model-submission.change-list #changelist #toolbar label {
@@ -75,15 +114,16 @@
     body.app-submissions.model-submission.change-list #changelist #toolbar input[type="text"],
     body.app-submissions.model-submission.change-list #changelist #toolbar input[type="search"] {
       flex: 1;
-      max-width: 400px;
-      padding: 14px 20px;
-      border: none;
-      border-radius: 10px;
-      background: rgba(255,255,255,.06);
+      min-width: 320px;
+      padding: 16px 24px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px;
+      background: rgba(0,0,0,.2);
       color: #e8eefc;
       font-size: 15px;
       font-weight: 500;
-      transition: all .2s;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 4px 12px rgba(0,0,0,.2) inset;
     }
 
     body.app-submissions.model-submission.change-list #changelist #toolbar input::placeholder {
@@ -92,63 +132,108 @@
 
     body.app-submissions.model-submission.change-list #changelist #toolbar input:focus {
       outline: none;
-      background: rgba(255,255,255,.08);
-      box-shadow: 0 0 0 3px rgba(44,102,255,.1);
+      background: rgba(0,0,0,.3);
+      border-color: rgba(44,102,255,.4);
+      box-shadow: 
+        0 0 0 4px rgba(44,102,255,.08),
+        0 4px 12px rgba(0,0,0,.2) inset;
+      transform: scale(1.01);
     }
 
     body.app-submissions.model-submission.change-list #changelist #toolbar input[type="submit"] {
-      padding: 14px 28px;
+      padding: 16px 36px;
       border: none;
-      border-radius: 10px;
-      background: #2c66ff;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #2c66ff 0%, #4b87ff 100%);
       color: #fff;
       font-size: 15px;
       font-weight: 700;
       cursor: pointer;
-      transition: all .2s;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        0 8px 24px rgba(44,102,255,.3),
+        0 0 0 1px rgba(255,255,255,.1) inset,
+        0 1px 0 rgba(255,255,255,.2) inset;
+      position: relative;
     }
 
     body.app-submissions.model-submission.change-list #changelist #toolbar input[type="submit"]:hover {
-      background: #4b87ff;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(44,102,255,.25);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 
+        0 12px 32px rgba(44,102,255,.4),
+        0 0 0 1px rgba(255,255,255,.15) inset,
+        0 1px 0 rgba(255,255,255,.25) inset;
     }
 
-    /* Object tools */
+    body.app-submissions.model-submission.change-list #changelist #toolbar input[type="submit"]:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* Object tools – 3D glass button */
     body.app-submissions.model-submission.change-list #changelist .object-tools {
       margin: 0 0 32px;
     }
 
     body.app-submissions.model-submission.change-list #changelist .object-tools a {
-      padding: 14px 28px;
-      border: none;
-      border-radius: 10px;
-      background: #22c55e;
-      color: #fff;
+      padding: 16px 36px;
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 14px;
+      background: linear-gradient(135deg, rgba(34,197,94,.2) 0%, rgba(34,197,94,.1) 100%);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      color: #22c55e;
       font-size: 15px;
-      font-weight: 700;
+      font-weight: 800;
       text-decoration: none;
-      transition: all .2s;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        0 8px 24px rgba(34,197,94,.2),
+        0 0 0 1px rgba(255,255,255,.05) inset,
+        0 1px 0 rgba(255,255,255,.15) inset;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    body.app-submissions.model-submission.change-list #changelist .object-tools a::before {
+      content: '+';
+      font-size: 22px;
+      font-weight: 900;
+      line-height: 1;
     }
 
     body.app-submissions.model-submission.change-list #changelist .object-tools a:hover {
-      background: #16a34a;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(34,197,94,.25);
+      background: linear-gradient(135deg, rgba(34,197,94,.3) 0%, rgba(34,197,94,.15) 100%);
+      border-color: rgba(34,197,94,.3);
+      transform: translateY(-3px) scale(1.02);
+      box-shadow: 
+        0 12px 32px rgba(34,197,94,.3),
+        0 0 0 1px rgba(255,255,255,.1) inset,
+        0 1px 0 rgba(255,255,255,.2) inset;
     }
 
-    /* Date hierarchy */
+    body.app-submissions.model-submission.change-list #changelist .object-tools a:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* Date hierarchy – 3D glass pills */
     body.app-submissions.model-submission.change-list #changelist .xfull {
-      background: none;
-      border: none;
-      padding: 0 0 28px;
-      margin: 0;
-      box-shadow: none;
+      background: linear-gradient(135deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.04) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 18px;
+      padding: 20px 24px;
+      margin-bottom: 32px;
+      box-shadow: 
+        0 12px 40px rgba(0,0,0,.25),
+        0 0 0 1px rgba(255,255,255,.05) inset,
+        0 1px 0 rgba(255,255,255,.12) inset;
     }
 
     body.app-submissions.model-submission.change-list #changelist .xfull ul {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       flex-wrap: wrap;
       padding: 0;
       margin: 0;
@@ -156,149 +241,225 @@
     }
 
     body.app-submissions.model-submission.change-list #changelist .xfull a {
-      padding: 8px 16px;
-      border-radius: 8px;
-      background: rgba(255,255,255,.05);
-      border: none;
-      color: rgba(232,238,252,.6);
+      padding: 10px 20px;
+      border-radius: 10px;
+      background: rgba(0,0,0,.15);
+      border: 1px solid rgba(255,255,255,.08);
+      color: rgba(232,238,252,.7);
       font-size: 13px;
       font-weight: 600;
       text-decoration: none;
-      transition: all .2s;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(0,0,0,.15) inset;
     }
 
     body.app-submissions.model-submission.change-list #changelist .xfull a:hover {
-      background: rgba(255,255,255,.08);
+      background: rgba(255,255,255,.06);
+      border-color: rgba(44,102,255,.2);
       color: #e8eefc;
+      transform: translateY(-2px);
+      box-shadow: 
+        0 4px 12px rgba(0,0,0,.2),
+        0 0 0 1px rgba(255,255,255,.05) inset;
     }
 
     body.app-submissions.model-submission.change-list #changelist .xfull .this-month {
-      background: rgba(44,102,255,.15);
+      background: rgba(44,102,255,.18);
+      border-color: rgba(44,102,255,.3);
       color: #b9d2ff;
       font-weight: 700;
+      box-shadow: 
+        0 4px 12px rgba(44,102,255,.2),
+        0 0 0 1px rgba(255,255,255,.05) inset;
     }
 
-    /* Actions */
+    /* Actions – 3D glass panel */
     body.app-submissions.model-submission.change-list .actions {
-      background: none;
-      border: none;
-      padding: 0 0 28px;
-      margin: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.04) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 18px;
+      padding: 20px 24px;
+      margin-bottom: 32px;
       display: flex;
-      gap: 12px;
+      gap: 14px;
       align-items: center;
-      box-shadow: none;
+      box-shadow: 
+        0 12px 40px rgba(0,0,0,.25),
+        0 0 0 1px rgba(255,255,255,.05) inset,
+        0 1px 0 rgba(255,255,255,.12) inset;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.app-submissions.model-submission.change-list .actions:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 16px 48px rgba(0,0,0,.3),
+        0 0 0 1px rgba(255,255,255,.08) inset,
+        0 1px 0 rgba(255,255,255,.15) inset;
     }
 
     body.app-submissions.model-submission.change-list .actions label {
-      color: rgba(232,238,252,.6);
+      color: rgba(232,238,252,.7);
       font-size: 14px;
-      font-weight: 600;
+      font-weight: 700;
       margin: 0;
+      letter-spacing: 0.02em;
     }
 
     body.app-submissions.model-submission.change-list .actions select {
       padding: 12px 18px;
-      border: none;
-      border-radius: 10px;
-      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px;
+      background: rgba(0,0,0,.2);
       color: #e8eefc;
       font-size: 14px;
       font-weight: 600;
-      min-width: 180px;
-      transition: all .2s;
+      min-width: 200px;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(0,0,0,.15) inset;
     }
 
     body.app-submissions.model-submission.change-list .actions select:focus {
       outline: none;
-      background: rgba(255,255,255,.08);
-      box-shadow: 0 0 0 3px rgba(44,102,255,.1);
+      background: rgba(0,0,0,.3);
+      border-color: rgba(44,102,255,.3);
+      box-shadow: 
+        0 0 0 4px rgba(44,102,255,.08),
+        0 2px 8px rgba(0,0,0,.15) inset;
     }
 
     body.app-submissions.model-submission.change-list .actions button {
-      padding: 12px 24px;
+      padding: 12px 28px;
       border: none;
-      border-radius: 10px;
-      background: #2c66ff;
+      border-radius: 12px;
+      background: linear-gradient(135deg, #2c66ff, #4b87ff);
       color: #fff;
       font-size: 14px;
       font-weight: 700;
       cursor: pointer;
-      transition: all .2s;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 
+        0 6px 20px rgba(44,102,255,.3),
+        0 0 0 1px rgba(255,255,255,.1) inset,
+        0 1px 0 rgba(255,255,255,.2) inset;
     }
 
     body.app-submissions.model-submission.change-list .actions button:hover {
-      background: #4b87ff;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 24px rgba(44,102,255,.25);
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 
+        0 10px 28px rgba(44,102,255,.4),
+        0 0 0 1px rgba(255,255,255,.15) inset,
+        0 1px 0 rgba(255,255,255,.25) inset;
     }
 
-    /* Results count */
+    body.app-submissions.model-submission.change-list .actions button:active {
+      transform: translateY(0) scale(0.98);
+    }
+
+    /* Results count badge */
     body.app-submissions.model-submission.change-list #changelist .results {
-      background: none;
-      border: none;
-      padding: 0 0 20px;
-      margin: 0;
-      color: rgba(232,238,252,.5);
-      font-size: 14px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 10px;
+      padding: 10px 18px;
+      margin-bottom: 20px;
+      display: inline-block;
+      color: rgba(232,238,252,.7);
+      font-size: 13px;
       font-weight: 600;
+      box-shadow: 0 2px 8px rgba(0,0,0,.1);
     }
 
-    /* Table – clean minimal */
+    /* Table – 3D glass panel */
     body.app-submissions.model-submission.change-list #result_list {
-      border-radius: 0;
-      border: none;
-      background: none;
-      box-shadow: none;
-      margin-bottom: 40px;
+      border-radius: 20px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(255,255,255,.1) 0%, rgba(255,255,255,.05) 100%);
+      backdrop-filter: blur(24px) saturate(1.5);
+      -webkit-backdrop-filter: blur(24px) saturate(1.5);
+      border: 1px solid rgba(255,255,255,.12);
+      box-shadow: 
+        0 20px 60px rgba(0,0,0,.35),
+        0 0 0 1px rgba(255,255,255,.05) inset,
+        0 2px 0 rgba(255,255,255,.15) inset;
+      margin-bottom: 32px;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    body.app-submissions.model-submission.change-list #result_list:hover {
+      transform: translateY(-2px);
+      box-shadow: 
+        0 24px 72px rgba(0,0,0,.4),
+        0 0 0 1px rgba(255,255,255,.08) inset,
+        0 2px 0 rgba(255,255,255,.2) inset;
     }
 
     body.app-submissions.model-submission.change-list #result_list thead {
-      background: none;
-      border-bottom: 2px solid rgba(255,255,255,.06);
+      background: linear-gradient(135deg, rgba(44,102,255,.15) 0%, rgba(44,102,255,.08) 100%);
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
 
     body.app-submissions.model-submission.change-list #result_list thead th {
-      background: none;
-      color: rgba(232,238,252,.5);
+      background: transparent;
+      color: rgba(232,238,252,.8);
       font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      padding: 0 24px 16px;
+      padding: 20px 24px;
       border: none;
     }
 
     body.app-submissions.model-submission.change-list #result_list thead th a {
-      color: rgba(232,238,252,.5);
+      color: rgba(232,238,252,.8);
       text-decoration: none;
       transition: color .2s;
     }
 
     body.app-submissions.model-submission.change-list #result_list thead th a:hover {
-      color: rgba(232,238,252,.8);
+      color: #e8eefc;
     }
 
     body.app-submissions.model-submission.change-list #result_list tbody {
-      background: none;
+      background: transparent;
     }
 
     body.app-submissions.model-submission.change-list #result_list tbody td {
-      padding: 20px 24px;
-      border: none;
-      border-bottom: 1px solid rgba(255,255,255,.03);
+      padding: 24px;
+      border-bottom: 1px solid rgba(255,255,255,.04);
       vertical-align: middle;
       font-size: 15px;
       color: #e8eefc;
     }
 
     body.app-submissions.model-submission.change-list #result_list tbody tr {
-      transition: all .15s;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
       background: transparent;
+      position: relative;
+    }
+
+    body.app-submissions.model-submission.change-list #result_list tbody tr::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, rgba(44,102,255,.06) 0%, transparent 100%);
+      opacity: 0;
+      transition: opacity .3s;
+      pointer-events: none;
     }
 
     body.app-submissions.model-submission.change-list #result_list tbody tr:hover {
-      background: rgba(255,255,255,.03);
+      background: rgba(255,255,255,.04);
+      transform: scale(1.005);
+    }
+
+    body.app-submissions.model-submission.change-list #result_list tbody tr:hover::after {
+      opacity: 1;
     }
 
     body.app-submissions.model-submission.change-list #result_list tbody tr:last-child td {
@@ -309,94 +470,129 @@
       color: #6ba3ff;
       text-decoration: none;
       font-weight: 700;
-      transition: color .2s;
+      font-family: ui-monospace, monospace;
+      letter-spacing: 0.5px;
+      transition: all .2s;
     }
 
     body.app-submissions.model-submission.change-list #result_list tbody td a:hover {
       color: #9dc5ff;
+      text-shadow: 0 0 16px rgba(107,163,255,.4);
     }
 
-    /* Checkboxes */
+    /* Checkboxes – 3D glass */
     body.app-submissions.model-submission.change-list #result_list input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      border-radius: 6px;
-      border: none;
+      width: 22px;
+      height: 22px;
+      border-radius: 7px;
+      border: 1px solid rgba(255,255,255,.15);
       background: rgba(255,255,255,.06);
       cursor: pointer;
-      transition: all .2s;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 2px 8px rgba(0,0,0,.1) inset;
     }
 
     body.app-submissions.model-submission.change-list #result_list input[type="checkbox"]:hover {
       background: rgba(255,255,255,.1);
+      transform: scale(1.1);
     }
 
     body.app-submissions.model-submission.change-list #result_list input[type="checkbox"]:checked {
-      background: #2c66ff;
+      background: linear-gradient(135deg, #2c66ff, #4b87ff);
+      border-color: rgba(44,102,255,.4);
+      box-shadow: 
+        0 0 0 4px rgba(44,102,255,.12),
+        0 2px 8px rgba(0,0,0,.1) inset;
     }
 
-    /* Pagination */
+    /* Pagination – 3D glass pills */
     body.app-submissions.model-submission.change-list .paginator {
-      background: none;
-      border: none;
-      padding: 0;
-      margin: 40px 0 0;
-      box-shadow: none;
+      background: linear-gradient(135deg, rgba(255,255,255,.08) 0%, rgba(255,255,255,.04) 100%);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 18px;
+      padding: 16px 24px;
+      margin: 32px 0 0;
       display: flex;
       justify-content: center;
-      gap: 6px;
+      gap: 8px;
+      box-shadow: 
+        0 12px 40px rgba(0,0,0,.25),
+        0 0 0 1px rgba(255,255,255,.05) inset,
+        0 1px 0 rgba(255,255,255,.12) inset;
     }
 
     body.app-submissions.model-submission.change-list .paginator a,
     body.app-submissions.model-submission.change-list .paginator .this-page {
       padding: 10px 16px;
-      border-radius: 8px;
-      border: none;
+      border-radius: 10px;
       font-size: 14px;
       font-weight: 600;
       text-decoration: none;
-      transition: all .2s;
-      min-width: 40px;
+      transition: all .3s cubic-bezier(0.4, 0, 0.2, 1);
+      min-width: 42px;
       text-align: center;
+      border: 1px solid rgba(255,255,255,.08);
     }
 
     body.app-submissions.model-submission.change-list .paginator a {
-      background: rgba(255,255,255,.04);
-      color: rgba(232,238,252,.5);
+      background: rgba(0,0,0,.15);
+      color: rgba(232,238,252,.6);
+      box-shadow: 0 2px 8px rgba(0,0,0,.1) inset;
     }
 
     body.app-submissions.model-submission.change-list .paginator a:hover {
-      background: rgba(255,255,255,.08);
+      background: rgba(255,255,255,.06);
+      border-color: rgba(44,102,255,.2);
       color: #e8eefc;
+      transform: translateY(-2px) scale(1.05);
+      box-shadow: 
+        0 4px 12px rgba(0,0,0,.15),
+        0 0 0 1px rgba(255,255,255,.05) inset;
     }
 
     body.app-submissions.model-submission.change-list .paginator .this-page {
-      background: rgba(44,102,255,.15);
+      background: rgba(44,102,255,.2);
+      border-color: rgba(44,102,255,.3);
       color: #b9d2ff;
       font-weight: 700;
+      box-shadow: 
+        0 4px 12px rgba(44,102,255,.2),
+        0 0 0 1px rgba(255,255,255,.08) inset;
     }
 
     /* Empty state */
     body.app-submissions.model-submission.change-list #changelist .empty {
-      background: rgba(255,255,255,.02);
-      border: none;
-      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(255,255,255,.06) 0%, rgba(255,255,255,.03) 100%);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 20px;
       padding: 100px 40px;
       text-align: center;
+      box-shadow: 
+        0 20px 60px rgba(0,0,0,.3),
+        0 0 0 1px rgba(255,255,255,.04) inset;
     }
 
     body.app-submissions.model-submission.change-list #changelist .empty::before {
       content: '📭';
-      font-size: 56px;
+      font-size: 72px;
       display: block;
-      margin-bottom: 20px;
-      opacity: .3;
+      margin-bottom: 24px;
+      opacity: .4;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
     }
 
     body.app-submissions.model-submission.change-list #changelist .empty p {
-      color: rgba(232,238,252,.5);
-      font-size: 17px;
-      font-weight: 500;
+      color: rgba(232,238,252,.6);
+      font-size: 18px;
+      font-weight: 600;
       margin: 0;
     }
 
@@ -407,22 +603,23 @@
 
     /* Messages */
     body.app-submissions.model-submission.change-list ul.messagelist li {
-      border: none;
-      border-radius: 10px;
-      padding: 16px 20px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px;
+      padding: 16px 24px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 8px 24px rgba(0,0,0,.2);
     }
 
-    /* Responsive */
     @media (max-width: 768px) {
       body.app-submissions.model-submission.change-list #content {
         padding: 32px 20px;
       }
       body.app-submissions.model-submission.change-list #content h1 {
-        font-size: 28px;
+        font-size: 32px;
       }
       body.app-submissions.model-submission.change-list #changelist #toolbar input[type="text"],
       body.app-submissions.model-submission.change-list #changelist #toolbar input[type="search"] {
-        max-width: 100%;
+        min-width: 100%;
       }
     }
   </style>
