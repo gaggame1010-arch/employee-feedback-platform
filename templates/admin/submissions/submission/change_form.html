@@ -22,7 +22,10 @@
       --sf-brand: #2c66ff;
       --sf-radius: 16px;
       --sf-radius-sm: 12px;
+      --sf-radius-panel: 24px;
       --sf-shadow: 0 12px 40px rgba(0,0,0,.3);
+      --sf-darkblue: rgba(12,22,55,.85);
+      --sf-darkblue-border: rgba(44,102,255,.25);
     }
 
     /* Page shell */
@@ -94,11 +97,11 @@
       gap: 24px;
     }
 
-    /* Fieldsets = cards */
+    /* Fieldsets = round cards */
     body.app-submissions.model-submission.change-form #content-main fieldset {
       background: var(--sf-surface);
       border: 1px solid var(--sf-border);
-      border-radius: var(--sf-radius);
+      border-radius: var(--sf-radius-panel);
       padding: 24px;
       margin-bottom: 0;
       box-shadow: var(--sf-shadow);
@@ -133,15 +136,27 @@
       border-left: 3px solid var(--sf-brand);
     }
 
-    /* Submission Details – highlight */
+    /* Submission Details – dark blue, round panel */
     body.app-submissions.model-submission.change-form #content-main fieldset:first-of-type {
-      background: linear-gradient(180deg, rgba(44,102,255,.08) 0%, var(--sf-surface) 100%);
-      border-color: rgba(44,102,255,.2);
+      background: linear-gradient(165deg, rgba(15,35,75,.9) 0%, var(--sf-darkblue) 50%, rgba(10,20,48,.9) 100%);
+      border: 1px solid var(--sf-darkblue-border);
+      border-radius: var(--sf-radius-panel);
+      box-shadow: 0 12px 40px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.06);
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset:first-of-type:hover {
+      border-color: rgba(44,102,255,.35);
     }
 
     body.app-submissions.model-submission.change-form #content-main fieldset:first-of-type legend {
-      background: linear-gradient(135deg, rgba(44,102,255,.25), rgba(124,58,237,.15));
-      border-color: rgba(44,102,255,.35);
+      background: linear-gradient(135deg, rgba(44,102,255,.3), rgba(30,60,120,.5));
+      border: 1px solid rgba(44,102,255,.4);
+      border-radius: 14px;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset:first-of-type .description {
+      background: rgba(0,0,0,.2);
+      border-left-color: rgba(44,102,255,.6);
     }
 
     /* Form rows */
@@ -210,20 +225,64 @@
       white-space: pre-wrap;
     }
 
-    /* Timestamps collapsed */
-    body.app-submissions.model-submission.change-form #content-main fieldset.collapsed {
-      padding: 16px 24px;
+    /* Timestamps – upgraded design (collapse module) */
+    body.app-submissions.model-submission.change-form #content-main fieldset.collapse {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: var(--sf-radius-panel);
+      padding: 0;
+      overflow: hidden;
     }
 
-    body.app-submissions.model-submission.change-form #content-main fieldset.collapsed legend {
+    body.app-submissions.model-submission.change-form #content-main fieldset.collapse legend {
       margin-bottom: 0;
+      width: 100%;
+      padding: 14px 20px;
+      border-radius: 0;
+      background: linear-gradient(90deg, rgba(44,102,255,.12), rgba(80,60,140,.08));
+      border: none;
+      border-bottom: 1px solid rgba(255,255,255,.08);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset.collapse legend::before {
+      content: "🕐";
+      font-size: 16px;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset.collapse.collapsed {
+      padding: 0;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset.collapse.collapsed legend {
+      border-bottom: none;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset.collapse .form-row {
+      padding: 16px 24px;
+      margin-bottom: 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset.collapse .form-row:last-child {
+      border-bottom: none;
+    }
+
+    body.app-submissions.model-submission.change-form #content-main fieldset.collapse .readonly {
+      background: rgba(0,0,0,.15) !important;
+      font-family: ui-monospace, monospace;
+      font-size: 13px;
+      letter-spacing: 0.3px;
     }
 
     /* HR Response inline – distinct "Reply" card */
     body.app-submissions.model-submission.change-form #content-main .inline-group {
       background: var(--sf-surface);
       border: 1px solid var(--sf-border);
-      border-radius: var(--sf-radius);
+      border-radius: var(--sf-radius-panel);
       padding: 24px;
       margin-top: 8px;
       box-shadow: var(--sf-shadow);
@@ -302,7 +361,7 @@
       padding: 20px 24px;
       background: var(--sf-surface);
       border: 1px solid var(--sf-border);
-      border-radius: var(--sf-radius);
+      border-radius: var(--sf-radius-panel);
       margin-top: 8px;
       box-shadow: var(--sf-shadow);
     }
