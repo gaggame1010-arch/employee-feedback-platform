@@ -1,4 +1,30 @@
 {% extends "submissions/base.html" %}
+{% load static %}
+
+{% block body_class %}page-contact{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    /* Larger form inputs for contact page */
+    .page-contact form input,
+    .page-contact form textarea {
+      padding: 16px 20px !important;
+      font-size: 16px !important;
+      margin-bottom: 20px;
+    }
+    .page-contact form label {
+      margin-bottom: 10px !important;
+      font-size: 14px !important;
+    }
+    .page-contact form textarea {
+      min-height: 180px !important;
+    }
+    .page-contact .actions {
+      margin-top: 24px;
+    }
+  </style>
+{% endblock %}
 
 {% block content %}
 <h1>Contact / Book a demo</h1>
@@ -39,10 +65,6 @@
   </div>
   <div>
     <h2>Book a demo</h2>
-    <div class="actions actions--wrap">
-      <a class="btn" href="/how-it-works/">How it works</a>
-      <a class="btn" href="/pricing/">Pricing</a>
-    </div>
     <p class="hint">
       For now, this page sends messages to your configured HR notification emails.
     </p>
