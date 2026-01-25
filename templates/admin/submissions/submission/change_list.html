@@ -1,0 +1,413 @@
+{% extends "admin/change_list.html" %}
+{% load i18n admin_urls %}
+
+{% block content %}
+  <p class="submission-list-back">
+    <a href="{% url 'admin:index' %}">← Back to dashboard</a>
+  </p>
+  {{ block.super }}
+{% endblock %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    /* Submissions changelist – upgraded design */
+    :root {
+      --sl-bg: #0b1220;
+      --sl-surface: rgba(255,255,255,.06);
+      --sl-surface-hover: rgba(255,255,255,.08);
+      --sl-border: rgba(255,255,255,.12);
+      --sl-border-focus: rgba(44,102,255,.4);
+      --sl-text: #e8eefc;
+      --sl-muted: rgba(232,238,252,.65);
+      --sl-brand: #2c66ff;
+      --sl-radius: 12px;
+      --sl-radius-panel: 24px;
+      --sl-shadow: 0 12px 40px rgba(0,0,0,.3);
+      --sl-darkblue: rgba(12,22,55,.85);
+    }
+
+    /* Page shell */
+    body.app-submissions.model-submission.change-list #content {
+      padding-top: 24px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    /* Back link */
+    body.app-submissions.model-submission.change-list .submission-list-back {
+      margin: 0 0 20px;
+    }
+
+    body.app-submissions.model-submission.change-list .submission-list-back a {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--sl-radius);
+      border: 1px solid var(--sl-border);
+      background: var(--sl-surface);
+      color: var(--sl-muted);
+      font-size: 14px;
+      font-weight: 600;
+      transition: all .2s;
+      text-decoration: none;
+    }
+
+    body.app-submissions.model-submission.change-list .submission-list-back a:hover {
+      color: var(--sl-text);
+      border-color: var(--sl-border-focus);
+      background: var(--sl-surface-hover);
+    }
+
+    /* Title */
+    body.app-submissions.model-submission.change-list #content h1 {
+      font-size: 24px;
+      font-weight: 800;
+      color: var(--sl-text);
+      letter-spacing: -0.3px;
+      margin-bottom: 24px;
+    }
+
+    /* Toolbar – search + filters */
+    body.app-submissions.model-submission.change-list #changelist #toolbar {
+      background: linear-gradient(165deg, rgba(18,38,78,.5) 0%, var(--sl-darkblue) 100%);
+      border: 1px solid rgba(44,102,255,.25);
+      border-radius: var(--sl-radius-panel);
+      padding: 20px 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--sl-shadow), 0 1px 0 rgba(255,255,255,.06) inset;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    body.app-submissions.model-submission.change-list #changelist #toolbar form {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      flex: 1;
+      min-width: 200px;
+    }
+
+    body.app-submissions.model-submission.change-list #changelist #toolbar label {
+      color: var(--sl-muted);
+      font-weight: 700;
+      font-size: 13px;
+      margin: 0;
+    }
+
+    body.app-submissions.model-submission.change-list #changelist #toolbar input[type="text"],
+    body.app-submissions.model-submission.change-list #changelist #toolbar input[type="search"] {
+      border-radius: var(--sl-radius);
+      border: 1px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.3);
+      color: var(--sl-text);
+      padding: 12px 18px;
+      min-width: 260px;
+      font-size: 14px;
+      transition: all .2s;
+    }
+
+    body.app-submissions.model-submission.change-list #changelist #toolbar input:focus {
+      outline: none;
+      border-color: var(--sl-border-focus);
+      box-shadow: 0 0 0 3px rgba(44,102,255,.2);
+    }
+
+    body.app-submissions.model-submission.change-list #changelist #toolbar input[type="submit"] {
+      border-radius: var(--sl-radius);
+      border: 1px solid rgba(44,102,255,.55);
+      background: linear-gradient(135deg, var(--sl-brand), #4b87ff);
+      color: #fff;
+      padding: 12px 22px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: filter .2s, transform .2s;
+    }
+
+    body.app-submissions.model-submission.change-list #changelist #toolbar input[type="submit"]:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    /* Object tools (Add) */
+    body.app-submissions.model-submission.change-list #changelist .object-tools {
+      margin: 0;
+      padding: 0;
+    }
+
+    body.app-submissions.model-submission.change-list #changelist .object-tools a {
+      border-radius: var(--sl-radius);
+      border: 1px solid rgba(44,102,255,.55);
+      background: linear-gradient(135deg, var(--sl-brand), #4b87ff);
+      color: #fff;
+      padding: 12px 22px;
+      font-weight: 800;
+      font-size: 14px;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: filter .2s, transform .2s;
+    }
+
+    body.app-submissions.model-submission.change-list #changelist .object-tools a:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    /* Date hierarchy */
+    body.app-submissions.model-submission.change-list #changelist .xfull {
+      background: var(--sl-surface);
+      border: 1px solid var(--sl-border);
+      border-radius: var(--sl-radius-panel);
+      padding: 16px 20px;
+      margin-bottom: 20px;
+      box-shadow: var(--sl-shadow);
+    }
+
+    body.app-submissions.model-submission.change-list #changelist .xfull ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    body.app-submissions.model-submission.change-list #changelist .xfull a {
+      color: var(--sl-muted);
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: var(--sl-radius);
+      background: rgba(255,255,255,.03);
+      border: 1px solid var(--sl-border);
+      transition: all .2s;
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    body.app-submissions.model-submission.change-list #changelist .xfull a:hover {
+      background: rgba(44,102,255,.15);
+      border-color: rgba(44,102,255,.3);
+      color: var(--sl-text);
+    }
+
+    body.app-submissions.model-submission.change-list #changelist .xfull .this-month {
+      background: rgba(44,102,255,.2);
+      border-color: rgba(44,102,255,.4);
+      color: var(--sl-text);
+      font-weight: 700;
+    }
+
+    /* Actions bar */
+    body.app-submissions.model-submission.change-list .actions {
+      background: var(--sl-surface);
+      border: 1px solid var(--sl-border);
+      border-radius: var(--sl-radius-panel);
+      padding: 18px 24px;
+      margin-bottom: 20px;
+      box-shadow: var(--sl-shadow);
+    }
+
+    body.app-submissions.model-submission.change-list .actions label {
+      color: var(--sl-muted);
+      font-weight: 700;
+      font-size: 13px;
+      margin-right: 12px;
+    }
+
+    body.app-submissions.model-submission.change-list .actions select {
+      border-radius: var(--sl-radius);
+      border: 1px solid var(--sl-border);
+      background: rgba(0,0,0,.3);
+      color: var(--sl-text);
+      padding: 10px 14px;
+      font-weight: 600;
+      min-width: 180px;
+      margin-right: 12px;
+    }
+
+    body.app-submissions.model-submission.change-list .actions button {
+      border-radius: var(--sl-radius);
+      border: 1px solid rgba(44,102,255,.55);
+      background: linear-gradient(135deg, var(--sl-brand), #4b87ff);
+      color: #fff;
+      padding: 10px 20px;
+      font-weight: 700;
+      font-size: 14px;
+      cursor: pointer;
+      transition: filter .2s, transform .2s;
+    }
+
+    body.app-submissions.model-submission.change-list .actions button:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+    }
+
+    /* Results summary */
+    body.app-submissions.model-submission.change-list #changelist .results {
+      background: var(--sl-surface);
+      border: 1px solid var(--sl-border);
+      border-radius: var(--sl-radius);
+      padding: 12px 18px;
+      margin-bottom: 16px;
+      color: var(--sl-muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    /* Results table */
+    body.app-submissions.model-submission.change-list #result_list {
+      border-radius: var(--sl-radius-panel);
+      overflow: hidden;
+      border: 1px solid var(--sl-border);
+      background: var(--sl-surface);
+      box-shadow: var(--sl-shadow);
+      margin-bottom: 20px;
+    }
+
+    body.app-submissions.model-submission.change-list #result_list thead th {
+      background: linear-gradient(135deg, rgba(44,102,255,.15) 0%, rgba(30,60,120,.25) 100%);
+      color: var(--sl-text);
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(44,102,255,.2);
+    }
+
+    body.app-submissions.model-submission.change-list #result_list thead th a {
+      color: var(--sl-text);
+      text-decoration: none;
+    }
+
+    body.app-submissions.model-submission.change-list #result_list thead th a:hover {
+      color: #b9d2ff;
+    }
+
+    body.app-submissions.model-submission.change-list #result_list tbody td {
+      padding: 16px 18px;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+      vertical-align: middle;
+      font-size: 14px;
+    }
+
+    body.app-submissions.model-submission.change-list #result_list tbody tr {
+      transition: background .2s;
+    }
+
+    body.app-submissions.model-submission.change-list #result_list tbody tr:nth-child(even) {
+      background: rgba(255,255,255,.02);
+    }
+
+    body.app-submissions.model-submission.change-list #result_list tbody tr:hover {
+      background: rgba(44,102,255,.08);
+    }
+
+    body.app-submissions.model-submission.change-list #result_list tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    body.app-submissions.model-submission.change-list #result_list tbody td a {
+      color: #b9d2ff;
+      text-decoration: none;
+      font-weight: 600;
+      transition: color .2s;
+    }
+
+    body.app-submissions.model-submission.change-list #result_list tbody td a:hover {
+      color: #d2e4ff;
+      text-decoration: underline;
+    }
+
+    /* Pagination */
+    body.app-submissions.model-submission.change-list .paginator {
+      background: var(--sl-surface);
+      border: 1px solid var(--sl-border);
+      border-radius: var(--sl-radius-panel);
+      padding: 18px 24px;
+      margin-top: 20px;
+      box-shadow: var(--sl-shadow);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    body.app-submissions.model-submission.change-list .paginator a,
+    body.app-submissions.model-submission.change-list .paginator .this-page {
+      padding: 10px 16px;
+      border-radius: var(--sl-radius);
+      font-weight: 600;
+      font-size: 14px;
+      transition: all .2s;
+      text-decoration: none;
+      border: 1px solid transparent;
+    }
+
+    body.app-submissions.model-submission.change-list .paginator a {
+      color: var(--sl-muted);
+      background: rgba(255,255,255,.03);
+      border-color: var(--sl-border);
+    }
+
+    body.app-submissions.model-submission.change-list .paginator a:hover {
+      background: rgba(44,102,255,.2);
+      border-color: rgba(44,102,255,.35);
+      color: var(--sl-text);
+    }
+
+    body.app-submissions.model-submission.change-list .paginator .this-page {
+      background: rgba(44,102,255,.25);
+      border-color: rgba(44,102,255,.45);
+      color: var(--sl-text);
+    }
+
+    /* Empty state */
+    body.app-submissions.model-submission.change-list #changelist .empty {
+      background: var(--sl-surface);
+      border: 1px solid var(--sl-border);
+      border-radius: var(--sl-radius-panel);
+      padding: 60px 40px;
+      text-align: center;
+      box-shadow: var(--sl-shadow);
+    }
+
+    body.app-submissions.model-submission.change-list #changelist .empty p {
+      color: var(--sl-muted);
+      font-size: 16px;
+      margin: 0;
+    }
+
+    /* Hide sidebar filter on submission list */
+    body.app-submissions.model-submission.change-list #changelist-filter {
+      display: none;
+    }
+
+    /* Messages */
+    body.app-submissions.model-submission.change-list ul.messagelist li {
+      border-radius: var(--sl-radius);
+      padding: 14px 18px;
+    }
+
+    @media (max-width: 768px) {
+      body.app-submissions.model-submission.change-list #content { padding-top: 16px; }
+      body.app-submissions.model-submission.change-list #changelist #toolbar {
+        padding: 16px;
+      }
+      body.app-submissions.model-submission.change-list #changelist #toolbar input[type="text"],
+      body.app-submissions.model-submission.change-list #changelist #toolbar input[type="search"] {
+        min-width: 100%;
+      }
+    }
+  </style>
+{% endblock %}
