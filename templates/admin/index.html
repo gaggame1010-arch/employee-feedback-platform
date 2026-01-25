@@ -4,27 +4,55 @@
 {% block extrastyle %}
   {{ block.super }}
   <style>
+    :root {
+      --dash-radius: 24px;
+      --dash-shadow: 0 16px 48px rgba(0,0,0,.4);
+    }
+
+    /* Dashboard page shell */
+    .dashboard #content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding-top: 32px;
+    }
+
     /* Dashboard Statistics Cards */
     .dashboard-stats {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-bottom: 32px;
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+      gap: 18px;
+      margin-bottom: 36px;
     }
     
     .stat-card {
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 24px;
-      padding: 20px;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 18px 60px rgba(0,0,0,.35);
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      background: linear-gradient(165deg, rgba(18,38,78,.7) 0%, rgba(12,25,55,.8) 50%, rgba(8,18,42,.7) 100%);
+      border: 1px solid rgba(44,102,255,.22);
+      border-radius: var(--dash-radius);
+      padding: 24px;
+      box-shadow: var(--dash-shadow), 0 0 0 1px rgba(255,255,255,.04) inset, 0 1px 0 rgba(255,255,255,.08) inset;
+      transition: all 0.25s;
       cursor: pointer;
       position: relative;
       text-decoration: none;
       display: block;
       color: inherit;
+      overflow: hidden;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, transparent, var(--dash-accent, #2c66ff), transparent);
+      opacity: 0;
+      transition: opacity .25s;
+    }
+
+    .stat-card:hover::before {
+      opacity: 1;
     }
 
     .stat-card,
@@ -38,18 +66,19 @@
     .stat-card::after {
       content: "→";
       position: absolute;
-      top: 20px;
-      right: 20px;
+      top: 24px;
+      right: 24px;
       opacity: 0;
-      transition: opacity 0.2s, transform 0.2s;
-      color: rgba(232,238,252,.5);
-      font-size: 18px;
+      transition: opacity 0.25s, transform 0.25s;
+      color: rgba(232,238,252,.6);
+      font-size: 20px;
+      font-weight: 700;
     }
     
     .stat-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 24px 80px rgba(0,0,0,.45);
-      border-color: rgba(44,102,255,.3);
+      transform: translateY(-3px);
+      box-shadow: 0 24px 64px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06) inset;
+      border-color: rgba(44,102,255,.4);
     }
     
     .stat-card:hover::after {
@@ -57,80 +86,88 @@
       transform: translateX(4px);
     }
     
-    
     .stat-card h3 {
-      margin: 0 0 8px;
+      margin: 0 0 12px;
       font-size: 11px;
-      font-weight: 700;
+      font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
-      color: rgba(232,238,252,.72);
+      letter-spacing: 0.08em;
+      color: rgba(232,238,252,.8);
     }
     
     .stat-card .number {
-      font-size: 36px;
+      font-size: 42px;
       font-weight: 900;
       color: #2c66ff;
       line-height: 1;
       margin: 0;
       font-family: ui-monospace, monospace;
+      text-shadow: 0 2px 12px rgba(44,102,255,.3);
     }
     
-    .stat-card.issue .number { color: #ef4444; }
-    .stat-card.concern .number { color: #f59e0b; }
-    .stat-card.question .number { color: #2c66ff; }
-    .stat-card.suggestion .number { color: #22c55e; }
-    .stat-card.new .number { color: #f59e0b; }
-    .stat-card.in-review .number { color: #3b82f6; }
-    .stat-card.responded .number { color: #22c55e; }
-    .stat-card.closed .number { color: #6b7280; }
+    .stat-card.issue { --dash-accent: #ef4444; }
+    .stat-card.concern { --dash-accent: #f59e0b; }
+    .stat-card.question { --dash-accent: #2c66ff; }
+    .stat-card.suggestion { --dash-accent: #22c55e; }
+    .stat-card.new { --dash-accent: #f59e0b; }
+    .stat-card.in-review { --dash-accent: #3b82f6; }
+    .stat-card.responded { --dash-accent: #22c55e; }
+    .stat-card.closed { --dash-accent: #6b7280; }
+    
+    .stat-card.issue .number { color: #ef4444; text-shadow: 0 2px 12px rgba(239,68,68,.3); }
+    .stat-card.concern .number { color: #f59e0b; text-shadow: 0 2px 12px rgba(245,158,11,.3); }
+    .stat-card.question .number { color: #2c66ff; text-shadow: 0 2px 12px rgba(44,102,255,.3); }
+    .stat-card.suggestion .number { color: #22c55e; text-shadow: 0 2px 12px rgba(34,197,94,.3); }
+    .stat-card.new .number { color: #f59e0b; text-shadow: 0 2px 12px rgba(245,158,11,.3); }
+    .stat-card.in-review .number { color: #3b82f6; text-shadow: 0 2px 12px rgba(59,130,246,.3); }
+    .stat-card.responded .number { color: #22c55e; text-shadow: 0 2px 12px rgba(34,197,94,.3); }
+    .stat-card.closed .number { color: #6b7280; text-shadow: 0 2px 12px rgba(107,114,128,.3); }
     
     /* Dashboard Modules Grid */
     .dashboard #content-main {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-      gap: 20px;
+      grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+      gap: 24px;
       margin-top: 0;
     }
     
     .dashboard .module {
-      background: rgba(255,255,255,.06);
-      border: 1px solid rgba(255,255,255,.10);
-      border-radius: 24px;
-      padding: 24px;
-      box-shadow: 0 18px 60px rgba(0,0,0,.35);
-      backdrop-filter: blur(8px);
-      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      background: linear-gradient(165deg, rgba(18,38,78,.6) 0%, rgba(12,25,55,.7) 50%, rgba(8,18,42,.6) 100%);
+      border: 1px solid rgba(44,102,255,.2);
+      border-radius: var(--dash-radius);
+      padding: 0;
+      box-shadow: var(--dash-shadow), 0 0 0 1px rgba(255,255,255,.04) inset;
+      overflow: hidden;
+      transition: all 0.25s;
     }
     
     .dashboard .module:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 24px 80px rgba(0,0,0,.45);
-      border-color: rgba(44,102,255,.3);
+      transform: translateY(-3px);
+      box-shadow: 0 24px 64px rgba(0,0,0,.5), 0 0 0 1px rgba(255,255,255,.06) inset;
+      border-color: rgba(44,102,255,.35);
     }
     
     .dashboard .module h2 {
-      color: #e8eefc;
-      font-size: 16px;
-      font-weight: 900;
-      margin: 0 0 20px;
-      padding: 14px 18px;
-      background: linear-gradient(135deg, rgba(44,102,255,.2), rgba(124,58,237,.15));
-      border: 1px solid rgba(44,102,255,.3);
-      border-radius: 16px;
-      letter-spacing: 0.5px;
+      color: rgba(232,238,252,.95);
+      font-size: 15px;
+      font-weight: 800;
+      margin: 0;
+      padding: 18px 24px;
+      background: linear-gradient(135deg, rgba(44,102,255,.22) 0%, rgba(30,60,120,.35) 50%, rgba(20,45,95,.4) 100%);
+      border: none;
+      border-bottom: 1px solid rgba(44,102,255,.2);
+      letter-spacing: 0.08em;
       text-transform: uppercase;
       display: flex;
       align-items: center;
       gap: 10px;
-      box-shadow: 0 4px 12px rgba(0,0,0,.2);
+      box-shadow: 0 1px 0 rgba(255,255,255,.1) inset;
     }
     
     .dashboard .module h2::before {
-      content: "▸";
-      color: #2c66ff;
-      font-size: 18px;
-      font-weight: 900;
+      content: "📋";
+      font-size: 20px;
+      margin-right: 2px;
     }
     
     /* Custom icon for Authentication and Authorization */
@@ -141,77 +178,89 @@
     }
     
     .dashboard .module.auth-module h2 .auth-icon {
-      display: none; /* Hide the JS-added icon if CSS works */
+      display: none;
     }
     
     /* Submissions module header styling */
     .dashboard .module:has(a[href*="/admin/submissions/"]) h2 {
-      background: linear-gradient(135deg, rgba(34,197,94,.2), rgba(44,102,255,.15));
-      border-color: rgba(34,197,94,.3);
+      background: linear-gradient(135deg, rgba(34,197,94,.2), rgba(30,60,120,.35));
+      border-bottom-color: rgba(34,197,94,.25);
+    }
+
+    .dashboard .module:has(a[href*="/admin/submissions/"]) h2::before {
+      content: "📬";
     }
     
+    /* Module content area */
+    .dashboard .module table,
+    .dashboard .module ul {
+      padding: 20px;
+      background: rgba(0,0,0,.15);
+    }
+
     .dashboard .module table {
       width: 100%;
       border-collapse: separate;
       border-spacing: 0 10px;
+      padding: 16px 20px 20px;
     }
     
     .dashboard .module table thead th {
       text-align: left;
-      padding: 8px 0 4px;
+      padding: 8px 0 10px;
       font-size: 11px;
       font-weight: 800;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
-      color: rgba(232,238,252,.5);
-      border-bottom: none;
+      letter-spacing: 0.08em;
+      color: rgba(232,238,252,.6);
+      border-bottom: 1px solid rgba(255,255,255,.08);
     }
     
     .dashboard .module table tbody tr {
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px;
       transition: all 0.2s;
     }
     
     .dashboard .module table tbody tr:hover {
-      background: rgba(185,210,255,.08);
-      border-color: rgba(44,102,255,.25);
+      background: rgba(44,102,255,.12);
+      border-color: rgba(44,102,255,.3);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+      box-shadow: 0 4px 12px rgba(0,0,0,.2);
     }
     
     .dashboard .module table tbody tr th,
     .dashboard .module table tbody tr td {
-      padding: 14px 18px;
+      padding: 16px 18px;
       border: none;
       vertical-align: middle;
     }
     
     .dashboard .module table tbody tr th {
-      border-radius: 16px 0 0 16px;
+      border-radius: 14px 0 0 14px;
       font-weight: 700;
       font-size: 15px;
       color: #e8eefc;
     }
     
     .dashboard .module table tbody tr td {
-      border-radius: 0 16px 16px 0;
+      border-radius: 0 14px 14px 0;
       text-align: right;
     }
     
     .dashboard .module table tbody tr:only-child th,
     .dashboard .module table tbody tr:only-child td {
-      border-radius: 16px;
+      border-radius: 14px;
     }
     
     .dashboard .module ul {
       list-style: none;
-      padding: 0;
+      padding: 16px 20px 20px;
       margin: 0;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
     
     .dashboard .module li {
@@ -220,18 +269,18 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(255,255,255,.04);
-      border: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px;
-      padding: 14px 18px;
+      background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px;
+      padding: 16px 18px;
       transition: all 0.2s;
     }
     
     .dashboard .module li:hover {
-      background: rgba(185,210,255,.08);
-      border-color: rgba(44,102,255,.25);
+      background: rgba(44,102,255,.12);
+      border-color: rgba(44,102,255,.3);
       transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(0,0,0,.15);
+      box-shadow: 0 4px 12px rgba(0,0,0,.2);
     }
     
     .dashboard .module li:last-child {
@@ -241,9 +290,9 @@
     .dashboard .module a {
       color: #b9d2ff;
       text-decoration: none;
-      font-weight: 600;
+      font-weight: 700;
       transition: color 0.2s;
-      font-size: 14px;
+      font-size: 15px;
     }
     
     .dashboard .module a:hover {
@@ -255,22 +304,22 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 8px 16px;
+      padding: 10px 18px;
       background: linear-gradient(135deg, #22c55e, #16a34a);
       color: white;
-      border-radius: 20px;
+      border-radius: 12px;
       font-weight: 800;
-      font-size: 12px;
+      font-size: 13px;
       text-transform: uppercase;
-      letter-spacing: 0.3px;
-      border: 1px solid rgba(34,197,94,.4);
-      box-shadow: 0 2px 8px rgba(34,197,94,.2);
+      letter-spacing: 0.04em;
+      border: 1px solid rgba(34,197,94,.5);
+      box-shadow: 0 4px 12px rgba(34,197,94,.25);
       transition: all 0.2s;
     }
     
     .dashboard .module .addlink::before {
       content: "+";
-      font-size: 16px;
+      font-size: 18px;
       font-weight: 900;
       line-height: 1;
     }
@@ -278,8 +327,8 @@
     .dashboard .module .addlink:hover {
       filter: brightness(1.15);
       text-decoration: none;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(34,197,94,.3);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(34,197,94,.35);
     }
     
     /* Model name links styling */
@@ -291,7 +340,7 @@
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      transition: color 0.2s;
+      transition: all 0.2s;
     }
     
     .dashboard .module table tbody tr th a::after,
@@ -300,7 +349,7 @@
       opacity: 0;
       transition: opacity 0.2s, transform 0.2s;
       transform: translateX(-4px);
-      color: #2c66ff;
+      color: var(--dash-accent, #2c66ff);
       font-weight: 900;
       margin-left: 4px;
     }
@@ -314,6 +363,7 @@
     .dashboard .module table tbody tr th a:hover,
     .dashboard .module li a:not(.addlink):hover {
       color: #d2e4ff;
+      transform: translateX(2px);
     }
     
     /* Ensure Add buttons are properly styled in table cells */
@@ -334,7 +384,12 @@
     /* Recent Activity Section */
     .recent-activity {
       grid-column: 1 / -1;
-      margin-top: 20px;
+      margin-top: 8px;
+    }
+
+    .recent-activity > div {
+      padding: 16px 20px 20px;
+      background: rgba(0,0,0,.15);
     }
     
     .activity-item {
@@ -342,17 +397,24 @@
       align-items: center;
       justify-content: space-between;
       gap: 16px;
-      padding: 14px 16px;
-      background: rgba(255,255,255,.03);
-      border-radius: 20px;
+      padding: 16px 18px;
+      background: rgba(255,255,255,.05);
+      border-radius: 14px;
       margin-bottom: 10px;
-      border-left: 3px solid #2c66ff;
-      transition: background 0.2s, transform 0.2s;
+      border: 1px solid rgba(255,255,255,.1);
+      border-left: 4px solid #2c66ff;
+      transition: all 0.2s;
+    }
+    
+    .activity-item:last-child {
+      margin-bottom: 0;
     }
     
     .activity-item:hover {
-      background: rgba(255,255,255,.06);
-      transform: translateX(4px);
+      background: rgba(44,102,255,.12);
+      border-color: rgba(44,102,255,.3);
+      transform: translateX(3px);
+      box-shadow: 0 4px 12px rgba(0,0,0,.2);
     }
     
     .activity-item.new { border-left-color: #f59e0b; }
@@ -360,32 +422,40 @@
     
     .activity-item strong {
       font-family: ui-monospace, monospace;
-      color: #2c66ff;
+      color: #b9d2ff;
       font-weight: 700;
+      letter-spacing: 0.5px;
     }
     
-    /* Welcome Message */
+    /* Welcome Message – upgraded hero banner */
     .dashboard-welcome {
-      background: linear-gradient(135deg, rgba(44,102,255,.15), rgba(124,58,237,.1));
-      border: 1px solid rgba(44,102,255,.3);
-      border-radius: 24px;
-      padding: 24px;
-      margin-bottom: 24px;
-      backdrop-filter: blur(8px);
+      background: linear-gradient(165deg, rgba(18,38,78,.95) 0%, rgba(12,25,55,.95) 45%, rgba(8,18,42,.95) 100%);
+      border: 1px solid rgba(44,102,255,.28);
+      border-radius: var(--dash-radius);
+      padding: 0;
+      margin-bottom: 32px;
+      overflow: hidden;
+      box-shadow: var(--dash-shadow), 0 0 0 1px rgba(255,255,255,.04) inset, 0 1px 0 rgba(255,255,255,.08) inset;
     }
     
     .dashboard-welcome h1 {
-      margin: 0 0 8px;
-      font-size: 24px;
+      margin: 0;
+      padding: 24px 28px;
+      font-size: 28px;
       font-weight: 900;
-      color: #e8eefc;
-      letter-spacing: -0.5px;
+      color: rgba(232,238,252,.98);
+      letter-spacing: -0.6px;
+      background: linear-gradient(135deg, rgba(44,102,255,.18), rgba(124,58,237,.12));
+      border-bottom: 1px solid rgba(44,102,255,.2);
+      box-shadow: 0 1px 0 rgba(255,255,255,.08) inset;
     }
     
     .dashboard-welcome p {
       margin: 0;
-      color: rgba(232,238,252,.72);
-      font-size: 14px;
+      padding: 20px 28px;
+      color: rgba(232,238,252,.8);
+      font-size: 15px;
+      line-height: 1.6;
     }
   </style>
 {% endblock %}
