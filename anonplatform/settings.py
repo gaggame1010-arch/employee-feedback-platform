@@ -147,6 +147,14 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# Password Hashers - Using bcrypt for enhanced security
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',  # Fallback for existing passwords
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+]
+
 AUTHENTICATION_BACKENDS = [
     "anonplatform.auth_backends.EmailOrUsernameModelBackend",
     "django.contrib.auth.backends.ModelBackend",
